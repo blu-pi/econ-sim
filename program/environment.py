@@ -36,4 +36,8 @@ class Graph:
         pass
 
     def makeLineGraph(self):
-        pass
+        for x in range(len(Agent.sellers) - 1):
+            seller1 = Agent.sellers[x]
+            seller2 = Agent.sellers[x+1]
+            buyer = Agent(Agent.Type.Buyer, [seller1,seller2])
+            

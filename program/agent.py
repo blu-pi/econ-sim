@@ -12,6 +12,7 @@ class Agent:
     buyers = []
 
     def __init__(self, type = Type.Seller, buys_from = []):
+        self.type = type
         if type == Agent.Type.Seller or type == Agent.Type.Both:
             self.product_price = 0
             self.customers = [] #list of all agents looking to buy from this agent. Not used for decision making. Populated later
@@ -20,3 +21,9 @@ class Agent:
             self.percieved_utility = random.randint(1,10)
             self.buys_from = buys_from #list of all agents this buyer is looking to purchase from. Is used in decision making
             Agent.buyers.append(self)
+
+    def __eq__(self, other) -> bool:
+        if isinstance(other, Agent):
+            return self.type == other.type
+        return False
+        

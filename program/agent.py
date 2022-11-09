@@ -1,11 +1,10 @@
-from enum import Enum
 import random
 
 #interface
 class Agent:
 
-    total_sellers = []
-    total_buyers = []
+    sellers_arr = []
+    buyers_arr = []
 
 class Seller(Agent):
 
@@ -15,7 +14,8 @@ class Seller(Agent):
         self.arg_dict = arg_dict
         self.product_price = 0
         self.buyers = []
-        super().total_sellers.append(self)
+        Agent.sellers_arr.append(self)
+        self.arr_pos = len(Agent.sellers_arr) - 1
 
     def setBuyer(self, buyer) -> bool:
         if isinstance(buyer, Buyer):
@@ -31,6 +31,9 @@ class Seller(Agent):
             return self.buyers == other.buyers and self.product_price == other.product_price
         return False
 
+    def __str__(self) -> str:
+        return "Seller" + str(self.arr_pos)
+
 class Buyer(Agent):
 
     valid_args = []
@@ -39,9 +42,10 @@ class Buyer(Agent):
         self.buys_from = buys_from_arr
         self.arg_dict = arg_dict
         self.setPercievedUtility()
-        super().total_buyers.append(self)
+        Agent.buyers_arr.append(self)
+        self.arr_pos = len(Agent.buyers_arr) - 1
 
-    def setPercievedUtility(self, util = False, min_util = 1, max_util = 10):
+    def setPercievedUtility(self, util = False, min_util = 1, max_util = 10) -> None:
         if "percieved_util" in self.arg_dict:
             self.percieved_utility = self.arg_dict["percieved_util"]
         elif util:
@@ -57,3 +61,6 @@ class Buyer(Agent):
         if isinstance(other, Buyer):
             return self.buys_from == other.buys_from and self.percieved_utility == other.percieved_utility
         return False
+
+    def __str__(self) -> str:
+        return "Buyer" + str(self.arr_pos)

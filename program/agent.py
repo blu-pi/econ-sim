@@ -1,29 +1,59 @@
 from enum import Enum
 import random
 
+#interface
 class Agent:
 
-    class Type(Enum):
-        Seller = "Seller",
-        Buyer = "Buyer",
-        Both = "Buyer and Seller"
+    total_sellers = []
+    total_buyers = []
 
-    sellers = []
-    buyers = []
+class Seller(Agent):
 
-    def __init__(self, type = Type.Seller, buys_from = []):
-        self.type = type
-        if type == Agent.Type.Seller or type == Agent.Type.Both:
-            self.product_price = 0
-            self.customers = [] #list of all agents looking to buy from this agent. Not used for decision making. Populated later
-            Agent.sellers.append(self)
-        if type == Agent.Type.Buyer or type == Agent.Type.Both:
-            self.percieved_utility = random.randint(1,10)
-            self.buys_from = buys_from #list of all agents this buyer is looking to purchase from. Is used in decision making
-            Agent.buyers.append(self)
+    valid_args = []
 
-    def __eq__(self, other) -> bool:
-        if isinstance(other, Agent):
-            return self.type == other.type
+    def __init__(self, arg_dict = {}) -> None:
+        self.arg_dict = arg_dict
+        self.product_price = 0
+        self.buyers = []
+        super().total_sellers.append(self)
+
+    def setBuyer(self, buyer) -> bool:
+        if isinstance(buyer, Buyer):
+            self.buyers.append(buyer)
+            return True
         return False
-        
+    
+    #IMPORTANT! ALL sellers are equal before they become a node in a graph! That is because they are only assigned sellers then. 
+    #Their prices only change when the simulation starts (even later chronologically).
+    #So basically don't bother comparing sellers until they become Graph Nodes.
+    def __eq__(self, other) -> bool:
+        if isinstance(other, Seller):
+            return self.buyers == other.buyers and self.product_price == other.product_price
+        return False
+
+class Buyer(Agent):
+
+    valid_args = []
+
+    def __init__(self, buys_from_arr, arg_dict = {}) -> None:
+        self.buys_from = buys_from_arr
+        self.arg_dict = arg_dict
+        self.setPercievedUtility()
+        super().total_buyers.append(self)
+
+    def setPercievedUtility(self, util = False, min_util = 1, max_util = 10):
+        if "percieved_util" in self.arg_dict:
+            self.percieved_utility = self.arg_dict["percieved_util"]
+        elif util:
+            self.percieved_utility = util
+        else:
+            if "min_util" in self.arg_dict:
+                min_util = self.arg_dict["min_util"]
+            if "max_util" in self.arg_dict:
+                min_util = self.arg_dict["max_util"]
+            self.percieved_utility = random.randint(min_util, max_util)
+    
+    def __eq__(self, other) -> bool:
+        if isinstance(other, Buyer):
+            return self.buys_from == other.buys_from and self.percieved_utility == other.percieved_utility
+        return False

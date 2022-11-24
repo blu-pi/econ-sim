@@ -1,7 +1,7 @@
 import networkx as nx
 import matplotlib.pyplot as plt
 from random import Random
-from agent import Agent, Buyer, Seller
+from program.code.agent import *
 
 
 #interface, not to be confuced with nx.Graph!
@@ -29,7 +29,12 @@ class Line(Graph):
                 buyer = Buyer([previous, seller], buyer_args)
                 G.add_edge(str(previous), str(seller), obj = buyer) #add edge between previous and seller. Give buyer object as reference.
             previous = seller
-        nx.draw(G)
+        nx.draw_networkx(G) #just to test correct shape
+        # Set margins for the axes so that nodes aren't clipped
+        ax = plt.gca()
+        ax.margins(0.20)
+        plt.axis("off")
+        plt.show()
         return G
 
 class Tree(Graph):
@@ -39,11 +44,4 @@ class Tree(Graph):
         self.buyer_args = buyer_args
         self.seller_args = seller_args
         self.graph_args = graph_args
-        #TODO makeGraph implementation
-
-if __name__ == "__main__":
-    G = nx.petersen_graph()
-    subax1 = plt.subplot(121)
-    nx.draw(G, with_labels=True, font_weight='bold')
-    subax2 = plt.subplot(122)
-    nx.draw_shell(G, nlist=[range(5, 10), range(5)], with_labels=True, font_weight='bold')
+    #TODO makeGraph implementation

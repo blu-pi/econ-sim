@@ -12,3 +12,5 @@ Looked into using networkx library for graphing. Investigating best solution for
 
 Decided on how to rewrite environment/graph class. Now uses interface Graph which implemented graph types inherit. Finished rewriting Agents class. Agent is now an interface which Buyers and Sellers inherit from. Game theory code will go in Agents class. Working on finishing rewrite of Graph class. Changes are completly untested and old tests will not work. Began adding support for variable parameters for creating any Agent. This will allow the user to change Agent properties between simulations through a UI.
 Can't test new graph class visually since networkx visualisation isn't working for some reason... will fix next.
+
+Can now visually display networkx graph. Redid testing on rewritten classes. Fixed imports where needed. Offiacially finished rewrite.

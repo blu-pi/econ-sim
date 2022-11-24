@@ -6,6 +6,7 @@ class Agent:
     sellers_arr = []
     buyers_arr = []
 
+
 class Seller(Agent):
 
     valid_args = []
@@ -33,6 +34,7 @@ class Seller(Agent):
 
     def __str__(self) -> str:
         return "Seller" + str(self.arr_pos)
+
 
 class Buyer(Agent):
 

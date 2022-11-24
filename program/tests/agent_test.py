@@ -4,17 +4,18 @@ import sys
 # append the path of the parent directory
 sys.path.append("./")
 
-from program.code.agent import Agent
+from program.code.agent import *
 
 
 def test_agent():
-    test_seller1 = Agent()
-    test_seller2 = Agent()
-    test_buyer1 = Agent(Agent.Type.Buyer, [test_seller1, test_seller2])
-    print(type(test_seller1), type(Agent.Type.Seller))
-    assert test_seller1.type == Agent.Type.Seller
-    assert test_buyer1.type == Agent.Type.Buyer
-    assert len(Agent.sellers) == 2
-    assert len(Agent.buyers) == 1
+    # these pass
+    test_seller1 = Seller()
+    test_seller2 = Seller()
+    test_buyer1 = Buyer([test_seller1, test_seller2])
+    assert isinstance(test_seller1, Seller) and isinstance(test_seller1, Agent)
+    assert isinstance(test_buyer1, Buyer) and isinstance(test_buyer1, Agent)
+    assert len(Agent.sellers_arr) == 2
+    assert len(Agent.buyers_arr) == 1
+    assert test_seller1 in test_buyer1.buys_from
 
 test_agent()

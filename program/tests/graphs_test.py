@@ -3,8 +3,8 @@ import sys
 # append the path of the parent directory
 sys.path.append("./")
 
-from program.code.graph import *
-from program.code.agent import *
+from program.code.graphs import *
+from program.code.agents import *
 
 def test_line_graph():
     #passes (makes correct graph checked visually)

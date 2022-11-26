@@ -1,7 +1,7 @@
 import networkx as nx
 import matplotlib.pyplot as plt
 from random import Random
-from program.code.agent import *
+from program.code.agents import Seller, Buyer
 
 
 #interface, not to be confuced with nx.Graph!

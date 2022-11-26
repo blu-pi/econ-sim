@@ -6,6 +6,15 @@ class Agent:
     sellers_arr = []
     buyers_arr = []
 
+    @staticmethod
+    def agentChoices() -> bool:
+        seller_index, buyer_index = 0
+        for seller in Agent.sellers_arr:
+            action = seller.findBestAction()
+        for buyer in Agent.buyers_arr:
+            action = buyer.findBestAction()
+        return True
+
 
 class Seller(Agent):
 
@@ -17,12 +26,16 @@ class Seller(Agent):
         self.buyers = []
         Agent.sellers_arr.append(self)
         self.arr_pos = len(Agent.sellers_arr) - 1
+        self.action_history = []
 
     def setBuyer(self, buyer) -> bool:
         if isinstance(buyer, Buyer):
             self.buyers.append(buyer)
             return True
         return False
+
+    def findBestAction(self):
+        pass
     
     #IMPORTANT! ALL sellers are equal before they become a node in a graph! That is because they are only assigned sellers then. 
     #Their prices only change when the simulation starts (even later chronologically).
@@ -46,6 +59,7 @@ class Buyer(Agent):
         self.setPercievedUtility()
         Agent.buyers_arr.append(self)
         self.arr_pos = len(Agent.buyers_arr) - 1
+        self.action_history = []
 
     def setPercievedUtility(self, util = False, min_util = 1, max_util = 10) -> None:
         if "percieved_util" in self.arg_dict:
@@ -58,6 +72,9 @@ class Buyer(Agent):
             if "max_util" in self.arg_dict:
                 min_util = self.arg_dict["max_util"]
             self.percieved_utility = random.randint(min_util, max_util)
+
+    def findBestAction(self):
+        pass
     
     def __eq__(self, other) -> bool:
         if isinstance(other, Buyer):

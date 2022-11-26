@@ -4,7 +4,7 @@ import sys
 # append the path of the parent directory
 sys.path.append("./")
 
-from program.code.agent import *
+from program.code.agents import *
 
 
 def test_agent():

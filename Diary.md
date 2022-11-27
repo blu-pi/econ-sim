@@ -17,3 +17,5 @@ Can now visually display networkx graph. Redid testing on rewritten classes. Fix
 
 Began preperations for running simulations. Implementation for Agent actions started. Planned how to implement agent decision making. Need to finish Agent actions then move to programming Agent decision making which will be absed on game theory. 
 Will do basic research for graph traversal using networkx library. Will struggle to get basic simulations ready for Dec. 2nd. Changed file names to reflect that they define multiple types of the given class. 
+
+Did some more testing for Actions class. Goals remain what they are above. Need to do more testing too.

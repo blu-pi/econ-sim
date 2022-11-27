@@ -59,6 +59,7 @@ class Buyer(Agent):
         self.setPercievedUtility()
         Agent.buyers_arr.append(self)
         self.arr_pos = len(Agent.buyers_arr) - 1
+        self.bought_products = False
         self.action_history = []
 
     def setPercievedUtility(self, util = False, min_util = 1, max_util = 10) -> None:

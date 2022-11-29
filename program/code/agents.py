@@ -1,5 +1,7 @@
 import random
 
+from program.code.actions import *
+
 #interface
 class Agent:
 
@@ -35,7 +37,9 @@ class Seller(Agent):
         return False
 
     def findBestAction(self):
-        pass
+        #done on 2 lines to preserve original lists in their classes
+        actions = SellerAction.possible_actions
+        actions.append(AgentAction.possible_actions)
     
     #IMPORTANT! ALL sellers are equal before they become a node in a graph! That is because they are only assigned sellers then. 
     #Their prices only change when the simulation starts (even later chronologically).
@@ -75,7 +79,8 @@ class Buyer(Agent):
             self.percieved_utility = random.randint(min_util, max_util)
 
     def findBestAction(self):
-        pass
+        actions = BuyerAction.possible_actions
+        actions.append(AgentAction.possible_actions)
     
     def __eq__(self, other) -> bool:
         if isinstance(other, Buyer):

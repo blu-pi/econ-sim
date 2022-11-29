@@ -10,7 +10,7 @@ class Action():
 #interface
 class BuyerAction(Action):
 
-    possible_actions = []
+    possible_actions = ["Buy"]
 
 class Buy(BuyerAction):
 
@@ -33,11 +33,13 @@ class Buy(BuyerAction):
         self.agent.bought_products = True
         self.agent.action_history.append(self)
 
+    def eval(self) -> int:
+        return self.agent.percieved_utility - self.cost
 
 #interface
 class SellerAction(Action):
 
-    possible_actions = []
+    possible_actions = ["PriceChange"]
 
 class PriceChange(SellerAction):
 
@@ -64,10 +66,14 @@ class PriceChange(SellerAction):
             self.agent.product_price += self.amount
         self.agent.action_history.append(self)
 
+    #much harder to judge and implement (not objective like others)
+    def eval(self) -> int:
+        pass
+
 #interface
 class AgentAction(Action): #both can do these
 
-    possible_actions = []
+    possible_actions = ["Idle"]
 
 class Idle(AgentAction):
 
@@ -79,3 +85,6 @@ class Idle(AgentAction):
 
     def apply(self):
         self.agent.action_history.append(self)
+    
+    def eval(self) -> int:
+        return 0

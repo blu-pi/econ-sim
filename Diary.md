@@ -19,3 +19,9 @@ Began preperations for running simulations. Implementation for Agent actions sta
 Will do basic research for graph traversal using networkx library. Will struggle to get basic simulations ready for Dec. 2nd. Changed file names to reflect that they define multiple types of the given class. 
 
 Did some more testing for Actions class. Goals remain what they are above. Need to do more testing too.
+
+Planning on initial direction for how to implement interesting and meaningful Agent decision-making. Must follow Game theory principles: rational agents, finite choices. 
+Came up with the following idea: Buyers simply follow objective value function (cost - percieved utility) and if that's > 0 they buy. 
+Sellers are more complicated. This is because Sellers don't have an objective way
+to make decisions without cheating (having too much information). The predicted utility from raising or lowering prices can't be accurately predicted. This is because Buyers aren't predicatable from the perspective of the Seller as the Seller doesn't know the Buyer's percieved utility of the product they're selling. 
+Solution for Sellers: Make multiple "Personalities" that have different decision making profiles. (Some may take more risk or be more aggressive etc.) The way these personalities are distributed among sellers will be determined at the start of the simulaton. There will also be a toggle to allow or disallow Sellers to change personality mid simulation.

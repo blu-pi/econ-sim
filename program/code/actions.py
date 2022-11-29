@@ -3,16 +3,28 @@ from program.code.agents import Seller, Buyer
 
 #interface
 class Action():
+    """
+    General Interface to define what are/ aren't Actions in general. Mostly used for type comparisons. 
+    All Actions have some way to evaluate (eval) their predicted utility. Sometimes there is also a split between Objective and Estimated eval options.
+    Perfect (Objective) eval will calculate a 100% accurate evaluation based on perfect information. Imperfect eval will estimate using limited information.
+    The type of eval used depends on preconditions selected during the simulation set-up by the user. All Actions also have an apply method that applies a 
+    prospective Action to a given Agent.
+    """
 
     types = []
 
 
 #interface
 class BuyerAction(Action):
+    """
+    Interface to categorise different action types. In this case to define Buyer-specific Actions.
+    Stores all implemented Actions for Buyers in posible_actions list (class attribute). Inherits from Action.
+    """
 
     possible_actions = ["Buy"]
 
 class Buy(BuyerAction):
+    """Class which defines the buying Action for a Buyer object. Inherits from BuyerAction."""
 
     def __init__(self, agent : Buyer) -> None:
         self.agent = agent
@@ -38,10 +50,15 @@ class Buy(BuyerAction):
 
 #interface
 class SellerAction(Action):
+    """
+    Interface to categorise different action types. In this case to define Seller-specific Actions.
+    Stores all implemented Actions for Sellers in posible_actions list (class attribute). Inherits from Action.
+    """
 
     possible_actions = ["PriceChange"]
 
 class PriceChange(SellerAction):
+    """Class which defines the price change Action for a Seller object. Inherits from SellerAction."""
 
     def __init__(self, agent : Seller, amount, is_percentage : bool = False) -> None:
         assert amount != 0
@@ -67,15 +84,25 @@ class PriceChange(SellerAction):
         self.agent.action_history.append(self)
 
     #much harder to judge and implement (not objective like others)
-    def eval(self) -> int:
+    def perfect_eval(self) -> int:
+        #TODO implement algo
+        pass
+
+    def imperfect_eval(self) -> int:
+        #TODO implement algo
         pass
 
 #interface
 class AgentAction(Action): #both can do these
+    """
+    Interface to categorise different action types. In this case to define Actions any type of Agent may perform.
+    Stores all implemented non-type-specific (Any Agent) Actions in posible_actions list (class attribute). Inherits from Action.
+    """
 
     possible_actions = ["Idle"]
 
 class Idle(AgentAction):
+    """Class which defines the idle (do nothing) Action for a Buyer or Seller object. Inherits from AgentAction."""
 
     def __init__(self, agent : Union[Buyer, Seller]) -> None:
         self.agent = agent

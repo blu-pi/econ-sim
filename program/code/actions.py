@@ -83,12 +83,27 @@ class PriceChange(SellerAction):
             self.agent.product_price += self.amount
         self.agent.action_history.append(self)
 
-    #much harder to judge and implement (not objective like others)
-    def perfect_eval(self) -> int:
-        #TODO implement algo
-        pass
+    def eval(self) -> int:
+        if "PERFECT_INFORMATION" in self.agent.arg_dict:
+            return self.__perfectEval()
+        else:
+            return self.__imperfectEval()
 
-    def imperfect_eval(self) -> int:
+    #much harder to judge and implement (not objective like others)
+    def __perfectEval(self) -> int:
+        buyers = self.agent.buyers
+        total_util = 0
+        if self.amount < 0:
+            for buyer in buyers:
+                assert isinstance(buyer, Buyer) #honestly just to get vscode to understand the type
+                sellers = buyer.buys_from
+                
+        else:
+            pass
+
+        return total_util
+
+    def __imperfectEval(self) -> int:
         #TODO implement algo
         pass
 

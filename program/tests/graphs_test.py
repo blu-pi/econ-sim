@@ -4,7 +4,7 @@ import sys
 sys.path.append("./")
 
 from program.code.graphs import *
-from program.code.agents import *
+#from program.code.agents import *
 
 def test_line_graph():
     #passes (makes correct graph checked visually)

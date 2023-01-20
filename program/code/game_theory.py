@@ -1,6 +1,8 @@
 import math
 from typing import Union
 
+
+#concept class, may be superceded by library made for game theory - should have thought about this earlier
 class DecisionMatrix: #only supported for Seller vs Seller
     """
     Data structure mimicking a matrix storing a Decision matrix for 2 Sellers 'competing' for the same buyer. 

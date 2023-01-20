@@ -1,6 +1,7 @@
 import random
+from typing import Union
 
-from program.code.actions import *
+from program.code.agent_actions_interface import ActionInterface
 
 #interface
 class Agent:
@@ -21,6 +22,12 @@ class Agent:
             action = buyer.findBestAction()
         return True
 
+    @staticmethod
+    def findBestAction(agent_obj):
+        if isinstance(agent_obj, Union[Buyer,Seller]):
+            actions = ActionInterface.getPossibleActions(agent_obj)
+        return None
+            
 
 class Seller(Agent):
     """
@@ -47,9 +54,10 @@ class Seller(Agent):
         return False
 
     def findBestAction(self):
+        Agent.findBestAction(self)
         #done on 2 lines to preserve original lists in their classes
-        actions = SellerAction.possible_actions
-        actions.append(AgentAction.possible_actions)
+        #actions = SellerAction.possible_actions
+        #actions.append(AgentAction.possible_actions)
         #TODO carry on
     
     #IMPORTANT! ALL sellers are equal before they become a node in a graph! That is because they are only assigned sellers then. 
@@ -105,8 +113,9 @@ class Buyer(Agent):
             self.percieved_utility = random.randint(min_util, max_util)
 
     def findBestAction(self):
-        actions = BuyerAction.possible_actions
-        actions.append(AgentAction.possible_actions)
+        Agent.findBestAction(self)
+        #actions = BuyerAction.possible_actions
+        #actions.append(AgentAction.possible_actions)
         #TODO carry on
     
     def __eq__(self, other) -> bool:

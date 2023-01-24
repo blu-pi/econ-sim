@@ -12,7 +12,7 @@ class OptArgDict:
         for key in to_check:
             if key not in allowed:
                 rejected.update({key : to_check[key]}) #add removed content to new dict
-                del to_check[key]
+                del to_check[key] #This change happens to the dict globally
         if len(rejected) == 0:
             return None
         else:

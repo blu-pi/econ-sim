@@ -55,7 +55,7 @@ class SellerAction(Action):
     Stores all implemented Actions for Sellers in posible_actions list (class attribute). Inherits from Action.
     """
 
-    possible_actions = ["PriceChange"]
+    possible_actions = ["IncreasePrice", "DecreasePrice"]
 
 class PriceChange(SellerAction):
     """Class which defines the price change Action for a Seller object. Inherits from SellerAction."""
@@ -106,6 +106,19 @@ class PriceChange(SellerAction):
     def __imperfectEval(self) -> int:
         #TODO implement algo
         pass
+
+#Both classes only exist to logically represent all possible actions an agent can make. One class can't be responsible for more than 1 action
+class IncreasePrice(PriceChange):
+
+    def __init__(self, agent: Seller, amount, is_percentage: bool = False) -> None:
+        super().__init__(agent, amount, is_percentage)
+
+
+class DecreasePrice(PriceChange):
+
+    def __init__(self, agent: Seller, amount, is_percentage: bool = False) -> None:
+        super().__init__(agent, amount, is_percentage)
+
 
 #interface
 class AgentAction(Action): #both can do these

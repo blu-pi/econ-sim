@@ -21,12 +21,6 @@ class Agent:
         for buyer in Agent.buyers_arr:
             action = buyer.findBestAction()
         return True
-
-    @staticmethod
-    def findBestAction(agent_obj):
-        if isinstance(agent_obj, Union[Buyer,Seller]):
-            actions = ActionInterface.getPossibleActions(agent_obj)
-        return None
             
 
 class Seller(Agent):
@@ -54,7 +48,8 @@ class Seller(Agent):
         return False
 
     def findBestAction(self):
-        Agent.findBestAction(self)
+        action_obj_arr = []
+        pass
         #done on 2 lines to preserve original lists in their classes
         #actions = SellerAction.possible_actions
         #actions.append(AgentAction.possible_actions)
@@ -113,7 +108,7 @@ class Buyer(Agent):
             self.percieved_utility = random.randint(min_util, max_util)
 
     def findBestAction(self):
-        Agent.findBestAction(self)
+        pass
         #actions = BuyerAction.possible_actions
         #actions.append(AgentAction.possible_actions)
         #TODO carry on

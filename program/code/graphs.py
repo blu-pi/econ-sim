@@ -10,6 +10,11 @@ class Graph:
     General Interface to define what are/ aren't Graphs in general. Mostly used for type comparisons.
     Stores all actively used graphs in a current simulation in 'total_graphs' class attribute. (There may be more than 1 graph in some cases)
     """
+
+    #Args that apply no matter which graph type is being used
+    valid_g_args = []
+    valid_b_args = ["percieved_util", "min_util", "max_util"]
+    valid_s_args = ["PERFECT_INFORMATION"]
     
     total_graphs = []
 
@@ -22,6 +27,7 @@ class Line(Graph):
     Inherits from Graph.
     """
 
+    #Args that apply only for a line graph
     valid_g_args = []
     valid_b_args = []
     valid_s_args = []
@@ -61,6 +67,7 @@ class Tree(Graph):
     Inherits from Graph.
     """
 
+    #Args that only apply for a tree graph
     valid_g_args = []
     valid_b_args = []
     valid_s_args = []

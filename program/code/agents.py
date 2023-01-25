@@ -1,7 +1,7 @@
 import random
-from typing import Union
+from typing import Union, Any
 
-from program.code.agent_actions_interface import ActionInterface
+#from program.code.agent_actions_interface import ActionInterface
 
 #interface
 class Agent:
@@ -15,6 +15,11 @@ class Agent:
 
     @staticmethod
     def agentChoices() -> bool:
+        """
+        Loop through all agents in the simulation and have them make choices one at a time. Sellers make choices before buyers. No agent ever has 
+        access to the choice another has made in the same cycle, they happen 'simultaniously' for the sake of the simulatoin. This prevents the order 
+        in which agents make choices influencing results. Returns whether this was performed successfully.
+        """
         seller_index, buyer_index = 0
         for seller in Agent.sellers_arr:
             action = seller.findBestAction()
@@ -35,6 +40,7 @@ class Seller(Agent):
     def __init__(self, arg_dict = {}) -> None:
         self.arg_dict = arg_dict
         self.product_price = 0
+        self.price_change_amount = 1
         self.buyers = []
         Agent.sellers_arr.append(self)
         self.arr_pos = len(Agent.sellers_arr) - 1
@@ -48,12 +54,17 @@ class Seller(Agent):
         return False
 
     def findBestAction(self):
+        """Returns action object that the Seller can perform which was calculated to be the best. """
+        from program.code.actions import PriceChange, Idle
         action_obj_arr = []
-        pass
-        #done on 2 lines to preserve original lists in their classes
-        #actions = SellerAction.possible_actions
-        #actions.append(AgentAction.possible_actions)
-        #TODO carry on
+        action_values_arr = []
+        increase_action = PriceChange(self, self.price_change_amount)
+        decrease_action = PriceChange(self, self.price_change_amount * -1)
+        idle_action = Idle(self)
+        action_obj_arr.append(increase_action, decrease_action, idle_action)
+        for obj in action_obj_arr:
+            action_values_arr.append(obj.eval())
+        return action_obj_arr[action_values_arr.index(max(action_values_arr))] #return action object with highest predicted value
     
     #IMPORTANT! ALL sellers are equal before they become a node in a graph! That is because they are only assigned sellers then. 
     #Their prices only change when the simulation starts (even later than being placed in a graph chronologically).
@@ -107,11 +118,17 @@ class Buyer(Agent):
                 min_util = self.arg_dict["max_util"]
             self.percieved_utility = random.randint(min_util, max_util)
 
-    def findBestAction(self):
-        pass
-        #actions = BuyerAction.possible_actions
-        #actions.append(AgentAction.possible_actions)
-        #TODO carry on
+    def findBestAction(self): #No typing because imports are made later
+        """Returns action object that the Buyer can perform which was calculated to be the best."""
+        from program.code.actions import Buy, Idle
+        action_obj_arr = []
+        action_values_arr = []
+        buy_action = Buy(self)
+        idle_action = Idle(self)
+        action_obj_arr.append(buy_action, idle_action)
+        for obj in action_obj_arr:
+            action_values_arr.append(obj.eval())
+        return action_obj_arr[action_values_arr.index(max(action_values_arr))] #return action object with highest predicted value
     
     def __eq__(self, other) -> bool:
         if isinstance(other, Buyer):
@@ -120,3 +137,14 @@ class Buyer(Agent):
 
     def __str__(self) -> str:
         return "Buyer" + str(self.arr_pos)
+
+    #method graveyard, following methods may or may not be resurrected from the dead. (Not used right now but could be useful later)
+    #TODO remove before release. Definitely won't be forgotten 
+    @staticmethod
+    def stringToClassReference(val : str) -> Any:
+        """Returns static reference to class given it's string name. May or may not be needed at some point."""
+        try:
+            return eval(val) #different eval to the methods in Actions class
+        except:
+            print("Warning: Class name {val} could not be referenced! Either it can't be accessed or it doesn't exist.".format(val=val))
+            return None

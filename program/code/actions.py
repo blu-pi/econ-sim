@@ -55,7 +55,7 @@ class SellerAction(Action):
     Stores all implemented Actions for Sellers in posible_actions list (class attribute). Inherits from Action.
     """
 
-    possible_actions = ["IncreasePrice", "DecreasePrice"]
+    possible_actions = ["PriceChange"]
 
 class PriceChange(SellerAction):
     """Class which defines the price change Action for a Seller object. Inherits from SellerAction."""
@@ -77,6 +77,7 @@ class PriceChange(SellerAction):
         return out
     
     def apply(self) -> None:
+        """Perform the specified action in the simulation"""
         if self.is_percentage:
             self.agent.product_price *= 1 + (self.amount / 100)
         else:
@@ -89,36 +90,25 @@ class PriceChange(SellerAction):
         else:
             return self.__imperfectEval()
 
-    #much harder to judge and implement (not objective like others)
     def __perfectEval(self) -> int:
         buyers = self.agent.buyers
         total_util = 0
         if self.amount < 0:
             for buyer in buyers:
                 assert isinstance(buyer, Buyer) #honestly just to get vscode to understand the type
-                sellers = buyer.buys_from
-                
+                sellers : list[Seller] = buyer.buys_from
+                sellers.remove(self.agent) #remove seller making the decision from the list
+                #TODO generate game theory decision matrix for current seller vs other sellers 1 at a time. Then average values and create decision making behaviour.
         else:
             pass
 
         return total_util
 
+    #much harder to judge and implement (not objective like others)
     def __imperfectEval(self) -> int:
         #TODO implement algo
         pass
-
-#Both classes only exist to logically represent all possible actions an agent can make. One class can't be responsible for more than 1 action
-class IncreasePrice(PriceChange):
-
-    def __init__(self, agent: Seller, amount, is_percentage: bool = False) -> None:
-        super().__init__(agent, amount, is_percentage)
-
-
-class DecreasePrice(PriceChange):
-
-    def __init__(self, agent: Seller, amount, is_percentage: bool = False) -> None:
-        super().__init__(agent, amount, is_percentage)
-
+    
 
 #interface
 class AgentAction(Action): #both can do these

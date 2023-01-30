@@ -1,4 +1,4 @@
-from typing import Union
+from typing import Union, Any
 from program.code.agents import Seller, Buyer
 
 #interface
@@ -55,6 +55,17 @@ class SellerAction(Action):
     Stores all implemented Actions for Sellers in posible_actions list (class attribute). Inherits from Action.
     """
 
+    @staticmethod
+    def getOpponents(seller : Seller) -> list[Seller]:
+        out = []
+        buyers = seller.buyers
+        for buyer in buyers:
+            assert isinstance(buyer, Buyer) #honestly just to get vscode to understand the type
+            sellers : list[Seller] = buyer.buys_from
+            sellers.remove(seller) #remove seller making the decision from the list
+        out.append(sellers)
+        return sellers
+
     possible_actions = ["PriceChange"]
 
 class PriceChange(SellerAction):
@@ -90,24 +101,21 @@ class PriceChange(SellerAction):
         else:
             return self.__imperfectEval()
 
-    def __perfectEval(self) -> int:
-        buyers = self.agent.buyers
+    def __perfectEval(self) -> int: #matrices should be a list containing DecisionMatrix
+        from program.code.game_theory import DecisionMatrix
+        #assert(isinstance(matrices, list[DecisionMatrix]))
+        decision_vector = []
+        
         total_util = 0
-        if self.amount < 0:
-            for buyer in buyers:
-                assert isinstance(buyer, Buyer) #honestly just to get vscode to understand the type
-                sellers : list[Seller] = buyer.buys_from
-                sellers.remove(self.agent) #remove seller making the decision from the list
-                #TODO generate game theory decision matrix for current seller vs other sellers 1 at a time. Then average values and create decision making behaviour.
-        else:
-            pass
 
         return total_util
 
     #much harder to judge and implement (not objective like others)
     def __imperfectEval(self) -> int:
-        #TODO implement algo
-        pass
+        from program.code.game_theory import DecisionMatrix
+        total_util = 0
+
+        return total_util
     
 
 #interface

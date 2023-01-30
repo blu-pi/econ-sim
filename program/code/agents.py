@@ -1,5 +1,6 @@
 import random
 from typing import Union, Any
+from program.code.game_theory import DecisionMatrix
 
 #from program.code.agent_actions_interface import ActionInterface
 
@@ -9,6 +10,8 @@ class Agent:
     General Interface to define what are/ aren't Agents in general. Mostly used for type comparisons. Stores list containing all sellers and buyers
     in class attributes (sellers_arr, buyers_arr). Agent decision making is done in this class by looping through those lists.
     """
+
+    #TODO for valid args in buyers and sellers, eiter remove them as functionality is in graph class or use them for more specific arg restrictions (e.g. min/max values or sub parameters etc.)
 
     sellers_arr = []
     buyers_arr = []
@@ -20,7 +23,7 @@ class Agent:
         access to the choice another has made in the same cycle, they happen 'simultaniously' for the sake of the simulatoin. This prevents the order 
         in which agents make choices influencing results. Returns whether this was performed successfully.
         """
-        seller_index, buyer_index = 0
+
         for seller in Agent.sellers_arr:
             action = seller.findBestAction()
         for buyer in Agent.buyers_arr:
@@ -35,6 +38,7 @@ class Seller(Agent):
     'valid_args' class attribute. Inherits from Agent.
     """
 
+    sequential_decisions : bool = False #applies to all Sellers TODO change var depending on arg_dict!
     valid_args = []
 
     def __init__(self, arg_dict = {}) -> None:
@@ -55,16 +59,33 @@ class Seller(Agent):
 
     def findBestAction(self):
         """Returns action object that the Seller can perform which was calculated to be the best. """
-        from program.code.actions import PriceChange, Idle
+        from program.code.actions import PriceChange, Idle, SellerAction
+        from program.code.game_theory import DecisionMatrix
+        #Following could be 1-liner but I find this easier to read
         action_obj_arr = []
-        action_values_arr = []
+        #TODO make these dynamic and give option between 2 and 4 price change possibilities.
         increase_action = PriceChange(self, self.price_change_amount)
         decrease_action = PriceChange(self, self.price_change_amount * -1)
         idle_action = Idle(self)
         action_obj_arr.append(increase_action, decrease_action, idle_action)
-        for obj in action_obj_arr:
-            action_values_arr.append(obj.eval())
-        return action_obj_arr[action_values_arr.index(max(action_values_arr))] #return action object with highest predicted value
+        #end of 1-liner
+
+        if "BEHAVIOUR" in self.arg_dict:
+            pass #TODO checking behaviour parameters and then using them if valid
+        else:
+            #use default behaviour
+            opponents = SellerAction.getOpponents(self) #TODO move method to Seller class and make non-static
+            matrices = []
+            i = 0
+            for opp in opponents:
+                
+                decision_matrix = DecisionMatrix(3,["Raise price", "Lower price", "Idle"])
+                matrices.append(decision_matrix) #technically just an array containing arrays, containing arrays, containing arrays - fun
+
+        #dead code TODO remove? or use?
+        #for obj in action_obj_arr:
+        #    action_values_arr.append(obj.eval())
+        #return action_obj_arr[action_values_arr.index(max(action_values_arr))] #return action object with highest predicted value
     
     #IMPORTANT! ALL sellers are equal before they become a node in a graph! That is because they are only assigned sellers then. 
     #Their prices only change when the simulation starts (even later than being placed in a graph chronologically).
@@ -76,6 +97,10 @@ class Seller(Agent):
 
     def __str__(self) -> str:
         return "Seller" + str(self.arr_pos)
+
+    @staticmethod
+    def setSequential() -> None:
+        Seller.sequential_decisions = True
 
 
 class Buyer(Agent):

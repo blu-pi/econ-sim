@@ -23,7 +23,8 @@ class Agent:
         access to the choice another has made in the same cycle, they happen 'simultaniously' for the sake of the simulatoin. This prevents the order 
         in which agents make choices influencing results. Returns whether this was performed successfully.
         """
-
+        if Seller.sequential_decisions:
+            random.shuffle(Agent.sellers_arr)#prevents order of agent creation impacting simulation results. Makes simulation non-deterministic!
         for seller in Agent.sellers_arr:
             action = seller.findBestAction()
         for buyer in Agent.buyers_arr:
@@ -56,36 +57,99 @@ class Seller(Agent):
             self.buyers.append(buyer)
             return True
         return False
+       
+    def getOpponents(self) -> Any: #supposed to return list of sellers
+        """
+        Method that returns a Seller object for each Buyer object of the original Seller. This way the Seller can make a Decision Matrix
+        to compete with all sellers over each Buyer being competed over.
+        """
+        out = []
+        buyers = self.buyers
+        for buyer in buyers:
+            assert isinstance(buyer, Buyer) #honestly just to get vscode to understand the type
+            sellers : list[Seller] = buyer.buys_from
+            sellers.remove(self) #remove seller making the decision from the list
+        out.append(sellers)
+        assert isinstance(out, list[Seller])
+        return out
+    
+    def makeMatrices(self, actions) -> list[DecisionMatrix]:
+        """Makes empty decision matrix out of a seller obj and a list of action objs. Utilies aren't entered"""
+        from program.code.actions import SellerAction, AgentAction
+
+        assert isinstance(actions, list[Union[SellerAction,AgentAction]])
+        num_actions = len(actions)
+        str_actions = []
+        for action in actions:
+            str_actions.append(str(action))
+        opponents = self.getOpponents(self)
+        matrices = []
+        i = 0
+        for opp in opponents: 
+            decision_matrix = DecisionMatrix(num_actions, str_actions)
+            matrices.append(decision_matrix) #technically just an array containing arrays, containing arrays, containing arrays - fun
+        return matrices
+    
+    def populateMatrix(self, matrix : DecisionMatrix, values, byIndex : bool = False) -> None:
+        """
+        Method for writing utility values into a decision matrix using an exisiting 2D array (NOT DecisionMatrix obj) or a dictionary
+        storing values by row name. This is intended for a 1-sided matrix in the sense that it only stores the utility for the row player.
+        """
+        if byIndex:
+            if len(values) != matrix.size:
+                print("Error populating matrix, size of matrix doesn't match size of values dict. {} vs. {}".format(len(keys),matrix.size))
+            else:
+                i = 0
+                for i in range(len(values)):
+                    matrix.setRow(matrix.__indexToName(i), values[i])
+        else:
+            values_dict = values #for clarity
+            keys = list(values_dict.keys())
+            if keys != matrix.axis_labels:
+                print("Error populating matrix, matrix labels don't match value labels. No clue how this could even happen...")
+            else:
+                for key in values_dict:
+                    matrix.setRow(key, values_dict[key])
 
     def findBestAction(self):
         """Returns action object that the Seller can perform which was calculated to be the best. """
+
         from program.code.actions import PriceChange, Idle, SellerAction
         from program.code.game_theory import DecisionMatrix
-        #Following could be 1-liner but I find this easier to read
-        action_obj_arr = []
-        #TODO make these dynamic and give option between 2 and 4 price change possibilities.
-        increase_action = PriceChange(self, self.price_change_amount)
-        decrease_action = PriceChange(self, self.price_change_amount * -1)
-        idle_action = Idle(self)
-        action_obj_arr.append(increase_action, decrease_action, idle_action)
-        #end of 1-liner
+        
+        num_steps = 1 #default
+        if "price_steps" in self.arg_dict:
+            if not self.arg_dict["price_steps"] > 0:
+                print("ERROR, invalid quantity for argument 'price steps'. {} is below minimum of 1.".format(self.arg_dict["price_steps"]))
+                print("Default value of {} used instead.".format(num_steps))
+            else:
+                num_steps = self.arg_dict["price_steps"] 
+        
+        action_obj_arr = [Idle(self)]
+        change = 0
+        interval : float = self.price_change_amount / num_steps #TODO ensure price_change_amount is > 0 as a rule?
+        for i in range(num_steps):
+            change += i * interval
+            action_obj_arr.append(PriceChange(self, change))
+            action_obj_arr.append(PriceChange(self, change * -1))
+        
+        assert(len(action_obj_arr) == 1 + (num_steps * 2))
 
-        if "BEHAVIOUR" in self.arg_dict:
-            pass #TODO checking behaviour parameters and then using them if valid
-        else:
-            #use default behaviour
-            opponents = SellerAction.getOpponents(self) #TODO move method to Seller class and make non-static
-            matrices = []
-            i = 0
-            for opp in opponents:
-                
-                decision_matrix = DecisionMatrix(3,["Raise price", "Lower price", "Idle"])
-                matrices.append(decision_matrix) #technically just an array containing arrays, containing arrays, containing arrays - fun
-
-        #dead code TODO remove? or use?
-        #for obj in action_obj_arr:
-        #    action_values_arr.append(obj.eval())
-        #return action_obj_arr[action_values_arr.index(max(action_values_arr))] #return action object with highest predicted value
+        #TODO split decision methods into their own private methods called by this one!
+        if not Seller.sequential_decisions and "PERFECT_INFORMATION" in self.arg_dict:
+            matrices = self.makeMatrices(action_obj_arr)
+            print("ERROR, NOT IMPLEMENTED!")
+            exit(0)
+        elif Seller.sequential_decisions and "PERFECT_INFORMATION" in self.arg_dict:
+            self.populateMatrices(matrices)
+        else: #FOR ALL CASES WHERE IMPERFECT INFORMATION IS USED
+            matrices = self.makeMatrices(action_obj_arr)
+            #TODO write get values then utilise populateMatrix to inser values. 
+            if "BEHAVIOUR" in self.arg_dict:
+                pass #TODO checking behaviour parameters and then using them if valid
+            else:
+                pass
+                #TODO use default behaviour
     
     #IMPORTANT! ALL sellers are equal before they become a node in a graph! That is because they are only assigned sellers then. 
     #Their prices only change when the simulation starts (even later than being placed in a graph chronologically).
@@ -99,7 +163,7 @@ class Seller(Agent):
         return "Seller" + str(self.arr_pos)
 
     @staticmethod
-    def setSequential() -> None:
+    def setSequential() -> None: #TODO actually call this method when nessecary when simulation is being setup. Possibly in simulation class?
         Seller.sequential_decisions = True
 
 

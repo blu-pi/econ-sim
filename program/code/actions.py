@@ -55,19 +55,6 @@ class SellerAction(Action):
     Stores all implemented Actions for Sellers in posible_actions list (class attribute). Inherits from Action.
     """
 
-    @staticmethod
-    def getOpponents(seller : Seller) -> list[Seller]:
-        out = []
-        buyers = seller.buyers
-        for buyer in buyers:
-            assert isinstance(buyer, Buyer) #honestly just to get vscode to understand the type
-            sellers : list[Seller] = buyer.buys_from
-            sellers.remove(seller) #remove seller making the decision from the list
-        out.append(sellers)
-        return sellers
-
-    possible_actions = ["PriceChange"]
-
 class PriceChange(SellerAction):
     """Class which defines the price change Action for a Seller object. Inherits from SellerAction."""
 

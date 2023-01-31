@@ -44,3 +44,5 @@ Alternatively agents could make decisions sequentially once being put in a rando
 Other unforseen problems could arise here. Feels like there's no good solution. More detail in report. 
 Ended up splitting decision making process between simultanious with perfect information, sequential with perfect information and the rest (any imperfect information). Working on solution now.
 Added simulation.py which will be the top-level class handling all aspects of the simulation.
+
+After advice from supervisor, I added option for having Sellers make decisions in random sequential order as well as simultaniously. Solution for Simultanious + perfect information on seller decision-making is in the conceptual stage. All other combinations are ready and just have to be written which is what I'm doing now. 

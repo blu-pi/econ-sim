@@ -46,3 +46,9 @@ Ended up splitting decision making process between simultanious with perfect inf
 Added simulation.py which will be the top-level class handling all aspects of the simulation.
 
 After advice from supervisor, I added option for having Sellers make decisions in random sequential order as well as simultaniously. Solution for Simultanious + perfect information on seller decision-making is in the conceptual stage. All other combinations are ready and just have to be written which is what I'm doing now. 
+
+Revamped eval system for price change action to better reflect return types. Still working on decision making. Needs thorough testing after completion. Moved some methods to more appropriate classes. This type of refactoring will continue throughout.
+Want to implement behaviour class for sellers to use in case of imperfect information but I'm worried about it's potential complexity and time. Testing current implementation for eval, fixing problems encountered.
+
+Testing of seqEval for perfect information is now complete. Lessons were learnt. Now going to try and implement a full simulation run by starting the simulation after creating the graph and ending it at a fixed number of loops or looking for an equilibrium/cycle. Progress! 
+Extra features initially intended to be in final product that aren't yet implemented will be implemented later. For now I need the simulation to run successfully with existing parameters.

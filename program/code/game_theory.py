@@ -7,10 +7,12 @@ class DecisionMatrix: #only supported for Seller vs Seller
     """
     Data structure mimicking a matrix storing a Decision matrix for 2 Sellers 'competing' for the same buyer. 
     Values are accessed by passing 1 decision name for each Seller. Rows and collumns can also be accessed by name using getRow / get collumn.
-    Every getter also ahs a setter with the same naming convention.
+    Every getter also has a setter with the same naming convention.
     """
 
-    def __init__(self, size : int, axis_labels : list[str]) -> None:
+    #TODO collumn labels don't technically contain the correct obj since the same actions are hypothetically performed by another agent
+    #may not really be important for now but could be in future. Also for clarity
+    def __init__(self, size : int, axis_labels : list[str]) -> None: 
         self.size = size
         self.axis_labels = axis_labels
         self.__matrix = []
@@ -69,3 +71,24 @@ class DecisionMatrix: #only supported for Seller vs Seller
         for x in self.axis_labels:
             self.set(x, collumn_name, val[i])
             i += 1
+
+    def populateMatrix(self, values, byIndex : bool = False) -> None:
+        """
+        Method for writing utility values into a decision matrix using an exisiting 2D array (NOT DecisionMatrix obj) or a dictionary
+        storing values by row name. This is intended for a 1-sided matrix in the sense that it only stores the utility for the row player.
+        """
+        if byIndex:
+            if len(values) != self.size:
+                print("Error populating matrix, size of matrix doesn't match size of values dict. {} vs. {}".format(len(keys),self.size))
+            else:
+                i = 0
+                for i in range(len(values)):
+                    self.setRow(self.__indexToName(i), values[i])
+        else:
+            values_dict = values #for clarity
+            keys = list(values_dict.keys())
+            if keys != self.axis_labels:
+                print("Error populating matrix, matrix labels don't match value labels. No clue how this could even happen...")
+            else:
+                for key in values_dict:
+                    self.setRow(key, values_dict[key])

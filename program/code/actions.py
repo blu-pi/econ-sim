@@ -59,7 +59,7 @@ class PriceChange(SellerAction):
     """Class which defines the price change Action for a Seller object. Inherits from SellerAction."""
 
     def __init__(self, agent : Seller, amount, is_percentage : bool = False) -> None:
-        assert amount != 0
+        #assert amount != 0
         self.agent = agent
         self.amount = amount
         self.is_percentage = is_percentage
@@ -82,27 +82,43 @@ class PriceChange(SellerAction):
             self.agent.product_price += self.amount
         self.agent.action_history.append(self)
 
-    def eval(self) -> int:
-        if "PERFECT_INFORMATION" in self.agent.arg_dict:
-            return self.__perfectEval()
+    def eval(self) -> Union[int,list[int]]:
+        if self.agent.sequential_decisions:
+            return self.seqEval()
         else:
-            return self.__imperfectEval()
+            return self.simulEval()
 
-    def __perfectEval(self) -> int: #matrices should be a list containing DecisionMatrix
-        from program.code.game_theory import DecisionMatrix
-        #assert(isinstance(matrices, list[DecisionMatrix]))
-        decision_vector = []
-        
-        total_util = 0
+    def simulEval(self) -> list[int]:     
+        util = [0]
+        if "PERFECT_INFORMATION" in self.agent.arg_dict:
+            print("ERROR, NOT IMPLEMENTED!")
+            exit(0) #not implemented and very hard
+        else:
+            print("ERROR, NOT IMPLEMENTED!")
+            exit(0) #TODO
+        return util
 
-        return total_util
-
-    #much harder to judge and implement (not objective like others)
-    def __imperfectEval(self) -> int:
-        from program.code.game_theory import DecisionMatrix
-        total_util = 0
-
-        return total_util
+    def seqEval(self) -> int:
+        util = 0
+        if "PERFECT_INFORMATION" in self.agent.arg_dict:
+            #by far the easiest
+            if self.is_percentage:
+                new_price = self.agent.product_price * self.amount
+            else:
+                new_price = self.agent.product_price + self.amount
+            opponents = self.agent.getOpponents()
+            for i in range(len(opponents)):
+                opp = opponents[i]
+                assert(isinstance(opp, Seller))
+                buyer = self.agent.buyers[i]
+                assert(isinstance(buyer, Buyer))
+                if (opp.product_price + new_price) <= buyer.percieved_utility:
+                    util += new_price
+        else: #imperfect info
+            print("ERROR, NOT IMPLEMENTED!")
+            exit(0) #TODO
+        #print("Checked {action} and found util of: {util}".format(action=self,util=util)) #this is debug output
+        return util
     
 
 #interface
@@ -127,4 +143,9 @@ class Idle(AgentAction):
         self.agent.action_history.append(self)
     
     def eval(self) -> int:
-        return 0
+        if isinstance(self.agent, Buyer):
+            return 0
+        else:
+            temp_action = PriceChange(self.agent, 0)
+            if self.agent.sequential_decisions:
+                return temp_action.seqEval()

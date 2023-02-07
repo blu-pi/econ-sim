@@ -51,3 +51,5 @@ docs/_build/
 program/code/__pycache__/actions.cpython-310.pyc
 program/code/__pycache__/agents.cpython-310.pyc
 program/code/__pycache__/graphs.cpython-310.pyc
+program/code/__pycache__/actions.cpython-310.pyc
+program/code/__pycache__/*.pyc 

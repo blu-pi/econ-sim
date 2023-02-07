@@ -52,71 +52,54 @@ class Seller(Agent):
         self.action_history = []
 
     #Sellers are instantiated before buyers so the Buyers that are 'connected' to this Seller must be added retrospectively 
-    def setBuyer(self, buyer) -> bool:
+    def setBuyer(self, buyer : Union[Any,list]) -> None:
+        '''Method for populating Seller.buyers array which is empty when the Seller objects are first initialised.'''
         if isinstance(buyer, Buyer):
             self.buyers.append(buyer)
-            return True
-        return False
+        elif isinstance(buyer, list):
+            for b in buyer:
+                assert(isinstance(b, Buyer))
+                self.buyers.append(b)
        
     def getOpponents(self) -> Any: #supposed to return list of sellers
         """
         Method that returns a Seller object for each Buyer object of the original Seller. This way the Seller can make a Decision Matrix
-        to compete with all sellers over each Buyer being competed over.
+        to compete with all sellers over each Buyer being competed over. Allows duplicates!
         """
         out = []
-        buyers = self.buyers
-        for buyer in buyers:
+        for buyer in self.buyers:
             assert isinstance(buyer, Buyer) #honestly just to get vscode to understand the type
-            sellers : list[Seller] = buyer.buys_from
+            sellers : list[Seller] = buyer.buys_from.copy()
             sellers.remove(self) #remove seller making the decision from the list
-        out.append(sellers)
-        assert isinstance(out, list[Seller])
+            out.extend(sellers)
+        #assert isinstance(out, list[Seller])
         return out
     
     def makeMatrices(self, actions) -> list[DecisionMatrix]:
         """Makes empty decision matrix out of a seller obj and a list of action objs. Utilies aren't entered"""
         from program.code.actions import SellerAction, AgentAction
 
-        assert isinstance(actions, list[Union[SellerAction,AgentAction]])
+        #assert isinstance(actions, list[Union[SellerAction,AgentAction]]) #fix
         num_actions = len(actions)
         str_actions = []
         for action in actions:
             str_actions.append(str(action))
-        opponents = self.getOpponents(self)
+        opponents = self.getOpponents()
         matrices = []
         i = 0
         for opp in opponents: 
             decision_matrix = DecisionMatrix(num_actions, str_actions)
             matrices.append(decision_matrix) #technically just an array containing arrays, containing arrays, containing arrays - fun
         return matrices
-    
-    def populateMatrix(self, matrix : DecisionMatrix, values, byIndex : bool = False) -> None:
-        """
-        Method for writing utility values into a decision matrix using an exisiting 2D array (NOT DecisionMatrix obj) or a dictionary
-        storing values by row name. This is intended for a 1-sided matrix in the sense that it only stores the utility for the row player.
-        """
-        if byIndex:
-            if len(values) != matrix.size:
-                print("Error populating matrix, size of matrix doesn't match size of values dict. {} vs. {}".format(len(keys),matrix.size))
-            else:
-                i = 0
-                for i in range(len(values)):
-                    matrix.setRow(matrix.__indexToName(i), values[i])
-        else:
-            values_dict = values #for clarity
-            keys = list(values_dict.keys())
-            if keys != matrix.axis_labels:
-                print("Error populating matrix, matrix labels don't match value labels. No clue how this could even happen...")
-            else:
-                for key in values_dict:
-                    matrix.setRow(key, values_dict[key])
 
     def findBestAction(self):
         """Returns action object that the Seller can perform which was calculated to be the best. """
+        #TODO clean up this method (low priority). It should be split up bc it does to much at once right now.
 
         from program.code.actions import PriceChange, Idle, SellerAction
         from program.code.game_theory import DecisionMatrix
         
+        #generate possible actions
         num_steps = 1 #default
         if "price_steps" in self.arg_dict:
             if not self.arg_dict["price_steps"] > 0:
@@ -129,27 +112,27 @@ class Seller(Agent):
         change = 0
         interval : float = self.price_change_amount / num_steps #TODO ensure price_change_amount is > 0 as a rule?
         for i in range(num_steps):
-            change += i * interval
+            change += interval
             action_obj_arr.append(PriceChange(self, change))
-            action_obj_arr.append(PriceChange(self, change * -1))
-        
+            action_obj_arr.append(PriceChange(self, change * -1))       
         assert(len(action_obj_arr) == 1 + (num_steps * 2))
 
-        #TODO split decision methods into their own private methods called by this one!
+        matrices = self.makeMatrices(action_obj_arr) #only needed during simultaneous decision making!
         if not Seller.sequential_decisions and "PERFECT_INFORMATION" in self.arg_dict:
-            matrices = self.makeMatrices(action_obj_arr)
             print("ERROR, NOT IMPLEMENTED!")
             exit(0)
         elif Seller.sequential_decisions and "PERFECT_INFORMATION" in self.arg_dict:
-            self.populateMatrices(matrices)
+            max_util = -1 #nothing will be smaller than this
+            best_action = None
+            for action in action_obj_arr:
+                util = action.eval()
+                if util > max_util:
+                    best_action = action
+                    max_util = util
+            return best_action #TODO test this!!!
         else: #FOR ALL CASES WHERE IMPERFECT INFORMATION IS USED
-            matrices = self.makeMatrices(action_obj_arr)
-            #TODO write get values then utilise populateMatrix to inser values. 
-            if "BEHAVIOUR" in self.arg_dict:
-                pass #TODO checking behaviour parameters and then using them if valid
-            else:
-                pass
-                #TODO use default behaviour
+            pass
+            #Uses behaviour
     
     #IMPORTANT! ALL sellers are equal before they become a node in a graph! That is because they are only assigned sellers then. 
     #Their prices only change when the simulation starts (even later than being placed in a graph chronologically).
@@ -180,10 +163,12 @@ class Buyer(Agent):
         self.buys_from = buys_from_arr
         self.arg_dict = arg_dict
         self.setPercievedUtility()
+        self.informSellers()
         Agent.buyers_arr.append(self)
         self.arr_pos = len(Agent.buyers_arr) - 1
         self.bought_products = False
         self.action_history = []
+
 
     def setPercievedUtility(self, util = False, min_util = 1, max_util = 10) -> None:
         """
@@ -206,6 +191,12 @@ class Buyer(Agent):
             if "max_util" in self.arg_dict:
                 min_util = self.arg_dict["max_util"]
             self.percieved_utility = random.randint(min_util, max_util)
+    
+    def informSellers(self) -> None:
+        """Gives seller a direct reference to this obj. Acts as an intention to buy from them."""
+        for seller in self.buys_from:
+            assert(isinstance(seller,Seller))
+            seller.setBuyer(self)
 
     def findBestAction(self): #No typing because imports are made later
         """Returns action object that the Buyer can perform which was calculated to be the best."""
@@ -214,7 +205,7 @@ class Buyer(Agent):
         action_values_arr = []
         buy_action = Buy(self)
         idle_action = Idle(self)
-        action_obj_arr.append(buy_action, idle_action)
+        action_obj_arr.extend([buy_action, idle_action])
         for obj in action_obj_arr:
             action_values_arr.append(obj.eval())
         return action_obj_arr[action_values_arr.index(max(action_values_arr))] #return action object with highest predicted value
@@ -227,8 +218,6 @@ class Buyer(Agent):
     def __str__(self) -> str:
         return "Buyer" + str(self.arr_pos)
 
-    #method graveyard, following methods may or may not be resurrected from the dead. (Not used right now but could be useful later)
-    #TODO remove before release. Definitely won't be forgotten 
     @staticmethod
     def stringToClassReference(val : str) -> Any:
         """Returns static reference to class given it's string name. May or may not be needed at some point."""

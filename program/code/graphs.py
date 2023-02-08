@@ -32,7 +32,7 @@ class Line(Graph):
     valid_b_args = []
     valid_s_args = []
 
-    def __init__(self, num_sellers, graph_args = {}, buyer_args = {}, seller_args = {}) -> None:
+    def __init__(self, num_sellers = 20, graph_args = {}, buyer_args = {}, seller_args = {}) -> None:
         self.num_sellers = num_sellers
         self.buyer_args = buyer_args
         self.seller_args = seller_args

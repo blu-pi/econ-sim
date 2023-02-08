@@ -52,3 +52,5 @@ Want to implement behaviour class for sellers to use in case of imperfect inform
 
 Testing of seqEval for perfect information is now complete. Lessons were learnt. Now going to try and implement a full simulation run by starting the simulation after creating the graph and ending it at a fixed number of loops or looking for an equilibrium/cycle. Progress! 
 Extra features initially intended to be in final product that aren't yet implemented will be implemented later. For now I need the simulation to run successfully with existing parameters.
+
+Started on basic template for setup of the simulation. Needs to be tested! Methodology may change.

@@ -53,4 +53,11 @@ Want to implement behaviour class for sellers to use in case of imperfect inform
 Testing of seqEval for perfect information is now complete. Lessons were learnt. Now going to try and implement a full simulation run by starting the simulation after creating the graph and ending it at a fixed number of loops or looking for an equilibrium/cycle. Progress! 
 Extra features initially intended to be in final product that aren't yet implemented will be implemented later. For now I need the simulation to run successfully with existing parameters.
 
-Started on basic template for setup of the simulation. Needs to be tested! Methodology may change.
+Started on basic template for setup of the simulation. Needs to be tested! Methodology may change. 
+
+Completed sim setup but need to test it. Working on UI for data input. Still need to do data output and implementation of extra features which I planned to include. Generally most goals are marked with #TODO comments throughout the code. 
+Decided to use tkinter for UI since it comes in the default python package and I have previous experience using it.
+
+Working on setup UI. Going to use existing valid arg lists/dicts to generate entry fields. Decided to make one class for storing and checking all possible parameters that can be passed to the simulation. 
+This makes it easier to maintain and makes the implementation of the dynamic UI creating easier. Essentially the UI will automatically look which parameters the simulation can take and will generate entry fields accordingly.
+This makes it much simpler to add extra features in future. This maintainability has also been a focus for the code base since the beginning.

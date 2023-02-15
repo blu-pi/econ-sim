@@ -1,5 +1,6 @@
 from program.code.arg_checker import OptArgDict 
 from program.code.graphs import *
+from program.code.agents import *
 
 class Simulation:
     """
@@ -18,12 +19,18 @@ class Simulation:
         self.parameters = parameters
         self.buyer_args = buyer_args
         self.seller_args = seller_args
+        self.max_turn = 50 #default, only used if none passed
+        self.turn_num = 0
+        self.startSim()
 
     def setupSim(self) -> None:
         """
         Completes simulation setup including parameter verification and Graph creation. 
         Buyer and Seller args are checked later as they are totally optional and thus less important.
         """
+        if "max_iterations" in self.parameters:
+            self.max_turn = self.parameters["max_iterations"]
+    
         args = {
             "buyer_args" : self.buyer_args,
             "seller_args" : self.seller_args
@@ -43,6 +50,23 @@ class Simulation:
         if bad_params != None:
             print("Bad params passed to simulation, default values will be used where possible!\n{}".format(bad_params))
         self.setupSim()
-        self.runSim()
+        self.run()
 
-#TODO simulation control here. Start, ongoing, end procedures!
+    def endSim(self) -> None:
+        print("The End.") #TODO Data output
+    
+    def reachedEquilibrium(self) -> bool:
+        return False #TODO implement equilibrium checker
+
+    def run(self) -> None:
+        while(True):
+            #Agent decisions
+            Agent.agentChoices()
+            self.turn_num += 1
+            if self.turn_num >= self.max_turn or self.reachedEquilibrium():
+                break
+        self.endSim() #TODO implement!
+                
+
+    
+

@@ -17,7 +17,7 @@ class Agent:
     buyers_arr = []
 
     @staticmethod
-    def agentChoices() -> bool:
+    def agentChoices() -> None:
         """
         Loop through all agents in the simulation and have them make choices one at a time. Sellers make choices before buyers. No agent ever has 
         access to the choice another has made in the same cycle, they happen 'simultaniously' for the sake of the simulatoin. This prevents the order 
@@ -29,7 +29,7 @@ class Agent:
             action = seller.findBestAction()
         for buyer in Agent.buyers_arr:
             action = buyer.findBestAction()
-        return True
+        action.apply()
             
 
 class Seller(Agent):
@@ -182,14 +182,21 @@ class Buyer(Agent):
         """
 
         if "percieved_util" in self.arg_dict:
-            self.percieved_utility = self.arg_dict["percieved_util"]
+            self.percieved_utility = self.arg_dict["percieved_util"] #user-generated method call (explicit)
+
         elif util:
-            self.percieved_utility = util
+            self.percieved_utility = util #probably implicit method call
+            
         else:
             if "min_util" in self.arg_dict:
-                min_util = self.arg_dict["min_util"]
+                temp_min_util = self.arg_dict["min_util"]
             if "max_util" in self.arg_dict:
-                min_util = self.arg_dict["max_util"]
+                temp_max_util = self.arg_dict["max_util"]
+
+            if temp_max_util >= temp_min_util:
+                max_util = temp_max_util
+                min_util = temp_min_util
+
             self.percieved_utility = random.randint(min_util, max_util)
     
     def informSellers(self) -> None:

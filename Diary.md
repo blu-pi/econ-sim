@@ -61,3 +61,5 @@ Decided to use tkinter for UI since it comes in the default python package and I
 Working on setup UI. Going to use existing valid arg lists/dicts to generate entry fields. Decided to make one class for storing and checking all possible parameters that can be passed to the simulation. 
 This makes it easier to maintain and makes the implementation of the dynamic UI creating easier. Essentially the UI will automatically look which parameters the simulation can take and will generate entry fields accordingly.
 This makes it much simpler to add extra features in future. This maintainability has also been a focus for the code base since the beginning.
+
+Completed basic workin UI. Now need to connect UI with sim setup class so the simulation can be started through UI input. Also still need to update exisitng code to use reworked opt_arg dictionary format.

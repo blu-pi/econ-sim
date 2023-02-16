@@ -6,31 +6,16 @@ from program.code.simulation import Simulation
 from program.code.opt_args import *
 from tkinter import *
 
-# column_names, eventually this could be parsed from 'COLUMNS'. Currently it is
-# used to insert the data. 
-
-SIM_PARAMS = [('type', 'TEXT'), ('manufacturer', 'TEXT'), 
-        ('focal_length', 'TEXT'), ('wavelength', 'TEXT'),
-        ('diameter', 'TEXT'), ('comment', 'TEXT')]
-
-B_PARAMS = [('type', 'TEXT'), ('Manufacturer', 'TEXT'), 
-        ('focal_length', 'TEXT'), ('wavelength', 'TEXT'),
-        ('diameter', 'TEXT'), ('comment', 'TEXT')]
-
-S_PARAMS = [('type', 'TEXT'), ('manufacturer', 'TEXT'), 
-        ('focal_length', 'TEXT'), ('wavelength', 'TEXT'),
-        ('diameter', 'TEXT'), ('comment', 'TEXT')]
-
-PARAMS = [SIM_PARAMS,B_PARAMS,S_PARAMS]
-
 class entry_field:
-    def __init__(self, parent, colName):
+    def __init__(self, parent, colName, restriction = None):
+
+        self.restriction = restriction
 
         self.frame = Frame(parent)
         self.frame.pack(side = TOP)
         
         self.label = Label(self.frame, text = colName)
-        self.label.configure(width = 15)
+        self.label.configure(width = 20)
         self.label.pack(side = LEFT)
 
         self.entry = Entry(self.frame)
@@ -45,11 +30,82 @@ class entry_field:
         print('derp')
 
 class drop_down:
-    def __init__(self, parent, colName) -> None:
-        pass
+    def __init__(self, parent, colName, restriction) -> None:
+        self.restriction = restriction
 
+        self.frame = Frame(parent)
+        self.frame.pack(side = TOP)
+        
+        self.label = Label(self.frame, text = colName)
+        self.label.configure(width = 20)
+        self.label.pack(side = LEFT)
+
+        self.variable = StringVar(parent)
+        self.variable.set(restriction[0]) # default value
+
+        self.option_menu = OptionMenu(self.frame, self.variable, *restriction)
+        self.option_menu.pack(side = LEFT)
+        self.value = lambda : self.variable.get()
+
+        self.holdButton = Button(self.frame, command = self.hold)
+        self.holdButton.configure(text = 'Hold')
+        self.holdButton.pack(side = RIGHT)
+    
+    def hold(self):
+        print('derp') 
+
+class tick_box:
+    def __init__(self, parent, colName) -> None:
+        self.frame = Frame(parent)
+        self.frame.pack(side = TOP)
+        
+        self.label = Label(self.frame, text = colName)
+        self.label.configure(width = 20)
+        self.label.pack(side = LEFT)
+
+        var = BooleanVar()
+        self.check_button = Checkbutton(self.frame, variable=var, onvalue=True, offvalue=False)
+        self.check_button.pack(side = LEFT)
+        self.value = lambda : var.get()
+
+        self.holdButton = Button(self.frame, command = self.hold)
+        self.holdButton.configure(text = 'Hold')
+        self.holdButton.pack(side = RIGHT)
+    
+    def hold(self):
+        print('derp') 
 
 class App:
+
+    global_output = [] #ugly but honestly tkinter is ugly so idc >=/
+
+    def __init__(self, parent, sections_str, collumns) -> None:
+        self.parent = parent
+        self.sections_str = sections_str
+        self.sections = {}
+        self.collumns = collumns
+
+        i = 0
+        for collumn in self.collumns:
+            self.sections[sections_str[i]] = Section(self.parent, collumn, sections_str[i])
+            i += 1
+    
+        # Next button.
+        self.nextButton = Button(parent, command = self.getAllInput)
+        self.nextButton.configure(text = 'Next')
+        self.nextButton.pack(side = LEFT)
+    
+    def getAllInput(self) -> list:
+        i = 0
+        for key in self.sections:
+            section = self.sections[key]
+            assert(isinstance(section, Section))
+            App.global_output.append(section.nextItem()) 
+            i += 1
+        print(App.global_output)
+
+
+class Section():
     def __init__(self, parent, columns, title):
         self.myParent = parent
         self.columns = columns
@@ -71,11 +127,6 @@ class App:
         self.next_esc = Frame(self.Container)
         self.next_esc.pack(side = BOTTOM)
 
-        # Next button.
-        self.nextButton = Button(self.next_esc, command = self.nextItem)
-        self.nextButton.configure(text = 'Next')
-        self.nextButton.pack(side = LEFT)
-
         # Escape the window.
         self.Container.bind('<Escape>', self.quit)
 
@@ -85,25 +136,40 @@ class App:
 
     # Make data entry buttons.
     def make_buttons(self, parent, column_names):
-        #self.colName for colName in column_names
         self.factory = {}
-        for i in column_names:
-            colName = i[0]
-            self.factory[colName] = entry_field(self.entrycont, colName)
+        if isinstance(column_names,dict):
+            #new functionality
+            for key in column_names:
+                colName = key
+                entry_restrictions = column_names[key]
+                self.factory[colName] = self.gen_entry_obj(colName, entry_restrictions)
+        else:
+            print("critical error") #can't really happen idk TODO remove after debug
 
-        
+    def gen_entry_obj(self, colName, entry_restrictions):
+        if ".." in entry_restrictions:
+            return entry_field(self.entrycont, colName, entry_restrictions)
+        if len(entry_restrictions) == 0:
+            return tick_box(self.entrycont, colName)
+        return drop_down(self.entrycont, colName, entry_restrictions)
+
     # Next button handeler.
     def nextItem(self):
         # get data from buttons
         data = []
-        for i in self.columns:
-            colName = i[0]
+        for colName in self.columns:
             data.append(self.factory[colName].value())
-        print(data)
+        return data
 
-print(sys.path)
+
+dict_names = ["Simulation", "Buyer", "Seller"]
+
 root = Tk()
-app = App(root, B_PARAMS, "test")
+
+app = App(root, dict_names, OptArg.getAllParams())
+
+
+#app = App(root, B_PARAMS, "test")
 #sim = App(root,Simulation.valid_parameters,"Simulation")
 root.mainloop()
 #TODO work on this to make subsections!

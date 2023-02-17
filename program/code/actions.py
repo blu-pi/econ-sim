@@ -1,5 +1,7 @@
 from typing import Union, Any
+
 from program.code.agents import Seller, Buyer
+from program.code.opt_args import OptArg
 
 #interface
 class Action():
@@ -82,25 +84,25 @@ class PriceChange(SellerAction):
             self.agent.product_price += self.amount
         self.agent.action_history.append(self)
 
-    def eval(self) -> Union[int,list[int]]:
-        if self.agent.sequential_decisions:
+    def eval(self, isSequential : bool) -> Union[int,list[int]]:
+        if isSequential:
             return self.seqEval()
         else:
             return self.simulEval()
 
     def simulEval(self) -> list[int]:     
         util = [0]
-        if "PERFECT_INFORMATION" in self.agent.arg_dict:
-            print("ERROR, NOT IMPLEMENTED!")
+        if self.agent.arg_dict["PERFECT_INFORMATION"]: #if true
+            print("1 ERROR, NOT IMPLEMENTED!")
             exit(0) #not implemented and very hard
         else:
-            print("ERROR, NOT IMPLEMENTED!")
+            print("2 ERROR, NOT IMPLEMENTED!")
             exit(0) #TODO
         return util
 
     def seqEval(self) -> int:
         util = 0
-        if "PERFECT_INFORMATION" in self.agent.arg_dict:
+        if self.agent.arg_dict["PERFECT_INFORMATION"]: #if true
             #by far the easiest
             if self.is_percentage:
                 new_price = self.agent.product_price * self.amount
@@ -115,7 +117,7 @@ class PriceChange(SellerAction):
                 if (opp.product_price + new_price) <= buyer.percieved_utility:
                     util += new_price
         else: #imperfect info
-            print("ERROR, NOT IMPLEMENTED!")
+            print("3 ERROR, NOT IMPLEMENTED!")
             exit(0) #TODO
         #print("Checked {action} and found util of: {util}".format(action=self,util=util)) #this is debug output
         return util
@@ -142,10 +144,10 @@ class Idle(AgentAction):
     def apply(self):
         self.agent.action_history.append(self)
     
-    def eval(self) -> int:
+    def eval(self, isSequential : bool = None) -> int:
         if isinstance(self.agent, Buyer):
             return 0
         else:
             temp_action = PriceChange(self.agent, 0)
-            if self.agent.sequential_decisions:
+            if isSequential:
                 return temp_action.seqEval()

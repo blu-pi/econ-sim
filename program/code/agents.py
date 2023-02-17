@@ -1,6 +1,8 @@
 import random
 from typing import Union, Any
+
 from program.code.game_theory import DecisionMatrix
+from program.code.opt_args import OptArg
 
 #from program.code.agent_actions_interface import ActionInterface
 
@@ -16,21 +18,6 @@ class Agent:
     sellers_arr = []
     buyers_arr = []
 
-    @staticmethod
-    def agentChoices() -> bool:
-        """
-        Loop through all agents in the simulation and have them make choices one at a time. Sellers make choices before buyers. No agent ever has 
-        access to the choice another has made in the same cycle, they happen 'simultaniously' for the sake of the simulatoin. This prevents the order 
-        in which agents make choices influencing results. Returns whether this was performed successfully.
-        """
-        if Seller.sequential_decisions:
-            random.shuffle(Agent.sellers_arr)#prevents order of agent creation impacting simulation results. Makes simulation non-deterministic!
-        for seller in Agent.sellers_arr:
-            action = seller.findBestAction()
-        for buyer in Agent.buyers_arr:
-            action = buyer.findBestAction()
-        return True
-            
 
 class Seller(Agent):
     """
@@ -39,7 +26,6 @@ class Seller(Agent):
     'valid_args' class attribute. Inherits from Agent.
     """
 
-    sequential_decisions : bool = False #applies to all Sellers TODO change var depending on arg_dict!
     valid_args = []
 
     def __init__(self, arg_dict = {}) -> None:
@@ -92,7 +78,7 @@ class Seller(Agent):
             matrices.append(decision_matrix) #technically just an array containing arrays, containing arrays, containing arrays - fun
         return matrices
 
-    def findBestAction(self):
+    def findBestAction(self, isSequential : bool):
         """Returns action object that the Seller can perform which was calculated to be the best. """
         #TODO clean up this method (low priority). It should be split up bc it does to much at once right now.
 
@@ -118,14 +104,14 @@ class Seller(Agent):
         assert(len(action_obj_arr) == 1 + (num_steps * 2))
 
         matrices = self.makeMatrices(action_obj_arr) #only needed during simultaneous decision making!
-        if not Seller.sequential_decisions and "PERFECT_INFORMATION" in self.arg_dict:
+        if not isSequential and "PERFECT_INFORMATION" in self.arg_dict:
             print("ERROR, NOT IMPLEMENTED!")
             exit(0)
-        elif Seller.sequential_decisions and "PERFECT_INFORMATION" in self.arg_dict:
+        elif isSequential and "PERFECT_INFORMATION" in self.arg_dict:
             max_util = -1 #nothing will be smaller than this
             best_action = None
             for action in action_obj_arr:
-                util = action.eval()
+                util = action.eval(isSequential)
                 if util > max_util:
                     best_action = action
                     max_util = util
@@ -144,10 +130,6 @@ class Seller(Agent):
 
     def __str__(self) -> str:
         return "Seller" + str(self.arr_pos)
-
-    @staticmethod
-    def setSequential() -> None: #TODO actually call this method when nessecary when simulation is being setup. Possibly in simulation class?
-        Seller.sequential_decisions = True
 
 
 class Buyer(Agent):
@@ -182,14 +164,23 @@ class Buyer(Agent):
         """
 
         if "percieved_util" in self.arg_dict:
-            self.percieved_utility = self.arg_dict["percieved_util"]
+            self.percieved_utility = self.arg_dict["percieved_util"] #user-generated method call (explicit)
+
         elif util:
-            self.percieved_utility = util
+            self.percieved_utility = util #probably implicit method call
+            
         else:
+            temp_min_util = min_util
+            temp_max_util = max_util
             if "min_util" in self.arg_dict:
-                min_util = self.arg_dict["min_util"]
+                temp_min_util = self.arg_dict["min_util"]
             if "max_util" in self.arg_dict:
-                min_util = self.arg_dict["max_util"]
+                temp_max_util = self.arg_dict["max_util"]
+
+            if temp_max_util >= temp_min_util:
+                max_util = temp_max_util
+                min_util = temp_min_util
+
             self.percieved_utility = random.randint(min_util, max_util)
     
     def informSellers(self) -> None:

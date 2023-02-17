@@ -8,12 +8,9 @@ class OptArg:
     ALL OTHER CLASSES import their respective 'possible argument' list or dictionary from here when they are initialised!
     """
 
-    #CURRENTLY in testing so code still uses old format for storing parameters.
-    #TODO complete class and test it. Then actually make otyher classes use it.
-
-    #FORMAT EXPLANATION:
+    #FORMAT EXPLANATION for parameter dictionaries:
     #'..' is inspired by haskell. Logically serves the same function but simpler. Implies a range between l[n-1] and l[n+1]. Also implies numerical data
-    #[] just means a boolean response
+    #List containing values without a '..' is a whitelist of accepted values.
     #also possible is an explicit list of values as long as those don't countain the literal ".." mentioned earlier.
 
     #sim parameters are generic top-level parameters. Other are more specific but there is some overlap. 
@@ -21,6 +18,7 @@ class OptArg:
         "num_sellers" : [0,"..",100],
         "graph_type" : ["Line"],
         "buyer_dist" : ["Vanilla"],
+        "SEQ_DECISIONS" : [True,False],
         "max_iterations" : [1,"..",100]
     }
     
@@ -31,9 +29,9 @@ class OptArg:
         "max_util" : [0,"..",100]
     }
 
+    #TODO implement imperfect information and simultaneous (non-sequential) and all their new combinations in seller decision making.
     seller_parameters = {
-        "PERFECT_INFORMATION" : [],
-        "SEQ_DECISIONS" : [],
+        "PERFECT_INFORMATION" : [True,False],
         "price_steps" : [0,"..",5]
     } 
 
@@ -46,7 +44,7 @@ class OptArg:
     def verifyDictKeys(to_check : dict, allowed : Union[list, dict]) -> Union[None, dict]:
         """Verifies keys. Returns keys that are not permitted"""
         rejected = {}
-        for key in to_check:
+        for key in list(to_check):
             if key not in allowed:
                 rejected.update({key : to_check[key]}) #add removed content to new dict
                 del to_check[key] #This change happens to the dict globally
@@ -63,13 +61,19 @@ class OptArg:
             rejected.update(bad_args)
 
         #The following could be cleaner but this part of the code simply isn't important enough for me to care that much.
-        for key in to_check:
+        for key in list(to_check):
+            if to_check[key] in [[] , "", None]: #Extra safety, may not be needed. 
+                del to_check[key] #This change happens to the dict globally
+                continue #when a value for a parameter isn't passed then it probably has a default calue hardcoded somewhere.
+
             #allowed parameters are either lists or single values
             if isinstance(allowed[key],list):
-                if allowed[key].contains(".."): #hasskell style range of values
+                if ".." in allowed[key]: #hasskell style range of values
+                    print(to_check[key])
                     if not allowed[key][0] <= to_check[key] <= allowed[key][2]: #if not in range then it's bad
                         rejected.update({key : to_check[key]}) #add removed content to new dict
                         del to_check[key] #This change happens to the dict globally 
+
                 elif to_check[key] not in allowed[key]: #if param not in list of explicitly allowed params then it's bad
                     rejected.update({key : to_check[key]}) #add removed content to new dict
                     del to_check[key] #This change happens to the dict globally
@@ -77,6 +81,7 @@ class OptArg:
                 if to_check[key] != allowed[key]: #if param doesn't match possible param then it's bad
                     rejected.update({key : to_check[key]}) #add removed content to new dict
                     del to_check[key] #This change happens to the dict globally
+
         if len(rejected) == 0:
             return None
         return rejected

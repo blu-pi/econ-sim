@@ -48,4 +48,6 @@ coverage.xml
 
 # Sphinx documentation
 docs/_build/
-*.pyc 
+
+# Miscellaneous
+program/tests/random_tests.py

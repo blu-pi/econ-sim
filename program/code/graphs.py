@@ -1,7 +1,9 @@
 import networkx as nx
 import matplotlib.pyplot as plt
 from random import Random
+
 from program.code.agents import Seller, Buyer
+from program.code.opt_args import OptArg
 
 
 #interface, not to be confuced with nx.Graph!
@@ -12,9 +14,9 @@ class Graph:
     """
 
     #Args that apply no matter which graph type is being used
-    valid_g_args = []
-    valid_b_args = ["percieved_util", "min_util", "max_util"]
-    valid_s_args = ["PERFECT_INFORMATION", "SEQ_DECISIONS", "price_steps"]
+    # valid_g_args = []
+    # valid_b_args = ["percieved_util", "min_util", "max_util"]
+    # valid_s_args = ["PERFECT_INFORMATION", "SEQ_DECISIONS", "price_steps"]
     
     total_graphs = []
 

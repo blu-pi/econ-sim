@@ -1,10 +1,16 @@
 import sys
+from typing import Union
 
 sys.path.append("./")
 
 from program.code.simulation import Simulation
-from program.code.opt_args import *
+from program.code.opt_args import OptArg
 from tkinter import *
+
+class info_window:
+
+    def __init__(self, text) -> None:
+        pass #TODO complete (low priority)
 
 class entry_field:
     def __init__(self, parent, colName, restriction = None):
@@ -20,11 +26,18 @@ class entry_field:
 
         self.entry = Entry(self.frame)
         self.entry.pack(side = LEFT)
-        self.value = lambda : self.entry.get()
+        self.value = lambda : self.getIntVal()
 
         self.holdButton = Button(self.frame, command = self.hold)
-        self.holdButton.configure(text = 'Hold')
+        self.holdButton.configure(text = 'Info')
         self.holdButton.pack(side = RIGHT)
+
+    def getIntVal(self) -> Union[int,None]: #safe way to get int from entry box
+        try:
+            val = int(self.entry.get())
+        except ValueError:
+            val = None
+        return val
 
     def hold(self):
         print('derp')
@@ -48,7 +61,7 @@ class drop_down:
         self.value = lambda : self.variable.get()
 
         self.holdButton = Button(self.frame, command = self.hold)
-        self.holdButton.configure(text = 'Hold')
+        self.holdButton.configure(text = 'Info')
         self.holdButton.pack(side = RIGHT)
     
     def hold(self):
@@ -69,7 +82,7 @@ class tick_box:
         self.value = lambda : var.get()
 
         self.holdButton = Button(self.frame, command = self.hold)
-        self.holdButton.configure(text = 'Hold')
+        self.holdButton.configure(text = 'Info')
         self.holdButton.pack(side = RIGHT)
     
     def hold(self):
@@ -77,32 +90,42 @@ class tick_box:
 
 class App:
 
-    global_output = [] #ugly but honestly tkinter is ugly so idc >=/
+    global_output = {} #ugly but honestly tkinter is ugly so idc >=/
 
-    def __init__(self, parent, sections_str, collumns) -> None:
+    def __init__(self, parent, sections_str, columns) -> None:
         self.parent = parent
         self.sections_str = sections_str
         self.sections = {}
-        self.collumns = collumns
+        self.columns = columns
 
         i = 0
-        for collumn in self.collumns:
-            self.sections[sections_str[i]] = Section(self.parent, collumn, sections_str[i])
+        for column in self.columns:
+            self.sections[sections_str[i]] = Section(self.parent, column, sections_str[i])
             i += 1
     
         # Next button.
         self.nextButton = Button(parent, command = self.getAllInput)
-        self.nextButton.configure(text = 'Next')
+        self.nextButton.configure(text = 'Start Simulation!')
         self.nextButton.pack(side = LEFT)
+
+    def initSim(self) -> None:
+        #format global_output to be passable to Simulation constructor. 
+        #(Modifying key names)
+        App.global_output["parameters"] = App.global_output.pop("Simulation")
+        App.global_output["buyer_args"] = App.global_output.pop("Buyer")
+        App.global_output["seller_args"] = App.global_output.pop("Seller")
+        print(App.global_output["parameters"])
+
+        sim = Simulation(**App.global_output)
     
     def getAllInput(self) -> list:
         i = 0
         for key in self.sections:
             section = self.sections[key]
             assert(isinstance(section, Section))
-            App.global_output.append(section.nextItem()) 
+            App.global_output.update({self.sections_str[i] : section.nextItem()}) 
             i += 1
-        print(App.global_output)
+        self.initSim()
 
 
 class Section():
@@ -149,16 +172,19 @@ class Section():
     def gen_entry_obj(self, colName, entry_restrictions):
         if ".." in entry_restrictions:
             return entry_field(self.entrycont, colName, entry_restrictions)
-        if len(entry_restrictions) == 0:
+        if entry_restrictions == [True,False]:
             return tick_box(self.entrycont, colName)
         return drop_down(self.entrycont, colName, entry_restrictions)
 
     # Next button handeler.
-    def nextItem(self):
+    def nextItem(self) -> dict:
         # get data from buttons
-        data = []
+        data = {}
         for colName in self.columns:
-            data.append(self.factory[colName].value())
+            #data.append(self.factory[colName].value())
+            val = self.factory[colName].value()
+            if val not in ["",None]: #don't pass params that aren't needed.
+                data.update({colName : val})
         return data
 
 
@@ -168,8 +194,5 @@ root = Tk()
 
 app = App(root, dict_names, OptArg.getAllParams())
 
-
-#app = App(root, B_PARAMS, "test")
-#sim = App(root,Simulation.valid_parameters,"Simulation")
 root.mainloop()
 #TODO work on this to make subsections!

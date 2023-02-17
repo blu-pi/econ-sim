@@ -63,3 +63,9 @@ This makes it easier to maintain and makes the implementation of the dynamic UI 
 This makes it much simpler to add extra features in future. This maintainability has also been a focus for the code base since the beginning.
 
 Completed basic workin UI. Now need to connect UI with sim setup class so the simulation can be started through UI input. Also still need to update exisitng code to use reworked opt_arg dictionary format.
+Started debugging existing implementation. Adding robust type security for inputs. No user input should be able to crash the simulation. 
+Might need to remove old .pyc files from version tracking as they could potentially interfere and aren't functionally useful in any way. 
+They were simply added to the gitignore too late. 
+
+Debug stage 1 complete, the code runs to the end without crashing for default values. Now other values need to be tested including edge cases. "The End." console output is reached meaning the simulation is successfully running
+and terminating itself through proper means. After completing more debugging I will work on most important additional features I wanted to add. 

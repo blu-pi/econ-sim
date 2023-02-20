@@ -41,7 +41,8 @@ class Simulation:
     
         args = {
             "buyer_args" : self.buyer_args,
-            "seller_args" : self.seller_args
+            "seller_args" : self.seller_args,
+            "graph_args" : self.parameters
         }
         if "num_sellers" in self.parameters:
             args["num_sellers"] = self.parameters["num_sellers"]
@@ -49,6 +50,8 @@ class Simulation:
         if "graph_type" in self.parameters:
             if self.parameters["graph_type"] == "Line":
                 graph = Line(**args)
+            if self.parameters["graph_type"] == "Circle":
+                graph = Circle(**args)
         #TODO support for more graph types
         
 
@@ -69,6 +72,7 @@ class Simulation:
         access to the choice another has made in the same cycle, they happen 'simultaniously' for the sake of the simulatoin. This prevents the order 
         in which agents make choices influencing results. Returns whether this was performed successfully.
         """
+
         if self.parameters["SEQ_DECISIONS"]: #if true
             random.shuffle(Agent.sellers_arr)#prevents order of agent creation impacting simulation results. Makes simulation non-deterministic!
         for seller in Agent.sellers_arr:

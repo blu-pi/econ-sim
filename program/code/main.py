@@ -114,7 +114,6 @@ class App:
         App.global_output["parameters"] = App.global_output.pop("Simulation")
         App.global_output["buyer_args"] = App.global_output.pop("Buyer")
         App.global_output["seller_args"] = App.global_output.pop("Seller")
-        print(App.global_output["parameters"])
 
         sim = Simulation(**App.global_output)
     

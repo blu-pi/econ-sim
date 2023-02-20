@@ -16,10 +16,11 @@ class OptArg:
     #sim parameters are generic top-level parameters. Other are more specific but there is some overlap. 
     sim_parameters = {
         "num_sellers" : [0,"..",100],
-        "graph_type" : ["Line"],
+        "graph_type" : ["Line", "Circle"],
         "buyer_dist" : ["Vanilla"],
         "SEQ_DECISIONS" : [True,False],
-        "max_iterations" : [1,"..",100]
+        "max_iterations" : [1,"..",100],
+        "buyers_per_seller_pair" : [1,"..",5]
     }
     
     #logically, min and max util have tighter restrictions but they are checked later. e.g. min can't be bigger than max and its implications.
@@ -69,7 +70,6 @@ class OptArg:
             #allowed parameters are either lists or single values
             if isinstance(allowed[key],list):
                 if ".." in allowed[key]: #hasskell style range of values
-                    print(to_check[key])
                     if not allowed[key][0] <= to_check[key] <= allowed[key][2]: #if not in range then it's bad
                         rejected.update({key : to_check[key]}) #add removed content to new dict
                         del to_check[key] #This change happens to the dict globally 

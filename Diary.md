@@ -69,3 +69,6 @@ They were simply added to the gitignore too late.
 
 Debug stage 1 complete, the code runs to the end without crashing for default values. Now other values need to be tested including edge cases. "The End." console output is reached meaning the simulation is successfully running
 and terminating itself through proper means. After completing more debugging I will work on most important additional features I wanted to add. 
+
+Added circle graph type. Restructured Graph generation as original code wasn't flexible enough. Debugged infinite loop caused by __eq__ comparisons with buyers and sellers. Comparing buyer equality required comparing who they buy from. This starts comparing sellers which requires comparing who they sell to. I have no idea how this didn't casue an infinite loop earlier. Fixed removing overriden __eq__ methods as they are just not needed. They were written very early in development when I thought they were needed. 
+Might use tkinter .ttk for better looking UI, seems simple enough. 

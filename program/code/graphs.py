@@ -3,8 +3,6 @@ import matplotlib.pyplot as plt
 from random import Random
 
 from program.code.agents import Seller, Buyer
-from program.code.opt_args import OptArg
-
 
 #interface, not to be confuced with nx.Graph!
 class Graph:
@@ -12,67 +10,92 @@ class Graph:
     General Interface to define what are/ aren't Graphs in general. Mostly used for type comparisons.
     Stores all actively used graphs in a current simulation in 'total_graphs' class attribute. (There may be more than 1 graph in some cases)
     """
-
-    #Args that apply no matter which graph type is being used
-    # valid_g_args = []
-    # valid_b_args = ["percieved_util", "min_util", "max_util"]
-    # valid_s_args = ["PERFECT_INFORMATION", "SEQ_DECISIONS", "price_steps"]
     
     total_graphs = []
+    
+    @staticmethod
+    def joinSellers(buys_from : list[Seller], graph : nx.Graph, buyer_dist : str = "Vanilla", buyer_args : dict = {},  num_buyers : int = 1) -> None:
+        if buyer_dist == "Vanilla":
+            for i in range(num_buyers):
+                buyer = Buyer([buys_from[0], buys_from[1]], buyer_args)
+                graph.add_edge(str(buys_from[0]), str(buys_from[1]), obj = buyer) #add edge between previous and seller. Give buyer object as reference.
 
-class Line(Graph):
-    """
-    Class to define and create a line graph with given properties. Uses networkx library to represent the graph.
-    Graph properties can be given through optional argument 'graph_args'. 
-    GENERAL (NOT individual) Buyer and Seller args can be passed using optional arguments 'buyer_args' and 'seller_args' respectively.
-    All optional arguments are dictionaries with valid keys stored in class attributes 'valid_g_args', 'valid_b_args', and 'valid_s_args' respectively.
-    Inherits from Graph.
-    """
-
-    #Args that apply only for a line graph
-    valid_g_args = []
-    valid_b_args = []
-    valid_s_args = []
-
-    def __init__(self, num_sellers = 20, graph_args = {}, buyer_args = {}, seller_args = {}) -> None:
-        self.num_sellers = num_sellers
-        self.buyer_args = buyer_args
-        self.seller_args = seller_args
-        self.graph_args = graph_args
-        self.graph_obj = self.makeGraph(num_sellers, buyer_args, seller_args)
-
-    def makeGraph(self, num_sellers, buyer_args = {}, seller_args = {}) -> nx.Graph:
-        G = nx.Graph()
-        Graph.total_graphs.append(G)
-        previous = None
-        for i in range(num_sellers):
-            seller = Seller(seller_args)
-            G.add_node(str(seller), obj = seller)
-            if i > 0:
-                buyer = Buyer([previous, seller], buyer_args)
-                G.add_edge(str(previous), str(seller), obj = buyer) #add edge between previous and seller. Give buyer object as reference.
-            previous = seller
-        nx.draw_networkx(G) #just to test correct shape
+    def display(graph_obj) -> None:
+        nx.draw_networkx(graph_obj) #just to test correct shape
         # Set margins for the axes so that nodes aren't clipped
         ax = plt.gca()
         ax.margins(0.20)
         plt.axis("off")
         plt.show()
+        return graph_obj
+
+class Line(Graph):
+    """
+    Class to define and create a line graph with given properties. Uses networkx library to represent the graph.
+    Graph properties can be specified through optional argument 'graph_args'. 
+    Inherits from Graph.
+    """
+
+    def __init__(self, num_sellers = 20, graph_args = {}, buyer_args = {}, seller_args = {}) -> None:
+        self.num_sellers = num_sellers
+        self.buyer_args = buyer_args
+        self.seller_args = seller_args
+        self.graph_args = graph_args #clone of sim args so many params won't be used.
+        self.graph_obj = self.makeGraph()
+
+    def makeGraph(self, show_result : bool = True) -> nx.Graph:
+        G = nx.Graph()
+        Graph.total_graphs.append(G)
+        previous = None
+        for i in range(self.num_sellers):
+            seller = Seller(self.seller_args)
+            G.add_node(str(seller), obj = seller)
+            if i > 0:
+                Graph.joinSellers([previous, seller], G, self.graph_args["buyer_dist"], self.buyer_args)
+            previous = seller
+        if show_result:
+            Graph.display(G)
         return G
+
+class Circle(Graph):
+    """
+    Class to define and create a tree graph with given properties. Uses networkx library to represent the graph.
+    Graph properties can be specified through optional argument 'graph_args'. 
+    Inherits from Graph.
+    """    
+    def __init__(self, num_sellers = 20, graph_args = {}, buyer_args = {}, seller_args = {}) -> None:
+        self.num_sellers = num_sellers
+        self.buyer_args = buyer_args
+        self.seller_args = seller_args
+        self.graph_args = graph_args
+        self.graph_obj = self.makeGraph()
+    
+    def makeGraph(self, show_result : bool = True) -> nx.Graph:
+        G = nx.Graph()
+        Graph.total_graphs.append(G)
+        first = Seller(self.seller_args)
+        previous = first
+        num_buyers = 1 #default
+        if "buyers_per_seller_pair" in self.graph_args:
+            num_buyers = self.graph_args["buyers_per_seller_pair"]
+        for i in range(self.num_sellers - 1):
+            seller = Seller(self.seller_args)
+            G.add_node(str(seller), obj = seller)
+            Graph.joinSellers([previous, seller], G, self.graph_args["buyer_dist"], self.buyer_args, num_buyers)
+            previous = seller
+        Graph.joinSellers([previous, first], G, self.graph_args["buyer_dist"], self.buyer_args, num_buyers)
+        
+        if show_result:
+            Graph.display(G)
+        return G
+
 
 class Tree(Graph):
     """
     Class to define and create a tree graph with given properties. Uses networkx library to represent the graph.
-    Graph properties can be given through optional argument 'graph_args'. 
-    GENERAL (NOT individual) Buyer and Seller args can be passed using optional arguments 'buyer_args' and 'seller_args' respectively.
-    All optional arguments are dictionaries with valid keys stored in class attributes 'valid_g_args', 'valid_b_args', and 'valid_s_args' respectively.
+    Graph properties can be specified through optional argument 'graph_args'. 
     Inherits from Graph.
     """
-
-    #Args that only apply for a tree graph
-    valid_g_args = []
-    valid_b_args = []
-    valid_s_args = []
 
     def __init__(self, num_sellers, graph_args = {}, buyer_args = {}, seller_args = {}) -> None:
         self.num_sellers = num_sellers

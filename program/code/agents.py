@@ -123,10 +123,10 @@ class Seller(Agent):
     #IMPORTANT! ALL sellers are equal before they become a node in a graph! That is because they are only assigned sellers then. 
     #Their prices only change when the simulation starts (even later than being placed in a graph chronologically).
     #So basically don't bother comparing sellers until they become Graph Nodes.
-    def __eq__(self, other) -> bool:
-        if isinstance(other, Seller):
-            return self.buyers == other.buyers and self.product_price == other.product_price
-        return False
+    # def __eq__(self, other) -> bool:
+    #     if isinstance(other, Seller):
+    #         return self.buyers == other.buyers and self.product_price == other.product_price
+    #     return False
 
     def __str__(self) -> str:
         return "Seller" + str(self.arr_pos)
@@ -201,10 +201,10 @@ class Buyer(Agent):
             action_values_arr.append(obj.eval())
         return action_obj_arr[action_values_arr.index(max(action_values_arr))] #return action object with highest predicted value
     
-    def __eq__(self, other) -> bool:
-        if isinstance(other, Buyer):
-            return self.buys_from == other.buys_from and self.percieved_utility == other.percieved_utility
-        return False
+    # def __eq__(self, other) -> bool:
+    #     if isinstance(other, Buyer):
+    #         return self.buys_from == other.buys_from and self.percieved_utility == other.percieved_utility
+    #     return False
 
     def __str__(self) -> str:
         return "Buyer" + str(self.arr_pos)

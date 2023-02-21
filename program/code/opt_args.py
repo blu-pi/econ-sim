@@ -16,7 +16,7 @@ class OptArg:
     #sim parameters are generic top-level parameters. Other are more specific but there is some overlap. 
     sim_parameters = {
         "num_sellers" : [0,"..",100],
-        "graph_type" : ["Line", "Circle"],
+        "graph_type" : ["Line", "Circle","Tree"],
         "buyer_dist" : ["Vanilla"],
         "SEQ_DECISIONS" : [True,False],
         "max_iterations" : [1,"..",100],

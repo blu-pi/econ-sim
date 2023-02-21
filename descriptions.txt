@@ -1,0 +1,13 @@
+num_sellers : The number of Sellers in the Graph. The number of Buyers is partially dependant on this.
+graph_type : The shape of graph used to simulate the market.
+buyer_dist : I'm not even sure myself right now.
+SEQ_DECISIONS" : How sellers will make decisions. Seq will make decisions 1 at a time in random order. Simultaneous makes all decisions in 1 step and then applies them at the same time. No Seller has their decision influenced by knowing exactly what another seller has already done this turn.
+max_iterations" : How many cycles the simulation will run for at most.
+buyers_per_seller_pair : How many Buyers will connect any pair of sellers. Default is 1.
+
+percieved_util" : How much money all Buyers have to spend.
+min_util" : The minimum money a Buyer can have.
+max_util" : The maximum money a Buyer can have.
+
+PERFECT_INFORMATION : Should Sellers make decisions with perfect or imperfect information?
+price_steps : How many options for changing price up and down sellers will calculate.

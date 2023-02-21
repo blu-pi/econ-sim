@@ -6,6 +6,7 @@ sys.path.append("./")
 from program.code.simulation import Simulation
 from program.code.opt_args import OptArg
 from tkinter import *
+from tkinter.ttk import *
 
 class info_window:
 

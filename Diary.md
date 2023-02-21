@@ -72,3 +72,7 @@ and terminating itself through proper means. After completing more debugging I w
 
 Added circle graph type. Restructured Graph generation as original code wasn't flexible enough. Debugged infinite loop caused by __eq__ comparisons with buyers and sellers. Comparing buyer equality required comparing who they buy from. This starts comparing sellers which requires comparing who they sell to. I have no idea how this didn't casue an infinite loop earlier. Fixed removing overriden __eq__ methods as they are just not needed. They were written very early in development when I thought they were needed. 
 Might use tkinter .ttk for better looking UI, seems simple enough. 
+
+Ended up using ttk, it reeally was simple and looks much, much better. Refactored parts of Graph class making Circle implementation much cleaner (Was previously pretty bad). Added descriptions for existing parameters.
+Planning on rewriting Graph class to better utilise oop but I'm not sure if I will. Feels like it might be a waste of time.
+Abandoned Graph reqrite for now. Added Tree Graph to available graph types. Completed testing for it. Planning to add more variations of trees in future.

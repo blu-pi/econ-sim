@@ -43,7 +43,7 @@ class Simulation:
             "buyer_args" : self.buyer_args,
             "seller_args" : self.seller_args,
             "graph_args" : self.parameters
-        }
+        } #passing sim args as graph args for now.
         if "num_sellers" in self.parameters:
             args["num_sellers"] = self.parameters["num_sellers"]
            
@@ -51,7 +51,9 @@ class Simulation:
             if self.parameters["graph_type"] == "Line":
                 graph = Line(**args)
             if self.parameters["graph_type"] == "Circle":
-                graph = Circle(**args)
+                graph = Line(**args, isCircle=True)
+            if self.parameters["graph_type"] == "Tree":
+                graph = Tree(**args)
         #TODO support for more graph types
         
 

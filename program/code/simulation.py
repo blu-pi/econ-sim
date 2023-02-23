@@ -8,15 +8,6 @@ class Simulation:
     Class that manages the simulation setup and end. 
     """
 
-    # valid_parameters = {
-    #     "num_sellers" : [0,"..",100],
-    #     "graph_type" : ["Line"],
-    #     "buyer_dist" : ["Vanilla"],
-    #     "max_iterations" : [1,"..",100]
-    # }
-
-    #'..' is inspired by haskell. Logically serves the same function but simpler.
-
     def __init__(self, parameters, buyer_args = {}, seller_args = {}) -> None:
         self.parameters = parameters
         self.buyer_args = buyer_args
@@ -96,7 +87,7 @@ class Simulation:
             self.turn_num += 1
             if self.turn_num >= self.max_turn or self.reachedEquilibrium():
                 break
-        self.endSim() #TODO implement!
+        self.endSim() 
                 
 
     

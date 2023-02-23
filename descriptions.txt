@@ -5,9 +5,11 @@ SEQ_DECISIONS" : How sellers will make decisions. Seq will make decisions 1 at a
 max_iterations" : How many cycles the simulation will run for at most.
 buyers_per_seller_pair : How many Buyers will connect any pair of sellers. Default is 1.
 
-percieved_util" : How much money all Buyers have to spend.
-min_util" : The minimum money a Buyer can have.
-max_util" : The maximum money a Buyer can have.
+percieved_util" : How much utility all Buyers have to spend. (Overrides min/max util unput as this value is used for all Buyers)
+min_util" : The minimum utility a Buyer can have.
+max_util" : The maximum utility a Buyer can have.
 
-PERFECT_INFORMATION : Should Sellers make decisions with perfect or imperfect information?
-price_steps : How many options for changing price up and down sellers will calculate.
+PERFECT_INFORMATION : Determines whether Sellers use perfect information in decision making. The alternative is imperfect. Practically speaking, perfect information allows Sellers to know all potential buyers of theirs and how much money they have to spend. Imperfectly informed Sellers aren't sure.
+price_change_amount : Maximum change in price a seller can perform in 1 simulation cycle. Lower values can cause "Local maxima/minima" problem under certain circumstances. More detail in ReadMe. Higher values without enough "price_steps" make Sellers clumsy and even with enough steps it could affect performance.
+price_steps : Splits "price_change_amount" into n steps into the possible positive and negative changes. The result is 2n+1 total decisions with n being integer input. High values of n will cause performance issues. 
+product_price : The price all Sellers will sell their products for at the start of the simulation.

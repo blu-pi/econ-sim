@@ -76,3 +76,6 @@ Might use tkinter .ttk for better looking UI, seems simple enough.
 Ended up using ttk, it reeally was simple and looks much, much better. Refactored parts of Graph class making Circle implementation much cleaner (Was previously pretty bad). Added descriptions for existing parameters.
 Planning on rewriting Graph class to better utilise oop but I'm not sure if I will. Feels like it might be a waste of time.
 Abandoned Graph reqrite for now. Added Tree Graph to available graph types. Completed testing for it. Planning to add more variations of trees in future.
+
+Wrote initial code for exploring "local minima" problem that sellers face when they have large amounts of Buyers. Added Descriptions for newly added parameters. 
+Began Adding distribution classes to distribute numerical arguments in varying ways. Will give users the power to select how values should be distributed. This is based on the examples.py implementation.

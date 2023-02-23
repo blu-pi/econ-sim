@@ -13,8 +13,6 @@ class Agent:
     in class attributes (sellers_arr, buyers_arr). Agent decision making is done in this class by looping through those lists.
     """
 
-    #TODO for valid args in buyers and sellers, eiter remove them as functionality is in graph class or use them for more specific arg restrictions (e.g. min/max values or sub parameters etc.)
-
     sellers_arr = []
     buyers_arr = []
 
@@ -32,6 +30,10 @@ class Seller(Agent):
         self.arg_dict = arg_dict
         self.product_price = 0
         self.price_change_amount = 1
+        if "product_price" in self.arg_dict:
+            self.product_price = self.arg_dict["product_price"]
+        if "price_change_amount" in self.arg_dict:
+            self.price_change_amount = self.arg_dict["price_change_amount"]
         self.buyers = []
         Agent.sellers_arr.append(self)
         self.arr_pos = len(Agent.sellers_arr) - 1
@@ -115,18 +117,10 @@ class Seller(Agent):
                 if util > max_util:
                     best_action = action
                     max_util = util
-            return best_action #TODO test this!!!
+            return best_action
         else: #FOR ALL CASES WHERE IMPERFECT INFORMATION IS USED
             pass
             #Uses behaviour
-    
-    #IMPORTANT! ALL sellers are equal before they become a node in a graph! That is because they are only assigned sellers then. 
-    #Their prices only change when the simulation starts (even later than being placed in a graph chronologically).
-    #So basically don't bother comparing sellers until they become Graph Nodes.
-    # def __eq__(self, other) -> bool:
-    #     if isinstance(other, Seller):
-    #         return self.buyers == other.buyers and self.product_price == other.product_price
-    #     return False
 
     def __str__(self) -> str:
         return "Seller" + str(self.arr_pos)
@@ -200,11 +194,6 @@ class Buyer(Agent):
         for obj in action_obj_arr:
             action_values_arr.append(obj.eval())
         return action_obj_arr[action_values_arr.index(max(action_values_arr))] #return action object with highest predicted value
-    
-    # def __eq__(self, other) -> bool:
-    #     if isinstance(other, Buyer):
-    #         return self.buys_from == other.buys_from and self.percieved_utility == other.percieved_utility
-    #     return False
 
     def __str__(self) -> str:
         return "Buyer" + str(self.arr_pos)

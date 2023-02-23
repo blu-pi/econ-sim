@@ -33,7 +33,9 @@ class OptArg:
     #TODO implement imperfect information and simultaneous (non-sequential) and all their new combinations in seller decision making.
     seller_parameters = {
         "PERFECT_INFORMATION" : [True,False],
-        "price_steps" : [0,"..",5]
+        "price_change_amount" : [0,"..",5],
+        "price_steps" : [0,"..",5],
+        "product_price" : [0,"..",100]
     } 
 
     @staticmethod

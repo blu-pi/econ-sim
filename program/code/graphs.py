@@ -1,7 +1,5 @@
 import networkx as nx
 import matplotlib.pyplot as plt
-import pydot
-from networkx.drawing.nx_pydot import graphviz_layout
 
 import math
 from random import Random
@@ -9,6 +7,7 @@ from random import Random
 from program.code.agents import Seller, Buyer, Agent
 
 #interface, not to be confuced with nx.Graph!
+#Kinda ugly code but I'm not about to spend hours rewriting this just to make it marginally more efficient. #TODO eventually rewrite
 class Graph:
     """
     General Interface to define what are/ aren't Graphs in general. Mostly used for type comparisons.
@@ -21,7 +20,7 @@ class Graph:
     def joinSellers(buys_from : list[Seller], graph : nx.Graph, buyer_dist : str = "Vanilla", buyer_args : dict = {},  num_buyers : int = 1) -> None:
         if buyer_dist == "Vanilla":
             for i in range(num_buyers):
-                buyer = Buyer([buys_from[0], buys_from[1]], buyer_args)
+                buyer = Buyer(buys_from, buyer_args)
                 graph.add_edge(str(buys_from[0]), str(buys_from[1]), obj = buyer) #add edge between previous and seller. Give buyer object as reference.
 
     @staticmethod
@@ -83,13 +82,12 @@ class Tree(Graph):
         self.seller_args = seller_args
         self.graph_args = graph_args
         self.graph_obj = self.makeGraph()
-    #TODO makeGraph implementation
 
     def makeGraph(self, show_result : bool = True) -> nx.Graph:
         num_buyers = 1 #default
         if "buyers_per_seller_pair" in self.graph_args:
             num_buyers = self.graph_args["buyers_per_seller_pair"]
-        G = nx.Graph() #TODO finish
+        G = nx.Graph()
         root = Seller(self.seller_args)
         G.add_node(str(root), obj = root)
         prev_layer = [root]

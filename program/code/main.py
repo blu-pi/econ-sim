@@ -141,7 +141,7 @@ class Section():
         self.entrycont = Frame(self.Container)
         self.entrycont.pack(side = TOP)
 
-        self.title_label = Label(self.entrycont,text=self.title)
+        self.title_label = Label(self.entrycont,text=self.title,font=('Arial', 18))
         self.title_label.pack()
 
         self.make_buttons(self.myParent, self.columns)
@@ -195,4 +195,3 @@ root = Tk()
 app = App(root, dict_names, OptArg.getAllParams())
 
 root.mainloop()
-#TODO work on this to make subsections!

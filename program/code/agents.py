@@ -15,6 +15,7 @@ class Agent:
 
     sellers_arr = []
     buyers_arr = []
+    buyer_collections_arr = []
 
 
 class Seller(Agent):
@@ -146,7 +147,7 @@ class Buyer(Agent):
         self.action_history = []
 
 
-    def setPercievedUtility(self, util = False, min_util = 1, max_util = 10) -> None:
+    def setPercievedUtility(self, util : float = None, min_util = 1, max_util = 10) -> None:
         """
         Each buyer must have a percieved utility of owning both products they demand for the simulation to work. 
         It's a representation of how much they value those 2 goods in a bundle.
@@ -160,8 +161,8 @@ class Buyer(Agent):
         if "percieved_util" in self.arg_dict:
             self.percieved_utility = self.arg_dict["percieved_util"] #user-generated method call (explicit)
 
-        elif util:
-            self.percieved_utility = util #probably implicit method call
+        elif util != None: #could be it's own method honestly
+            self.percieved_utility = util #implicit call, usually happens when "util_distribution" arg is set to something that isn't "Vanilla".
             
         else:
             temp_min_util = min_util

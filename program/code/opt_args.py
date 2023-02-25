@@ -17,7 +17,6 @@ class OptArg:
     sim_parameters = {
         "num_sellers" : [0,"..",100],
         "graph_type" : ["Line", "Circle","Tree"],
-        "buyer_dist" : ["Vanilla"],
         "SEQ_DECISIONS" : [True,False],
         "max_iterations" : [1,"..",100],
         "buyers_per_seller_pair" : [1,"..",5]
@@ -26,6 +25,7 @@ class OptArg:
     #logically, min and max util have tighter restrictions but they are checked later. e.g. min can't be bigger than max and its implications.
     buyer_parameters = {
         "percieved_util" : [0,"..",100],
+        "util_distribution" : ["Vanilla","Linear","Exponential"],
         "min_util" : [0,"..",100],
         "max_util" : [0,"..",100]
     }

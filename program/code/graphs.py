@@ -17,11 +17,10 @@ class Graph:
     total_graphs = []
     
     @staticmethod
-    def joinSellers(buys_from : list[Seller], graph : nx.Graph, buyer_dist : str = "Vanilla", buyer_args : dict = {},  num_buyers : int = 1) -> None:
-        if buyer_dist == "Vanilla":
-            for i in range(num_buyers):
-                buyer = Buyer(buys_from, buyer_args)
-                graph.add_edge(str(buys_from[0]), str(buys_from[1]), obj = buyer) #add edge between previous and seller. Give buyer object as reference.
+    def joinSellers(buys_from : list[Seller], graph : nx.Graph, buyer_args : dict = {},  num_buyers : int = 1) -> None:
+        for i in range(num_buyers):
+            buyer = Buyer(buys_from, buyer_args)
+            graph.add_edge(str(buys_from[0]), str(buys_from[1]), obj = buyer) #add edge between previous and seller. Give buyer object as reference.
 
     @staticmethod
     def display(graph_obj) -> None:
@@ -54,10 +53,10 @@ class Line(Graph):
         for i in range(self.num_sellers - 1):
             seller = Seller(self.seller_args)
             G.add_node(str(seller), obj = seller)
-            Graph.joinSellers([previous, seller], G, self.graph_args["buyer_dist"], self.buyer_args, num_buyers)
+            Graph.joinSellers([previous, seller], G, self.buyer_args, num_buyers)
             previous = seller
         if self.isCircle:
-            Graph.joinSellers([previous, first], G, self.graph_args["buyer_dist"], self.buyer_args, num_buyers)
+            Graph.joinSellers([previous, first], G, self.buyer_args, num_buyers)
         if show_result:
             if self.isCircle:
                 self.display(G)
@@ -103,9 +102,9 @@ class Tree(Graph):
             current = current_layer.copy()
             for prev_seller in prev_layer:
                 if len(current) > 0:
-                    Graph.joinSellers([prev_seller, current[0]], G, self.graph_args["buyer_dist"], self.buyer_args, num_buyers)
+                    Graph.joinSellers([prev_seller, current[0]], G, self.buyer_args, num_buyers)
                 if len(current) > 1:
-                    Graph.joinSellers([prev_seller, current[1]], G, self.graph_args["buyer_dist"], self.buyer_args, num_buyers)
+                    Graph.joinSellers([prev_seller, current[1]], G, self.buyer_args, num_buyers)
                 del current[:2]
             prev_layer = current_layer
             remaining_sellers -= len(current_layer)

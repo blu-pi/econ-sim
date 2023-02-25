@@ -79,3 +79,7 @@ Abandoned Graph reqrite for now. Added Tree Graph to available graph types. Comp
 
 Wrote initial code for exploring "local minima" problem that sellers face when they have large amounts of Buyers. Added Descriptions for newly added parameters. 
 Began Adding distribution classes to distribute numerical arguments in varying ways. Will give users the power to select how values should be distributed. This is based on the examples.py implementation.
+
+Began adding BuyerCollection class to implement utility distribution. Additionally, it will be used in decision making logic to clean up code. Every collection is an Edge. Added implementations for some distributions but still need to test.
+Need to be able to draw graph of any BuyerCollection as this is used in Simultaneous + perfect info seller decision-making. Will also be useful when generating output from simulation. 
+Current main objectives outlined above other than that just complete sim output and minor polishing changes then initial release is ready.

@@ -25,7 +25,7 @@ class OptArg:
     #logically, min and max util have tighter restrictions but they are checked later. e.g. min can't be bigger than max and its implications.
     buyer_parameters = {
         "percieved_util" : [0,"..",100],
-        "util_distribution" : ["Vanilla","Linear","Exponential"],
+        "util_distribution" : ["Random","Linear","Exponential"],
         "min_util" : [0,"..",100],
         "max_util" : [0,"..",100]
     }

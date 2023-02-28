@@ -5,6 +5,7 @@ import math
 from random import Random
 
 from program.code.agents import Seller, Buyer, Agent
+from program.code.collection import BuyerCollection
 
 #interface, not to be confuced with nx.Graph!
 #Kinda ugly code but I'm not about to spend hours rewriting this just to make it marginally more efficient. #TODO eventually rewrite
@@ -18,9 +19,12 @@ class Graph:
     
     @staticmethod
     def joinSellers(buys_from : list[Seller], graph : nx.Graph, buyer_args : dict = {},  num_buyers : int = 1) -> None:
+        buyers = []
         for i in range(num_buyers):
             buyer = Buyer(buys_from, buyer_args)
+            buyers.append(buyer)
             graph.add_edge(str(buys_from[0]), str(buys_from[1]), obj = buyer) #add edge between previous and seller. Give buyer object as reference.
+        Agent.buyer_collections_arr.append(BuyerCollection(buyers))
 
     @staticmethod
     def display(graph_obj) -> None:

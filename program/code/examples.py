@@ -26,7 +26,6 @@ def linearDist(num_buyers : int, val_range = (0.0,10.0), buyer_args : dict = {})
     val_gradient = (val_range[1] - val_range[0]) / (num_buyers-1)
     for i in range(num_buyers):
         buyer_args.update({"percieved_util":current_val})
-        print(current_val)
         buyer = Buyer([seller], buyer_args)
         current_val += val_gradient
     last_eval = None

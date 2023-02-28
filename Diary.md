@@ -83,3 +83,9 @@ Began Adding distribution classes to distribute numerical arguments in varying w
 Began adding BuyerCollection class to implement utility distribution. Additionally, it will be used in decision making logic to clean up code. Every collection is an Edge. Added implementations for some distributions but still need to test.
 Need to be able to draw graph of any BuyerCollection as this is used in Simultaneous + perfect info seller decision-making. Will also be useful when generating output from simulation. 
 Current main objectives outlined above other than that just complete sim output and minor polishing changes then initial release is ready.
+
+Working on adding more distributions. Numpy.logspace had me stuck for a while... Need to figure out how to prevent or deal with buyer_util being set to 0 by user. Value or even min_value of 0 breaks most of the distributions.
+Testing of new content partially complete. Will rewrite existing code to always use Collections and Distributions. Once that is done and tested, I'll work on producing output. 
+Some of the old test files are outdated and no longer run. This is because the tested code has evolved too far for them to still apply. Generally testing is mostly done by running main.
+
+Distributions and BuyerCollection now complete. Could use buyercollection in other parts of the code. Next is sim output (finally). After that I might work on other decision-making related things.

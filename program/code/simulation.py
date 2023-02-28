@@ -16,7 +16,7 @@ class Simulation:
         #DEFAULT VALUES, overwritten if value is passed through "parameters" dictionary
         self.max_turn = 50 
         self.num_sellers = 20 
-        self.buyer_dist = "Vanilla"
+        self.buyer_dist = "Random"
         self.graph_type = "Line"
 
         self.turn_num = 0

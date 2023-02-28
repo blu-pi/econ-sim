@@ -35,6 +35,8 @@ class Seller(Agent):
             self.product_price = self.arg_dict["product_price"]
         if "price_change_amount" in self.arg_dict:
             self.price_change_amount = self.arg_dict["price_change_amount"]
+        if "price_steps" in self.arg_dict:
+            self.price_steps = self.arg_dict["price_steps"]
         self.buyers = []
         Agent.sellers_arr.append(self)
         self.arr_pos = len(Agent.sellers_arr) - 1
@@ -162,7 +164,7 @@ class Buyer(Agent):
             self.percieved_utility = self.arg_dict["percieved_util"] #user-generated method call (explicit)
 
         elif util != None: #could be it's own method honestly
-            self.percieved_utility = util #implicit call, usually happens when "util_distribution" arg is set to something that isn't "Vanilla".
+            self.percieved_utility = util #implicit call, usually happens when "util_distribution" arg is set to something that isn't "Random".
             
         else:
             temp_min_util = min_util
@@ -175,6 +177,10 @@ class Buyer(Agent):
             if temp_max_util >= temp_min_util:
                 max_util = temp_max_util
                 min_util = temp_min_util
+            
+            #used for buyercollections
+            self.min_util = min_util
+            self.max_util = max_util
 
             self.percieved_utility = random.randint(min_util, max_util)
     

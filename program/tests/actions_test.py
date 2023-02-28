@@ -53,3 +53,5 @@ def test_seqEval():
 
 #test_constructors()
 test_seqEval()
+
+#TEST OUTDATED! TODO make up to date

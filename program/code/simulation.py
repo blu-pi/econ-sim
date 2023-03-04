@@ -19,6 +19,10 @@ class Simulation:
         self.buyer_dist = "Random"
         self.graph_type = "Line"
 
+        #overwrite defaults using passed parameters
+        for key in parameters:
+            setattr(self, key, parameters[key])
+
         self.turn_num = 0
         self.startSim()
 
@@ -27,29 +31,25 @@ class Simulation:
         Completes simulation setup including parameter verification and Graph creation. 
         Buyer and Seller args are checked later as they are totally optional and thus less important.
         """
-        if "max_iterations" in self.parameters:
-            self.max_turn = self.parameters["max_iterations"]
-    
         args = {
             "buyer_args" : self.buyer_args,
             "seller_args" : self.seller_args,
-            "graph_args" : self.parameters
+            "graph_args" : self.parameters,
+            "num_sellers" : self.num_sellers
         } #passing sim args as graph args for now.
-        if "num_sellers" in self.parameters:
-            args["num_sellers"] = self.parameters["num_sellers"]
            
-        if "graph_type" in self.parameters:
-            if self.parameters["graph_type"] == "Line":
-                graph = Line(**args)
-            if self.parameters["graph_type"] == "Circle":
-                graph = Line(**args, isCircle=True)
-            if self.parameters["graph_type"] == "Tree":
-                graph = Tree(**args)
+        if self.graph_type == "Line":
+            graph = Line(**args)
+        if self.graph_type == "Circle":
+            graph = Line(**args, isCircle=True)
+        if self.graph_type == "Tree":
+            graph = Tree(**args)
         #TODO support for more graph types
         
 
     def startSim(self) -> None:
         """Method that uses entered parameters to start the simulation."""
+        #!IMPORTANT! all opt_dicts must pass through a .verify method! They will not be verified otherwise and can pass illegal parameters!
         bad_sim_params = OptArg.verifyDictParams(self.parameters,OptArg.sim_parameters)
         bad_buyer_params = OptArg.verifyDictParams(self.buyer_args,OptArg.buyer_parameters)
         bad_seller_params = OptArg.verifyDictParams(self.seller_args,OptArg.seller_parameters)
@@ -69,13 +69,24 @@ class Simulation:
         if self.parameters["SEQ_DECISIONS"]: #if true
             random.shuffle(Agent.sellers_arr)#prevents order of agent creation impacting simulation results. Makes simulation non-deterministic!
         for seller in Agent.sellers_arr:
+            assert(isinstance(seller,Seller))
+            seller.profits.append(0)
             action = seller.findBestAction(self.parameters["SEQ_DECISIONS"])
+            seller.prices.append(seller.product_price)
         for buyer in Agent.buyers_arr:
+            assert(isinstance(buyer,Buyer))
             action = buyer.findBestAction()
         action.apply()
 
     def endSim(self) -> None:
         print("The End.") #TODO Data output
+        sim_stats = self.getStats()
+        seller_stats = Seller.getStats()
+
+    def getStats(self) -> dict:
+        out = {}
+        #TODO complete
+        return out
     
     def reachedEquilibrium(self) -> bool:
         return False #TODO implement equilibrium checker

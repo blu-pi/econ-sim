@@ -2,7 +2,6 @@ import random
 from typing import Union, Any
 
 from program.code.game_theory import DecisionMatrix
-from program.code.opt_args import OptArg
 
 #from program.code.agent_actions_interface import ActionInterface
 
@@ -29,18 +28,23 @@ class Seller(Agent):
 
     def __init__(self, arg_dict = {}) -> None:
         self.arg_dict = arg_dict
+
+        #defaults (Must have values even if not passed by arg_dict) !these dicts are totally OPTIONAL to the function of the program!
         self.product_price = 0
         self.price_change_amount = 1
-        if "product_price" in self.arg_dict:
-            self.product_price = self.arg_dict["product_price"]
-        if "price_change_amount" in self.arg_dict:
-            self.price_change_amount = self.arg_dict["price_change_amount"]
-        if "price_steps" in self.arg_dict:
-            self.price_steps = self.arg_dict["price_steps"]
+        self.price_steps = 1    
+
+        #overwrite defaults using passed parameters
+        for key in arg_dict:
+            setattr(self, key, arg_dict[key])
+
         self.buyers = []
         Agent.sellers_arr.append(self)
         self.arr_pos = len(Agent.sellers_arr) - 1
+        self.prices = []
+        self.profits = []
         self.action_history = []
+        self.buyer_collections = []
 
     #Sellers are instantiated before buyers so the Buyers that are 'connected' to this Seller must be added retrospectively 
     def setBuyer(self, buyer : Union[Any,list]) -> None:
@@ -51,8 +55,16 @@ class Seller(Agent):
             for b in buyer:
                 assert(isinstance(b, Buyer))
                 self.buyers.append(b)
+
+    def setBuyerCollection(self, collection):
+        from program.code.collection import BuyerCollection
+        assert(isinstance(collection, BuyerCollection))
+        self.buyer_collections.append(collection)
+
+    def getMoney(self, amount : float) -> None:
+        self.profits[-1] += amount
        
-    def getOpponents(self) -> Any: #supposed to return list of sellers
+    def getOpponents(self) -> list: #supposed to return list of sellers
         """
         Method that returns a Seller object for each Buyer object of the original Seller. This way the Seller can make a Decision Matrix
         to compete with all sellers over each Buyer being competed over. Allows duplicates!
@@ -68,7 +80,6 @@ class Seller(Agent):
     
     def makeMatrices(self, actions) -> list[DecisionMatrix]:
         """Makes empty decision matrix out of a seller obj and a list of action objs. Utilies aren't entered"""
-        from program.code.actions import SellerAction, AgentAction
 
         #assert isinstance(actions, list[Union[SellerAction,AgentAction]]) #fix
         num_actions = len(actions)
@@ -90,23 +101,15 @@ class Seller(Agent):
         from program.code.actions import PriceChange, Idle, SellerAction
         from program.code.game_theory import DecisionMatrix
         
-        #generate possible actions
-        num_steps = 1 #default
-        if "price_steps" in self.arg_dict:
-            if not self.arg_dict["price_steps"] > 0:
-                print("ERROR, invalid quantity for argument 'price steps'. {} is below minimum of 1.".format(self.arg_dict["price_steps"]))
-                print("Default value of {} used instead.".format(num_steps))
-            else:
-                num_steps = self.arg_dict["price_steps"] 
-        
+        #generate possible actions    
         action_obj_arr = [Idle(self)]
         change = 0
-        interval : float = self.price_change_amount / num_steps #TODO ensure price_change_amount is > 0 as a rule?
-        for i in range(num_steps):
+        interval : float = self.price_change_amount / self.price_steps #TODO ensure price_change_amount is > 0 as a rule?
+        for i in range(self.price_steps):
             change += interval
             action_obj_arr.append(PriceChange(self, change))
             action_obj_arr.append(PriceChange(self, change * -1))       
-        assert(len(action_obj_arr) == 1 + (num_steps * 2))
+        assert(len(action_obj_arr) == 1 + (self.price_steps * 2))
 
         matrices = self.makeMatrices(action_obj_arr) #only needed during simultaneous decision making!
         if not isSequential and "PERFECT_INFORMATION" in self.arg_dict:
@@ -124,6 +127,16 @@ class Seller(Agent):
         else: #FOR ALL CASES WHERE IMPERFECT INFORMATION IS USED
             pass
             #Uses behaviour
+    
+    def getStats(self) -> dict:
+        out = {
+            "information" : self.arg_dict["PERFECT_INFORMATION"],
+            "prices" : self.prices,
+            "profits" : self.profits,
+            "num_customers" : len(self.buyers),
+            "num_direct_competitors" : len(self.buyer_collections)
+        }
+        return out
 
     def __str__(self) -> str:
         return "Seller" + str(self.arr_pos)
@@ -201,6 +214,15 @@ class Buyer(Agent):
         for obj in action_obj_arr:
             action_values_arr.append(obj.eval())
         return action_obj_arr[action_values_arr.index(max(action_values_arr))] #return action object with highest predicted value
+    
+    @staticmethod
+    def getClassStats() -> dict:
+        out = {
+            "num_buyers" : len(Seller.buyers_arr),
+            "num_edges" : len(Seller.buyer_collections_arr),
+            "Buyers_per_edge" : len(Seller.buyers_arr) / len(Seller.buyer_collections_arr)
+        }
+        return out
 
     def __str__(self) -> str:
         return "Buyer" + str(self.arr_pos)

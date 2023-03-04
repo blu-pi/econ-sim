@@ -89,3 +89,8 @@ Testing of new content partially complete. Will rewrite existing code to always 
 Some of the old test files are outdated and no longer run. This is because the tested code has evolved too far for them to still apply. Generally testing is mostly done by running main.
 
 Distributions and BuyerCollection now complete. Could use buyercollection in other parts of the code. Next is sim output (finally). After that I might work on other decision-making related things.
+
+Working on collecting and then outputting relevant data during simulation. Decided to store data using pickle which allows python objects to be serialised and deserialised. Basically a python version of json.
+At some point relevant data will be used to calculate all sorts of averages etc which will be displayed and plotted in the output screen. Also planning on reworking some code using the new buyercollection class.
+
+Might pass all data directly from simulation to output without saving a copy and reloading it. Generally progressed with data collection and more of the output UI. Cleaned up some code with the power of hindsight.

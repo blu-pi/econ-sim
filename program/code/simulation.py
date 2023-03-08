@@ -81,7 +81,7 @@ class Simulation:
     def endSim(self) -> None:
         print("The End.") #TODO Data output
         sim_stats = self.getStats()
-        seller_stats = Seller.getStats()
+        seller_stats = Buyer.getClassStats()
 
     def getStats(self) -> dict:
         out = {}

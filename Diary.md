@@ -94,3 +94,5 @@ Working on collecting and then outputting relevant data during simulation. Decid
 At some point relevant data will be used to calculate all sorts of averages etc which will be displayed and plotted in the output screen. Also planning on reworking some code using the new buyercollection class.
 
 Might pass all data directly from simulation to output without saving a copy and reloading it. Generally progressed with data collection and more of the output UI. Cleaned up some code with the power of hindsight.
+
+Working on output UI, should be completed soon. As part of that work I need to process the output data a little to generate more interesting output.

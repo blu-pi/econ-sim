@@ -8,9 +8,10 @@ import pickle
 
 class App:
 
-    def __init__(self, parent : Tk, filepath : str = None, arg_dict : dict = {}) -> None:
+    def __init__(self, parent : Tk, data_dict : dict = {}, filepath : str = None, arg_dict : dict = {}) -> None:
         self.parent = parent
         self.arg_dict = arg_dict
+        self.section_objs = []
 
         #defaults
         #There are none right now
@@ -34,33 +35,46 @@ class App:
                 sim_file.close()
                 seller_file.close()
                 buyer_file.close()
+        elif len(data) > 0:
+            #instantiate to avoid referenced before assignment
+            self.sim_data = {}
+            self.seller_data = {}
+            self.buyer_data = {}
+            for key,data in data_dict.items():
+                setattr(self, key, arg_dict[key]) #self.*key_name* = *dict_name*[*key_name*]
+        else:
+            print("Error, no filepath or data dictionaries passed to output generator!")
+            exit(0)
 
         self.genOutput()
 
     def genOutput(self) -> None:
         sections = {
-            "Simulation_data" : self.sim_data,
+            "Simulation data" : self.sim_data,
             "Seller data" : self.seller_data,
             "Buyer data" : self.buyer_data
         }
         for section_name in sections:
-            section = Section(section_name, sections[section_name])
+            self.section_objs.append(Section(self.parent, section_name, sections[section_name]))
 
-class Section(App):
+class Section():
 
-    def __init__(self, data : dict, arg_dict : dict = {}) -> None:
-        frame = Frame(self.parent)
-        frame.pack(side=TOP)
-
-        for data_key in data:
-            val = data[data_key]
-            #TODO make output class depending on data contents
-
+    def __init__(self, parent, title : str, data : dict, arg_dict : dict = {}) -> None:
+        self.frame = Frame(parent)
+        self.frame.pack(side=TOP)
+        self.displays = []
+        title_label = Label(self.frame,tesxt=title,font=('Arial', 18))
+        title_label.pack(side=TOP)
+        for key,vals in data.items():
+            if isinstance(vals,list):          
+                self.displays.append(graph_display(self.frame))
 
 class graph_display:
 
-    def __init__(self) -> None:
-        pass
+    def __init__(self, parent) -> None:
+        self.parent = parent
+        self.frame = Frame(parent)
+        self.frame.pack(side=TOP)
 
         
 class Controller: 

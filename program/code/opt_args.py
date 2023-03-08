@@ -15,11 +15,11 @@ class OptArg:
 
     #sim parameters are generic top-level parameters. Other are more specific but there is some overlap. 
     sim_parameters = {
-        "num_sellers" : [0,"..",100],
+        "num_sellers" : [0,"..",1000],
         "graph_type" : ["Line", "Circle","Tree"],
         "SEQ_DECISIONS" : [True,False],
-        "max_iterations" : [1,"..",100],
-        "buyers_per_seller_pair" : [1,"..",5]
+        "max_iterations" : [1,"..",1000],
+        "buyers_per_seller_pair" : [1,"..",10]
     }
     
     #logically, min and max util have tighter restrictions but they are checked later. e.g. min can't be bigger than max and its implications.

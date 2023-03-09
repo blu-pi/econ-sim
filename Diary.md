@@ -96,3 +96,6 @@ At some point relevant data will be used to calculate all sorts of averages etc 
 Might pass all data directly from simulation to output without saving a copy and reloading it. Generally progressed with data collection and more of the output UI. Cleaned up some code with the power of hindsight.
 
 Working on output UI, should be completed soon. As part of that work I need to process the output data a little to generate more interesting output.
+
+Added more data collection to different aspects of the simulation. Mainly focused on Sellers. Also began processing data to be able to provide more interesting and meaningful output. Limited on time here so ambitions for output detail will be scaled back slightly. I'm still planning to add imperfect decision-making and a method for detecting nash equilibria. Last but not least, I still want to change the file structure to something more professional. 
+Not only am I running out of time but from now on I also have to spend more time on the report which takes away from development time.

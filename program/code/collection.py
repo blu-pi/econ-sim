@@ -70,9 +70,24 @@ class BuyerCollection:
             if price <= buyer.percieved_utility:
                 total += price
         return total
+    
+    @staticmethod
+    def _show_output(prices, utilities) -> None:
+        """Create pyplot for given prices and utilities."""
+        plt.xlim(0, max(prices))
+        plt.ylim(0, max(utilities))
 
-    def makeGraph(self, price_limits : Tuple[float,float] = (0,100), interval : float = 1, show_output : bool = False) -> tuple:
-        """Get values for utility returned for a given range of prices"""
+        plt.grid()
+
+        plt.xlabel("Product price")
+        plt.ylabel("Seller utility")
+
+        plt.plot(prices, utilities)
+        plt.show()
+        
+
+    def makeGraph(self, price_limits : Tuple[float,float] = (0,100), interval : float = 1, show_output : bool = False) -> Tuple[float,float]:
+        """Get values for utility returned for a given range of prices."""
         total_price = 0
         prices = []
         utilities = []
@@ -81,16 +96,41 @@ class BuyerCollection:
             utilities.append(self.getSellerUtil(total_price))
         
         if show_output: 
-            plt.xlim(0, max(prices))
-            plt.ylim(0, max(utilities))
-
-            plt.grid()
-
-            plt.xlabel("Product price")
-            plt.ylabel("Seller utility")
-
-            #for i in range(len(prices)):
-            plt.plot(prices, utilities)
-            plt.show()
+            BuyerCollection._show_output(prices, utilities)
 
         return prices, utilities
+    
+    def makeComboGraph(self, others : list['BuyerCollection'], price_limits : Tuple[float,float] = (0,100), interval : float = 1, show_output : bool = False) -> Tuple[float,float]:
+        """
+        Make a combined price/util graph for at least 2 collections joined. Only really useful if collections share 1 common Seller.
+        """
+        sellers = self.buys_from.copy()
+        prices, utilities = self.makeGraph(price_limits, interval) #never show output here
+        for obj in others:
+            other_prices, other_utilities = obj.makeGraph(price_limits, interval)
+            other_sellers = obj.buys_from 
+
+            #FeelsHaskellMan       
+            sellers = [x for x in other_sellers if x in sellers]
+            prices = [sum(x) for x in zip(prices, other_prices)]
+            utilities = [sum(x) for x in zip(utilities, other_utilities)]
+
+        if sellers == []:
+            print("Warning, combined data of unrelated BuyerCollections!")
+
+        if show_output: 
+            BuyerCollection._show_output(prices, utilities)
+        
+        return prices, utilities
+    
+    @staticmethod
+    def makeComboGraphFromList(list_in : list['BuyerCollection'], price_limits : Tuple[float,float] = (0,100), interval : float = 1, show_output : bool = False) -> Tuple[float,float]:
+        """Use makeComboGraph using just a list of BuyerCollections"""
+        assert(len(list_in) > 0)
+        if len(list_in) > 1:
+            temp_in = list_in.copy()
+            obj_ref = temp_in.pop(0)
+            others = temp_in #doesn't need top be done but is more readable. Point is .pop already removes that 1st element. This makes it clear that temp_in changes in contents to fulfill role as 'others' parameter.
+            return obj_ref.makeComboGraph(others,price_limits, interval, show_output)
+        if len(list_in) == 1:
+            return list_in[0].makeGraph(price_limits, interval, show_output)

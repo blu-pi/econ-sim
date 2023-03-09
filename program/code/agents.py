@@ -127,14 +127,31 @@ class Seller(Agent):
         else: #FOR ALL CASES WHERE IMPERFECT INFORMATION IS USED
             pass
             #Uses behaviour
+
+    @staticmethod
+    def getClassStats() -> dict:
+        """Get data that is the same for all objects across the seller class."""
+        rand_obj = Agent.sellers_arr[0]
+        out = {
+            "information" : rand_obj.arg_dict["PERFECT_INFORMATION"]
+        }
+        return out
     
     def getStats(self) -> dict:
         out = {
-            "information" : self.arg_dict["PERFECT_INFORMATION"],
             "prices" : self.prices,
             "profits" : self.profits,
             "num_customers" : len(self.buyers),
             "num_direct_competitors" : len(self.buyer_collections)
+        }
+        out.update(self._getComplexStats())
+        return out
+    
+    def _getComplexStats(self) -> dict:
+        from program.code.collection import BuyerCollection
+        combi_prices, combi_util = BuyerCollection.makeComboGraphFromList(self.buyer_collections)
+        out = {
+            "price_to_profit" : (combi_prices, combi_util)
         }
         return out
 

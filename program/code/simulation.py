@@ -80,8 +80,12 @@ class Simulation:
 
     def endSim(self) -> None:
         print("The End.") #TODO Data output
-        sim_stats = self.getStats()
-        seller_stats = Buyer.getClassStats()
+        general_buyer_stats = Buyer.getClassStats()
+        general_seller_stats = Seller.getClassStats()
+        unique_seller_stats = Seller.getIndividualStats() #TODO implement (chuck em all in a list)
+        seller_averages_stats = Seller.getAveragedStats() #TODO implement (mean,mode,median,percentile of sellers)
+        #TODO somehow compare how each seller performed compared to neighbours
+        self.stats = self.getStats()
 
     def getStats(self) -> dict:
         out = {}

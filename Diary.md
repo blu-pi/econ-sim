@@ -99,3 +99,6 @@ Working on output UI, should be completed soon. As part of that work I need to p
 
 Added more data collection to different aspects of the simulation. Mainly focused on Sellers. Also began processing data to be able to provide more interesting and meaningful output. Limited on time here so ambitions for output detail will be scaled back slightly. I'm still planning to add imperfect decision-making and a method for detecting nash equilibria. Last but not least, I still want to change the file structure to something more professional. 
 Not only am I running out of time but from now on I also have to spend more time on the report which takes away from development time.
+
+Restructured part of the BuyerCollection class to split some functionality into a new class "NamedDataPlot". This is a data structure for handling sets of related data to be graphed against each other. 
+Now close to having initial data output ready.

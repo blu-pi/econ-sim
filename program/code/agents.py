@@ -128,6 +128,9 @@ class Seller(Agent):
             pass
             #Uses behaviour
 
+
+    #---------    SELLER STAT COLLECTION + PROCESSING    ---------
+
     @staticmethod
     def getClassStats() -> dict:
         """Get data that is the same for all objects across the seller class."""
@@ -135,6 +138,14 @@ class Seller(Agent):
         out = {
             "information" : rand_obj.arg_dict["PERFECT_INFORMATION"]
         }
+        return out
+    
+    @staticmethod
+    def getIndividualStats() -> None:
+        out = []
+        for obj in Agent.sellers_arr:
+            obj : Seller
+            out.append(obj.getStats())
         return out
     
     def getStats(self) -> dict:
@@ -149,9 +160,10 @@ class Seller(Agent):
     
     def _getComplexStats(self) -> dict:
         from program.code.collection import BuyerCollection
-        combi_prices, combi_util = BuyerCollection.makeComboGraphFromList(self.buyer_collections)
+        from program.code.data_plot import NamedDataPlot
+        combined_plot : NamedDataPlot = BuyerCollection.makeComboPlotFromList(self.buyer_collections)
         out = {
-            "price_to_profit" : (combi_prices, combi_util)
+            "price_to_profit_plot" : combined_plot
         }
         return out
 
@@ -232,6 +244,7 @@ class Buyer(Agent):
             action_values_arr.append(obj.eval())
         return action_obj_arr[action_values_arr.index(max(action_values_arr))] #return action object with highest predicted value
     
+    #---------    BUYER STAT COLLECTION + PROCESSING    ---------
     @staticmethod
     def getClassStats() -> dict:
         out = {
@@ -244,6 +257,7 @@ class Buyer(Agent):
     def __str__(self) -> str:
         return "Buyer" + str(self.arr_pos)
 
+    #---------    Random code I may or may not need    ---------
     @staticmethod
     def stringToClassReference(val : str) -> Any:
         """Returns static reference to class given it's string name. May or may not be needed at some point."""

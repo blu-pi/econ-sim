@@ -1,5 +1,6 @@
 from program.code.agents import Seller, Buyer, Agent
 from program.code.actions import PriceChange
+from program.code.data_plot import NamedDataPlot
 from program.code.distribution import Distribution, Linear, Exponential
 
 import numpy as np
@@ -71,43 +72,32 @@ class BuyerCollection:
                 total += price
         return total
     
-    @staticmethod
-    def _show_output(prices, utilities) -> None:
-        """Create pyplot for given prices and utilities."""
-        plt.xlim(0, max(prices))
-        plt.ylim(0, max(utilities))
-
-        plt.grid()
-
-        plt.xlabel("Product price")
-        plt.ylabel("Seller utility")
-
-        plt.plot(prices, utilities)
-        plt.show()
-        
-
-    def makeGraph(self, price_limits : Tuple[float,float] = (0,100), interval : float = 1, show_output : bool = False) -> Tuple[float,float]:
-        """Get values for utility returned for a given range of prices."""
+    #Probably "feature-envy" from this point down but I don't have the time to clean this up. It works and it's not super bad and won't casue issues. 
+    def makePlot(self, price_limits : Tuple[float,float] = (0,100), interval : float = 1, show_output : bool = False) -> NamedDataPlot:
+        """Return NamedDataPlot for a BuyerCollection's price vs seller utility data."""
         total_price = 0
         prices = []
         utilities = []
         for total_price in np.arange(price_limits[0], price_limits[1], interval, dtype=float):      
             prices.append(total_price)
             utilities.append(self.getSellerUtil(total_price))
-        
-        if show_output: 
-            BuyerCollection._show_output(prices, utilities)
+        price_profit_plot = NamedDataPlot(("Prices",prices),("Seller utility",utilities)) 
 
-        return prices, utilities
+        if show_output: 
+            price_profit_plot.show_output()
+
+        return price_profit_plot
     
-    def makeComboGraph(self, others : list['BuyerCollection'], price_limits : Tuple[float,float] = (0,100), interval : float = 1, show_output : bool = False) -> Tuple[float,float]:
+    def makeComboPlot(self, others : list['BuyerCollection'], price_limits : Tuple[float,float] = (0,100), interval : float = 1, show_output : bool = False) -> NamedDataPlot:
         """
         Make a combined price/util graph for at least 2 collections joined. Only really useful if collections share 1 common Seller.
         """
         sellers = self.buys_from.copy()
-        prices, utilities = self.makeGraph(price_limits, interval) #never show output here
+        price_profit_plot = self.makePlot(price_limits, interval) #never show output here
         for obj in others:
-            other_prices, other_utilities = obj.makeGraph(price_limits, interval)
+            other_price_profit_plot = obj.makePlot(price_limits, interval) #never show output here
+            other_prices = other_price_profit_plot.x_vals
+            other_utilities = other_price_profit_plot.y_vals
             other_sellers = obj.buys_from 
 
             #FeelsHaskellMan       
@@ -119,18 +109,19 @@ class BuyerCollection:
             print("Warning, combined data of unrelated BuyerCollections!")
 
         if show_output: 
-            BuyerCollection._show_output(prices, utilities)
+            price_profit_plot.show_output()
         
-        return prices, utilities
+        return price_profit_plot
     
     @staticmethod
-    def makeComboGraphFromList(list_in : list['BuyerCollection'], price_limits : Tuple[float,float] = (0,100), interval : float = 1, show_output : bool = False) -> Tuple[float,float]:
-        """Use makeComboGraph using just a list of BuyerCollections"""
+    def makeComboPlotFromList(list_in : list['BuyerCollection'], price_limits : Tuple[float,float] = (0,100), interval : float = 1, show_output : bool = False) -> NamedDataPlot:
+        """Use makeComboPlot using just a list of BuyerCollections"""
         assert(len(list_in) > 0)
         if len(list_in) > 1:
             temp_in = list_in.copy()
             obj_ref = temp_in.pop(0)
-            others = temp_in #doesn't need top be done but is more readable. Point is .pop already removes that 1st element. This makes it clear that temp_in changes in contents to fulfill role as 'others' parameter.
-            return obj_ref.makeComboGraph(others,price_limits, interval, show_output)
+            #doesn't need top be done but is more readable. Point is .pop already removes that 1st element. This makes it clear that temp_in changes in contents to fulfill role as 'others' parameter.
+            others = temp_in 
+            return obj_ref.makeComboPlot(others, price_limits, interval, show_output)
         if len(list_in) == 1:
-            return list_in[0].makeGraph(price_limits, interval, show_output)
+            return list_in[0].makePlot(price_limits, interval, show_output)

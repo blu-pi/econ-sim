@@ -1,5 +1,7 @@
 import random
 from typing import Union, Any
+import numpy as np
+import statistics
 
 from program.code.game_theory import DecisionMatrix
 
@@ -127,7 +129,6 @@ class Seller(Agent):
         else: #FOR ALL CASES WHERE IMPERFECT INFORMATION IS USED
             pass
             #Uses behaviour
-
 
     #---------    SELLER STAT COLLECTION + PROCESSING    ---------
 

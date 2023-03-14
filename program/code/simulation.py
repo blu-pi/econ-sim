@@ -1,3 +1,6 @@
+from typing import Tuple
+import pandas as pd
+
 #from program.code.arg_checker import OptArgDict 
 from program.code.opt_args import OptArg
 from program.code.graphs import *
@@ -77,20 +80,6 @@ class Simulation:
             assert(isinstance(buyer,Buyer))
             action = buyer.findBestAction()
         action.apply()
-
-    def endSim(self) -> None:
-        print("The End.") #TODO Data output
-        general_buyer_stats : dict = Buyer.getClassStats()
-        general_seller_stats : dict = Seller.getClassStats()
-        unique_seller_stats : list[dict] = Seller.getIndividualStats() #chuck em all in a list
-        seller_averages_stats = Seller.getAveragedStats() #TODO implement (mean,mode,median,percentile of sellers)
-        #TODO somehow compare how each seller performed compared to neighbours
-        self.stats = self.getStats()
-
-    def getStats(self) -> dict:
-        out = {}
-        #TODO complete
-        return out
     
     def reachedEquilibrium(self) -> bool:
         return False #TODO implement equilibrium checker
@@ -103,6 +92,66 @@ class Simulation:
             if self.turn_num >= self.max_turn or self.reachedEquilibrium():
                 break
         self.endSim() 
+
+    def endSim(self) -> None:
+        print("The End.") #TODO Data output
+        #-------- STAT PROCESSING --------
+        general_buyer_stats : dict = Buyer.getClassStats()
+        general_seller_stats : dict = Seller.getClassStats()
+        merged_seller_stats : dict = Simulation.unifyDicts(Seller.getIndividualStats())
+        merged_analysis, averaged_merged_seller_stats = Simulation.describeDataDict(merged_seller_stats)
+        self.stats : dict = self.getClassStats()
+        #TODO test and then pass to output UI
+        #TODO finish output UI to automatically create output depending on passed data
+
+    @staticmethod
+    def getAveragedStats(target : dict) -> dict:
+        out = {}
+        for key,data in target.items():
+            if all(isinstance(n, float) for n in data):
+                data = pd.Series(data)
+                avg_data = data.describe().to_dict() #more familiar with dict rather than series.
+            new_key = key + "_averages"
+            out.update({new_key : avg_data}) #dict in a dict... 
+        return out
+    
+    def unifyDicts(self, dictionaries : list[dict]) -> dict:
+        """
+        Merge passed dictionaries into 1 only using intersect of keys.
+        """
+        out = {}
+        key_sets = [set(d.keys()) for d in dictionaries]
+        common_keys = set.intersection(*key_sets)
+        for key in common_keys:
+            values = [d[key] for d in dictionaries]
+            new_key = "merged_" + key
+            out[new_key] = values
+        return out
+
+    def describeDataDict(target : dict) -> Tuple[dict,dict]:
+        """
+        Get pandas.describe data from a dictionary. Made specifically for a unified dict.
+        Also outputs modified input dictionary. This is only different from input dict
+        if it contains a nested list which is changed to an element-wise mean of the lists.
+        This needs to be returned to give the new values that were described.
+        Usually used as data for a pyplot in output.
+        """
+        temp = target
+        analysis_dict = {}
+        for key,data in target.items():
+            if all(isinstance(n, list) for n in data):
+                temp.update({key:[np.mean(k) for k in zip(*data)]}) #element wise mean of lists
+                data = temp[key]
+            if all(isinstance(n, float) for n in data): #other data doesn't need to be analysed
+                new_key = "described_" + key
+                data_series = pd.Series(data)
+                analysis_dict.update({new_key : data_series.describe().to_dict()})
+        return analysis_dict, temp
+
+    def getClassStats(self) -> dict:
+        out = {}
+        #TODO complete
+        return out
                 
 
     

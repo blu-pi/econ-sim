@@ -102,3 +102,7 @@ Not only am I running out of time but from now on I also have to spend more time
 
 Restructured part of the BuyerCollection class to split some functionality into a new class "NamedDataPlot". This is a data structure for handling sets of related data to be graphed against each other. 
 Now close to having initial data output ready.
+
+Started implementing data analysis to accompany data plots. This way raw data can be graphed and data such as variance etc. can also be given with the graph. Did a lot of research ojn pandas library. 
+Solution isn't yet tested and quite complicated. Might also be resource intensive. Whole approach could be abandoned if it's too much of a headache. Need to pass all data to output UI where I need to 
+finish the logic to automatically create plots for output. Once again I add complexity when I really shouldn't... However, I do feel data-output is important for a simulation.

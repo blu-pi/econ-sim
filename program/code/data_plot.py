@@ -9,11 +9,21 @@ class NamedDataPlot:
     Mainly used to streamline data output.
     """
 
+    time_axis_name = "time"
+
     def __init__(self, x_vals : Tuple[str,list[float]], y_vals : Tuple[str,list[float]], plot_name : str = None) -> None:
-        self.x_title = x_vals[0]
-        self.x_vals = x_vals[1]
+        #!IMPORTANT! in x_vals if the 'str' aspect of the tuple is EXACTLY equal to NamedDataPlot.time_axis_name then the remaining data is ignored.
+        #This is since it assumes the data is graphed over time with each interval being 1 step of t. 
+        #y_vals data will then be graphed by their position in the list as the point in time. 
         self.y_title = y_vals[0]
         self.y_vals = y_vals[1]
+        self.x_title = x_vals[0]
+        if self.x_title == NamedDataPlot.time_axis_name:
+            #ugly but simplest solution in practise
+            self.x_vals = list(np.arange(len(self.y_vals)))
+        else:
+            self.x_vals = x_vals[1]
+
         self.plot_name = plot_name
     
     def setName(self, name : str) -> None:

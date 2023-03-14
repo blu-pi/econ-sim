@@ -34,7 +34,7 @@ class OptArg:
     seller_parameters = {
         "PERFECT_INFORMATION" : [True,False],
         "price_change_amount" : [0,"..",5],
-        "price_steps" : [0,"..",5],
+        "price_steps" : [0,"..",10],
         "product_price" : [0,"..",100]
     } 
 

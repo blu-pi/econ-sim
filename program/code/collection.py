@@ -96,22 +96,17 @@ class BuyerCollection:
         price_profit_plot = self.makePlot(price_limits, interval) #never show output here
         for obj in others:
             other_price_profit_plot = obj.makePlot(price_limits, interval) #never show output here
-            other_prices = other_price_profit_plot.x_vals
-            other_utilities = other_price_profit_plot.y_vals
             other_sellers = obj.buys_from 
-
             #FeelsHaskellMan       
-            sellers = [x for x in other_sellers if x in sellers]
-            prices = [sum(x) for x in zip(prices, other_prices)]
-            utilities = [sum(x) for x in zip(utilities, other_utilities)]
+            common_sellers = [x for x in other_sellers if x in sellers]
 
-        if sellers == []:
+        if common_sellers == []:
             print("Warning, combined data of unrelated BuyerCollections!")
 
         if show_output: 
             price_profit_plot.show_output()
         
-        return price_profit_plot
+        return price_profit_plot.combine_y(other_price_profit_plot)
     
     @staticmethod
     def makeComboPlotFromList(list_in : list['BuyerCollection'], price_limits : Tuple[float,float] = (0,100), interval : float = 1, show_output : bool = False) -> NamedDataPlot:

@@ -10,6 +10,7 @@ class NamedDataPlot:
     """
 
     time_axis_name = "time"
+    placeholder_name = "Placeholder"
 
     def __init__(self, x_vals : Tuple[str,list[float]], y_vals : Tuple[str,list[float]], plot_name : str = None) -> None:
         #!IMPORTANT! in x_vals if the 'str' aspect of the tuple is EXACTLY equal to NamedDataPlot.time_axis_name then the remaining data is ignored.
@@ -36,13 +37,29 @@ class NamedDataPlot:
         if y_title != None:
             self.y_title = y_title
 
-    def _mean(self, other : 'NamedDataPlot') -> 'NamedDataPlot':
+    def combine_y(self, other : 'NamedDataPlot', new_title : str = None) -> 'NamedDataPlot':
+        """Add data element-wise while keeping x axis the same. Used when combining plots of BuyerCollections that share a single Seller."""
+        if not(self.x_vals == other.x_vals):
+            print("Warning x-axis don't match. Might mean invalid data (also might not idk)")
+            print(self.x_vals)
+            print("Compared to")
+            print(other.x_vals)
+        new_x_title = self.x_title
+        new_y_title = other.y_title
+        if self.x_title != other.x_title:
+            new_x_title = NamedDataPlot.placeholder_name
+        if self.y_title != other.y_title:
+            new_y_title = NamedDataPlot.placeholder_name        
+        new_y = [sum(x) for x in zip(self.y_vals, other.y_vals)]
+        return NamedDataPlot((new_x_title,self.x_vals),(new_y_title,new_y),new_title)
+
+    def mean(self, other : 'NamedDataPlot') -> 'NamedDataPlot':
         """Produce new NamedDataPlot with element-wise mean of passed data."""
         #Could enforce checks here to ensure NDPs storing different data aren't averaged.
         avg_x = [np.mean(x) for x in zip(self.x_vals, other.x_vals)]
         avg_y = [np.mean(x) for x in zip(self.y_vals, other.y_vals)]
-        x_title = self.x_title if self.x_title == other.x_title else "Placeholder"
-        y_title = self.y_title if self.y_title == other.y_title else "Placeholder"
+        x_title = self.x_title if self.x_title == other.x_title else NamedDataPlot.placeholder_name
+        y_title = self.y_title if self.y_title == other.y_title else NamedDataPlot.placeholder_name
         new_name = self.plot_name if self.plot_name == other.plot_name else None
         return NamedDataPlot((x_title,avg_x),(y_title,avg_y), new_name)
 

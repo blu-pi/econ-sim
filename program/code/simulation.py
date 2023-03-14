@@ -98,7 +98,7 @@ class Simulation:
         #-------- STAT PROCESSING --------
         general_buyer_stats : dict = Buyer.getClassStats()
         general_seller_stats : dict = Seller.getClassStats()
-        merged_seller_stats : dict = Simulation.unifyDicts(Seller.getIndividualStats())
+        merged_seller_stats : dict = self.unifyDicts(Seller.getIndividualStats())
         merged_analysis, averaged_merged_seller_stats = Simulation.describeDataDict(merged_seller_stats)
         self.stats : dict = self.getClassStats()
         #TODO test and then pass to output UI

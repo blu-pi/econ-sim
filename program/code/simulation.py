@@ -5,26 +5,24 @@ import pandas as pd
 from program.code.opt_args import OptArg
 from program.code.graphs import *
 from program.code.agents import *
+from program.code.output_ui import Controller
 
 class Simulation:
     """
     Class that manages the simulation setup and end. 
     """
 
-    def __init__(self, parameters, buyer_args = {}, seller_args = {}) -> None:
+    def __init__(self, parameters, buyer_args = {}, seller_args = {}, output_args = {}) -> None:
         self.parameters = parameters
         self.buyer_args = buyer_args
         self.seller_args = seller_args
+        self.output_args = output_args
 
         #DEFAULT VALUES, overwritten if value is passed through "parameters" dictionary
         self.max_turn = 50 
         self.num_sellers = 20 
         self.buyer_dist = "Random"
         self.graph_type = "Line"
-
-        #overwrite defaults using passed parameters
-        for key in parameters:
-            setattr(self, key, parameters[key])
 
         self.turn_num = 0
         self.startSim()
@@ -56,9 +54,16 @@ class Simulation:
         bad_sim_params = OptArg.verifyDictParams(self.parameters,OptArg.sim_parameters)
         bad_buyer_params = OptArg.verifyDictParams(self.buyer_args,OptArg.buyer_parameters)
         bad_seller_params = OptArg.verifyDictParams(self.seller_args,OptArg.seller_parameters)
-        bad_list = [bad_sim_params,bad_buyer_params,bad_seller_params]
+        bad_output_params = OptArg.verifyDictParams(self.output_args,OptArg.output_parameters)
+        bad_list = [bad_sim_params,bad_buyer_params,bad_seller_params,bad_output_params]
         if bad_list != [None] * len(bad_list):
-            print("Bad params passed to simulation, default values will be used where possible!\n{}".format(bad_list))
+            bad_params = [x for x in bad_list if x != None]
+            print("Bad params passed to simulation, default values will be used where possible!\n{}".format(bad_params))
+
+        #overwrite defaults using passed parameters
+        for key in self.parameters:
+            setattr(self, key, self.parameters[key])
+
         self.setupSim()
         self.run()
 
@@ -101,6 +106,13 @@ class Simulation:
         merged_seller_stats : dict = self.unifyDicts(Seller.getIndividualStats())
         merged_analysis, averaged_merged_seller_stats = Simulation.describeDataDict(merged_seller_stats)
         self.stats : dict = self.getClassStats()
+        #TODO process data a little more then pass under here instead of none. 
+        data = {
+            "sim_data" : None,
+            "seller_data" : None,
+            "buyer_data" : None
+        }
+        Controller.startUI(data_dict=data,params=self.output_args)
         #TODO test and then pass to output UI
         #TODO finish output UI to automatically create output depending on passed data
 

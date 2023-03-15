@@ -106,3 +106,6 @@ Now close to having initial data output ready.
 Started implementing data analysis to accompany data plots. This way raw data can be graphed and data such as variance etc. can also be given with the graph. Did a lot of research ojn pandas library. 
 Solution isn't yet tested and quite complicated. Might also be resource intensive. Whole approach could be abandoned if it's too much of a headache. Need to pass all data to output UI where I need to 
 finish the logic to automatically create plots for output. Once again I add complexity when I really shouldn't... However, I do feel data-output is important for a simulation.
+
+Doing a bunch of debugging. Learning a lot about more complex data handling. My implementation isn't perfect but actually not so bad. Code is working well! 
+Also added opt args for output. Currently only with a test value but new ones can noew be added easily.

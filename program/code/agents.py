@@ -251,7 +251,7 @@ class Buyer(Agent):
         out = {
             "num_buyers" : len(Seller.buyers_arr),
             "num_edges" : len(Seller.buyer_collections_arr),
-            "Buyers_per_edge" : len(Seller.buyers_arr) / len(Seller.buyer_collections_arr)
+            "Buyers_per_edge" : len(Agent.buyers_arr) / len(Agent.buyer_collections_arr)
         }
         return out
 

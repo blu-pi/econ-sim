@@ -1,5 +1,6 @@
 import numpy as np
 import matplotlib.pyplot as plt
+from matplotlib.figure import Figure
 
 from typing import Tuple
 
@@ -25,10 +26,10 @@ class NamedDataPlot:
         else:
             self.x_vals = x_vals[1]
 
-        self.plot_name = plot_name
+        self.name = plot_name
     
     def setName(self, name : str) -> None:
-        self.plot_name = name
+        self.name = name
 
     def setTitles(self, x_title : str = None, y_title : str = None):
         """Change one or both of the axis titles of a NamedDataPlot"""
@@ -60,7 +61,7 @@ class NamedDataPlot:
         avg_y = [np.mean(x) for x in zip(self.y_vals, other.y_vals)]
         x_title = self.x_title if self.x_title == other.x_title else NamedDataPlot.placeholder_name
         y_title = self.y_title if self.y_title == other.y_title else NamedDataPlot.placeholder_name
-        new_name = self.plot_name if self.plot_name == other.plot_name else None
+        new_name = self.name if self.name == other.name else None
         return NamedDataPlot((x_title,avg_x),(y_title,avg_y), new_name)
 
     @staticmethod
@@ -78,10 +79,28 @@ class NamedDataPlot:
             
         return running_average_plot
     
+    def getFigure(self) -> Figure:
+        """Make pyplot and return obj for use in Tkinter"""
+        fig = Figure(figsize=(6, 6), dpi=100)
+        ax = fig.add_subplot(111)
+
+        if self.name != None:
+            ax.set_title(self.name)
+
+        ax.set_xlim(0, max(self.x_vals))
+        ax.set_ylim(0, max(self.y_vals))
+
+        ax.set_xlabel(self.x_title)
+        ax.set_ylabel(self.y_title)
+        
+        ax.plot(self.x_vals, self.y_vals)
+
+        return fig
+    
     def show_output(self) -> None:
         """Create pyplot for given data."""
-        if self.plot_name != None:
-            plt.title(self.plot_name)
+        if self.name != None:
+            plt.title(self.name)
         
         plt.xlim(0, max(self.x_vals))
         plt.ylim(0, max(self.y_vals))

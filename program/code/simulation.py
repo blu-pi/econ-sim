@@ -108,13 +108,13 @@ class Simulation:
         self.stats : dict = self.getClassStats()
         #TODO process data a little more then pass under here instead of none. 
         data = {
-            "sim_data" : None,
-            "seller_data" : None,
-            "buyer_data" : None
+            "sim_data" : self.stats,
+            "seller_data" : [general_seller_stats,averaged_merged_seller_stats,merged_analysis],
+            "buyer_data" : general_buyer_stats
         }
+        if self.output_args.get("create_output_file"):
+            self.genOutputFile() #TODO implement
         Controller.startUI(data_dict=data,params=self.output_args)
-        #TODO test and then pass to output UI
-        #TODO finish output UI to automatically create output depending on passed data
 
     @staticmethod
     def getAveragedStats(target : dict) -> dict:
@@ -164,6 +164,9 @@ class Simulation:
         out = {}
         #TODO complete
         return out
+    
+    def genOutputFile(self):
+        print("File output not yet implemented =/")
                 
 
     

@@ -5,6 +5,7 @@ from program.code.opt_args import OptArg
 
 from tkinter import *
 from tkinter.ttk import *
+from matplotlib.backends.backend_tkagg import FigureCanvasTkAgg
 
 import pickle
 
@@ -43,7 +44,6 @@ class App:
             self.sim_data = {}
             self.seller_data = {}
             self.buyer_data = {}
-            print(data_dict)
             for key,data in data_dict.items():
                 if isinstance(data,dict):
                     setattr(self, key, data_dict[key]) #self.*key_name* = *dict_name*[*key_name*]
@@ -74,16 +74,38 @@ class Section():
         title_label = Label(self.frame,text=title,font=('Arial', 18))
         title_label.pack(side=TOP)
         for key,vals in data.items():
-            if isinstance(vals,list):          
-                self.displays.append(graph_display(self.frame))
+            if isinstance(vals,NamedDataPlot):          
+                self.displays.append(graph_display(self.frame, vals))
+            elif isinstance(vals,float):          
+                self.displays.append(single_stat_display(self.frame))
+            elif isinstance(vals,dict):          
+                self.displays.append(labeled_multi_stat_display(self.frame))
+            else:
+                print("Error, unsupported Unknown outout data")
+                print(vals)
 
 class graph_display:
 
-    def __init__(self, parent) -> None:
+    def __init__(self, parent : Tk, plot : NamedDataPlot) -> None:
         self.parent = parent
+        self.plot = plot
+        self.fig = plot.getFigure()
         self.frame = Frame(parent)
         self.frame.pack(side=TOP)
 
+        canvas = FigureCanvasTkAgg(self.fig, master=self.frame)
+        canvas.draw()
+        canvas.get_tk_widget().pack(side=TOP, fill=BOTH, expand=1)
+
+class single_stat_display:
+
+    def __init__(self, parent : Tk) -> None:
+        pass
+
+class labeled_multi_stat_display:
+
+    def __init__(self, parent : Tk) -> None:
+        pass
         
 class Controller: 
 

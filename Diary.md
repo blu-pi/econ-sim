@@ -109,3 +109,5 @@ finish the logic to automatically create plots for output. Once again I add comp
 
 Doing a bunch of debugging. Learning a lot about more complex data handling. My implementation isn't perfect but actually not so bad. Code is working well! 
 Also added opt args for output. Currently only with a test value but new ones can noew be added easily.
+
+More work on displaying graphical data in output UI. Coming towards completions. Still needs some testing and polish.

@@ -27,7 +27,7 @@ class App:
         "max" : "Maximum value"
     }
 
-    prefer_asLabels = True #default
+    prefer_asLabels = True #Just to inform that this value exists in runtime. Value not determined here though.
 
     heading_font = ('Arial', 18)
     sub_heading_font = ('Arial', 12)
@@ -45,6 +45,8 @@ class App:
         #overrides defaults
         for key in params:
             setattr(self, key, self.params[key])
+
+        App.prefer_asLabels = self.prefer_desc_as_labls
 
         if filepath != None:
             try:
@@ -122,7 +124,7 @@ class Section():
             elif isinstance(val,list):
                 temp = pd.Series(val)
                 desc = temp.describe()
-                self.displays.append(description_display(self.frame, key, desc))
+                self.displays.append(description_display(self.frame, key, desc, asLabels=App.prefer_asLabels))
             else:
                 print("Error, unsupported Unknown outout data")
                 print("{} section generation will be skipped".format(key))
@@ -136,10 +138,11 @@ class graph_display:
     def __init__(self, parent : Tk, data_name : str, plot : NamedDataPlot, withDescription : str = None) -> None:
         self.parent = parent
         self.plot = plot
+        self.plot.trim()
         self.data_name = data_name
         self.withDescription = withDescription
         self.description_display = None
-        self.fig = plot.getFigure()
+        self.fig = self.plot.getFigure()
         self.frame = Frame(parent)
         self.frame.pack(side=TOP)
 
@@ -153,14 +156,14 @@ class graph_display:
         new_title = []
         if self.withDescription != None:
             if "x" in withDescription:
-                new_data.append(plot.describe_x())
+                new_data.append(self.plot.describe_x())
                 new_title.append("_x")
             if "y" in withDescription:
-                new_data.append(plot.describe_y())
+                new_data.append(self.plot.describe_y())
                 new_title.append("_y")
             for val,title in zip(new_data,new_title):
                 new_data_name = data_name + "_described" + title
-                self.description_display = description_display(parent,new_data_name,val)
+                self.description_display = description_display(parent,new_data_name,val,asLabels=App.prefer_asLabels)
 
 class description_display:
 

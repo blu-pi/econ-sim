@@ -20,7 +20,7 @@ class Simulation:
         self.output_args = output_args
 
         #DEFAULT VALUES, overwritten if value is passed through "parameters" dictionary
-        self.max_turn = 50 
+        self.max_iterations = 50 
         self.num_sellers = 20 
         self.buyer_dist = "Random"
         self.graph_type = "Line"
@@ -81,11 +81,12 @@ class Simulation:
             assert(isinstance(seller,Seller))
             seller.profits.append(0)
             action = seller.findBestAction(self.parameters["SEQ_DECISIONS"])
+            action.apply()
             seller.prices.append(seller.product_price)
         for buyer in Agent.buyers_arr:
             assert(isinstance(buyer,Buyer))
             action = buyer.findBestAction()
-        action.apply()
+            action.apply()
     
     def reachedEquilibrium(self) -> bool:
         return False #TODO implement equilibrium checker
@@ -95,7 +96,7 @@ class Simulation:
             #Agent decisions
             self.agentChoices()
             self.turn_num += 1
-            if self.turn_num >= self.max_turn or self.reachedEquilibrium():
+            if self.turn_num >= self.max_iterations or self.reachedEquilibrium():
                 break
         self.endSim() 
 

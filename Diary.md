@@ -113,3 +113,5 @@ Also added opt args for output. Currently only with a test value but new ones ca
 More work on displaying graphical data in output UI. Coming towards completions. Still needs some testing and polish.
 
 Messing around with implementation for output UI and data generation for that UI. Many bug fixes. 
+
+Fixed all known bugs. Now going through full testing. Output seems accurate to some extent. Might work on adding more graphs to give more detail on sim outcomes. This is the very minimum of a completed product.

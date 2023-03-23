@@ -2,6 +2,7 @@ import numpy as np
 import matplotlib.pyplot as plt
 from matplotlib.figure import Figure
 import pandas as pd
+import copy
 
 from typing import Tuple
 
@@ -96,6 +97,25 @@ class NamedDataPlot:
         y_desc = self.describe_y()
         return x_desc, y_desc
     
+    def trim(self, axis_range : Tuple[float,float] = None) -> None:
+        """
+        Edit existing NDP so it only contains data within passed axis_range parameter. Values passed in axis_range are index positions.
+        If no values are passed the default behaviour is to remove 0 values at the end of y_vals and mirror the change to x_vals.
+        This is intended behaviour for a price-profit plot. For other types of plots this may be undesireable.
+        """
+
+        if axis_range != None:
+            self.x_vals = self.x_vals[axis_range[0] : axis_range[1]]
+            self.y_vals = self.y_vals[axis_range[0] : axis_range[1]]
+        else:
+            #default behaviour - good for price/profit plots
+            for i in range(len(self.y_vals) - 1):
+                if self.y_vals[i] == 0 and self.y_vals[i+1] == 0:
+                    cutoff = i +1
+                    break
+            self.y_vals = self.y_vals[:cutoff]
+            self.x_vals = self.x_vals[:cutoff]
+    
     def getFigure(self) -> Figure:
         """Make pyplot and return obj for use in Tkinter"""
         fig = Figure(figsize=(6, 6), dpi=100)
@@ -113,14 +133,6 @@ class NamedDataPlot:
         ax.plot(self.x_vals, self.y_vals)
 
         return fig
-    
-    def trim(self, x_range : Tuple[float,float] = None, y_range : Tuple[float,float] = None):
-        """
-        Return new plot containing only data within passed x_range or passed y_range. Only 1 should be passed. If both are passed an error is generated.
-        If no values are passed the default behaviour is to only show data with a non-zero y value. 
-        This is intended behaviour for a price-profit plot. For other types of plots this may be undesireable.
-        """
-        pass
     
     def show_output(self) -> None:
         """Create pyplot for given data."""

@@ -16,11 +16,11 @@ class OptArg:
 
     #sim parameters are generic top-level parameters. Other are more specific but there is some overlap. 
     sim_parameters = {
-        "num_sellers" : [2,"..",1000],
+        "num_sellers" : [2,"..",500],
         "graph_type" : ["Line", "Circle","Tree"],
         "SEQ_DECISIONS" : [True,False],
         "max_iterations" : [1,"..",1000],
-        "buyers_per_seller_pair" : [1,"..",10]
+        "buyers_per_seller_pair" : [1,"..",50]
     }
     _all_parameters.append(sim_parameters)
     
@@ -36,8 +36,8 @@ class OptArg:
     #TODO implement imperfect information and simultaneous (non-sequential) and all their new combinations in seller decision making.
     seller_parameters = {
         "PERFECT_INFORMATION" : [True,False],
-        "price_change_amount" : [0,"..",5],
-        "price_steps" : [0,"..",10],
+        "price_change_amount" : [0,"..",20],
+        "price_steps" : [0,"..",40],
         "product_price" : [0,"..",100]
     } 
     _all_parameters.append(seller_parameters)

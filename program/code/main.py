@@ -57,7 +57,7 @@ class drop_down:
         self.variable = StringVar(parent)
         self.variable.set(restriction[0]) # default value
 
-        self.option_menu = OptionMenu(self.frame, self.variable, *restriction)
+        self.option_menu = OptionMenu(self.frame, self.variable, restriction[0], *restriction)
         self.option_menu.pack(side = LEFT)
         self.value = lambda : self.variable.get()
 
@@ -94,6 +94,7 @@ class App:
     global_output = {} #ugly but honestly tkinter is ugly so idc >=/
 
     def __init__(self, parent, sections_str, columns) -> None:
+        parent.winfo_toplevel().title("Parameter Input")
         self.parent = parent
         self.sections_str = sections_str
         self.sections = {}
@@ -115,6 +116,7 @@ class App:
         App.global_output["parameters"] = App.global_output.pop("Simulation")
         App.global_output["buyer_args"] = App.global_output.pop("Buyer")
         App.global_output["seller_args"] = App.global_output.pop("Seller")
+        App.global_output["output_args"] = App.global_output.pop("Output")
 
         sim = Simulation(**App.global_output)
     
@@ -188,7 +190,7 @@ class Section():
         return data
 
 
-dict_names = ["Simulation", "Buyer", "Seller"]
+dict_names = ["Simulation", "Buyer", "Seller", "Output"]
 
 root = Tk()
 

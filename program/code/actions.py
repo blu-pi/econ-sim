@@ -46,6 +46,8 @@ class Buy(BuyerAction):
     def apply(self) -> None:
         self.agent.bought_products = True
         self.agent.action_history.append(self)
+        for seller in self.agent.buys_from:
+            seller.getMoney(self.cost)
 
     def eval(self) -> int:
         return self.agent.percieved_utility - self.cost

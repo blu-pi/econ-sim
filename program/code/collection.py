@@ -1,5 +1,6 @@
 from program.code.agents import Seller, Buyer, Agent
 from program.code.actions import PriceChange
+from program.code.data_plot import NamedDataPlot
 from program.code.distribution import Distribution, Linear, Exponential
 
 import numpy as np
@@ -32,6 +33,8 @@ class BuyerCollection:
             elif dist_str == "Linear":
                 self.util_dist = Linear(**args)
 
+        self.informSellers() #give corresponding seller objects a reference to this obj
+
         if not self._validateCollection():
             print("Collection doesn't contain matching Buyers. Critical error!") #no point catching this, it's over anyway.
             exit()
@@ -55,6 +58,12 @@ class BuyerCollection:
         for buyer,util in zip(self.buyers,self.util_dist.values):
             buyer.setPercievedUtility(util=util)
 
+    def informSellers(self) -> None:
+        """Give corresponding seller objects a reference to this object for future use"""
+        for seller in self.buys_from:
+            assert(isinstance(seller,Seller))
+            seller.setBuyerCollection(self)
+
     def getSellerUtil(self, price : float) -> float:
         """Returns total seller (plural) utility gained from this collection at given price."""
         total = 0
@@ -62,27 +71,52 @@ class BuyerCollection:
             if price <= buyer.percieved_utility:
                 total += price
         return total
-
-    def makeGraph(self, price_limits : Tuple[float,float] = (0,100), interval : float = 1, show_output : bool = False) -> tuple:
-        """Get values for utility returned for a given range of prices"""
+    
+    #Probably "feature-envy" from this point down but I don't have the time to clean this up. It works and it's not super bad and won't casue issues. 
+    def makePlot(self, price_limits : Tuple[float,float] = (0,100), interval : float = 1, show_output : bool = False) -> NamedDataPlot:
+        """Return NamedDataPlot for a BuyerCollection's price vs seller utility data."""
         total_price = 0
         prices = []
         utilities = []
         for total_price in np.arange(price_limits[0], price_limits[1], interval, dtype=float):      
             prices.append(total_price)
             utilities.append(self.getSellerUtil(total_price))
-        
+        price_profit_plot = NamedDataPlot(("Prices",prices),("Seller utility",utilities)) 
+
         if show_output: 
-            plt.xlim(0, max(prices))
-            plt.ylim(0, max(utilities))
+            price_profit_plot.show_output()
 
-            plt.grid()
+        return price_profit_plot
+    
+    def makeComboPlot(self, others : list['BuyerCollection'], price_limits : Tuple[float,float] = (0,100), interval : float = 1, show_output : bool = False) -> NamedDataPlot:
+        """
+        Make a combined price/util graph for at least 2 collections joined. Only really useful if collections share 1 common Seller.
+        """
+        sellers = self.buys_from.copy()
+        price_profit_plot = self.makePlot(price_limits, interval) #never show output here
+        for obj in others:
+            other_price_profit_plot = obj.makePlot(price_limits, interval) #never show output here
+            other_sellers = obj.buys_from 
+            #FeelsHaskellMan       
+            common_sellers = [x for x in other_sellers if x in sellers]
 
-            plt.xlabel("Product price")
-            plt.ylabel("Seller utility")
+        if common_sellers == []:
+            print("Warning, combined data of unrelated BuyerCollections!")
 
-            #for i in range(len(prices)):
-            plt.plot(prices, utilities)
-            plt.show()
-
-        return prices, utilities
+        if show_output: 
+            price_profit_plot.show_output()
+        
+        return price_profit_plot.combine_y(other_price_profit_plot)
+    
+    @staticmethod
+    def makeComboPlotFromList(list_in : list['BuyerCollection'], price_limits : Tuple[float,float] = (0,100), interval : float = 1, show_output : bool = False) -> NamedDataPlot:
+        """Use makeComboPlot using just a list of BuyerCollections"""
+        assert(len(list_in) > 0)
+        if len(list_in) > 1:
+            temp_in = list_in.copy()
+            obj_ref = temp_in.pop(0)
+            #doesn't need top be done but is more readable. Point is .pop already removes that 1st element. This makes it clear that temp_in changes in contents to fulfill role as 'others' parameter.
+            others = temp_in 
+            return obj_ref.makeComboPlot(others, price_limits, interval, show_output)
+        if len(list_in) == 1:
+            return list_in[0].makePlot(price_limits, interval, show_output)

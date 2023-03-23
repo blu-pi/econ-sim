@@ -7,6 +7,7 @@ class OptArg:
     Includes methods for checking passed parameter list/dictionaries to see if they are valid.
     ALL OTHER CLASSES import their respective 'possible argument' list or dictionary from here when they are initialised!
     """
+    _all_parameters = []
 
     #FORMAT EXPLANATION for parameter dictionaries:
     #'..' is inspired by haskell. Logically serves the same function but simpler. Implies a range between l[n-1] and l[n+1]. Also implies numerical data
@@ -15,12 +16,13 @@ class OptArg:
 
     #sim parameters are generic top-level parameters. Other are more specific but there is some overlap. 
     sim_parameters = {
-        "num_sellers" : [0,"..",100],
+        "num_sellers" : [2,"..",500],
         "graph_type" : ["Line", "Circle","Tree"],
         "SEQ_DECISIONS" : [True,False],
-        "max_iterations" : [1,"..",100],
-        "buyers_per_seller_pair" : [1,"..",5]
+        "max_iterations" : [1,"..",1000],
+        "buyers_per_seller_pair" : [1,"..",50]
     }
+    _all_parameters.append(sim_parameters)
     
     #logically, min and max util have tighter restrictions but they are checked later. e.g. min can't be bigger than max and its implications.
     buyer_parameters = {
@@ -29,19 +31,27 @@ class OptArg:
         "min_util" : [0,"..",100],
         "max_util" : [0,"..",100]
     }
+    _all_parameters.append(buyer_parameters)
 
     #TODO implement imperfect information and simultaneous (non-sequential) and all their new combinations in seller decision making.
     seller_parameters = {
         "PERFECT_INFORMATION" : [True,False],
-        "price_change_amount" : [0,"..",5],
-        "price_steps" : [0,"..",5],
+        "price_change_amount" : [0,"..",20],
+        "price_steps" : [0,"..",40],
         "product_price" : [0,"..",100]
     } 
+    _all_parameters.append(seller_parameters)
+
+    output_parameters = {
+        "create_output_file" : [True,False],
+        "prefer_desc_as_labels" : [True,False]
+    }
+    _all_parameters.append(output_parameters)
 
     @staticmethod
     def getAllParams() -> list: #ugly solution but it will do
         """Returns a list containing all 'possible-parameter' dicts."""
-        return [OptArg.sim_parameters , OptArg.buyer_parameters, OptArg.seller_parameters]
+        return OptArg._all_parameters
 
     @staticmethod
     def verifyDictKeys(to_check : dict, allowed : Union[list, dict]) -> Union[None, dict]:

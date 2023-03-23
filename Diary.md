@@ -89,3 +89,29 @@ Testing of new content partially complete. Will rewrite existing code to always 
 Some of the old test files are outdated and no longer run. This is because the tested code has evolved too far for them to still apply. Generally testing is mostly done by running main.
 
 Distributions and BuyerCollection now complete. Could use buyercollection in other parts of the code. Next is sim output (finally). After that I might work on other decision-making related things.
+
+Working on collecting and then outputting relevant data during simulation. Decided to store data using pickle which allows python objects to be serialised and deserialised. Basically a python version of json.
+At some point relevant data will be used to calculate all sorts of averages etc which will be displayed and plotted in the output screen. Also planning on reworking some code using the new buyercollection class.
+
+Might pass all data directly from simulation to output without saving a copy and reloading it. Generally progressed with data collection and more of the output UI. Cleaned up some code with the power of hindsight.
+
+Working on output UI, should be completed soon. As part of that work I need to process the output data a little to generate more interesting output.
+
+Added more data collection to different aspects of the simulation. Mainly focused on Sellers. Also began processing data to be able to provide more interesting and meaningful output. Limited on time here so ambitions for output detail will be scaled back slightly. I'm still planning to add imperfect decision-making and a method for detecting nash equilibria. Last but not least, I still want to change the file structure to something more professional. 
+Not only am I running out of time but from now on I also have to spend more time on the report which takes away from development time.
+
+Restructured part of the BuyerCollection class to split some functionality into a new class "NamedDataPlot". This is a data structure for handling sets of related data to be graphed against each other. 
+Now close to having initial data output ready.
+
+Started implementing data analysis to accompany data plots. This way raw data can be graphed and data such as variance etc. can also be given with the graph. Did a lot of research ojn pandas library. 
+Solution isn't yet tested and quite complicated. Might also be resource intensive. Whole approach could be abandoned if it's too much of a headache. Need to pass all data to output UI where I need to 
+finish the logic to automatically create plots for output. Once again I add complexity when I really shouldn't... However, I do feel data-output is important for a simulation.
+
+Doing a bunch of debugging. Learning a lot about more complex data handling. My implementation isn't perfect but actually not so bad. Code is working well! 
+Also added opt args for output. Currently only with a test value but new ones can noew be added easily.
+
+More work on displaying graphical data in output UI. Coming towards completions. Still needs some testing and polish.
+
+Messing around with implementation for output UI and data generation for that UI. Many bug fixes. 
+
+Fixed all known bugs. Now going through full testing. Output seems accurate to some extent. Might work on adding more graphs to give more detail on sim outcomes. This is the very minimum of a completed product.

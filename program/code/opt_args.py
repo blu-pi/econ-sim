@@ -43,7 +43,8 @@ class OptArg:
     _all_parameters.append(seller_parameters)
 
     output_parameters = {
-        "create_output_file" : [True,False]
+        "create_output_file" : [True,False],
+        "prefer_desc_as_labels" : [True,False]
     }
     _all_parameters.append(output_parameters)
 

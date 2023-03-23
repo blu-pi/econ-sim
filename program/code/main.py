@@ -57,7 +57,7 @@ class drop_down:
         self.variable = StringVar(parent)
         self.variable.set(restriction[0]) # default value
 
-        self.option_menu = OptionMenu(self.frame, self.variable, *restriction)
+        self.option_menu = OptionMenu(self.frame, self.variable, restriction[0], *restriction)
         self.option_menu.pack(side = LEFT)
         self.value = lambda : self.variable.get()
 

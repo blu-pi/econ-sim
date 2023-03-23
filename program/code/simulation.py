@@ -1,5 +1,6 @@
 from typing import Tuple
 import pandas as pd
+from program.code.data_plot import NamedDataPlot
 
 #from program.code.arg_checker import OptArgDict 
 from program.code.opt_args import OptArg
@@ -112,6 +113,10 @@ class Simulation:
             "seller_data" : [general_seller_stats,averaged_merged_seller_stats,merged_analysis],
             "buyer_data" : general_buyer_stats
         }
+        for key,values in data.items():
+            print(key)
+            print(values)
+            print("\n")
         if self.output_args.get("create_output_file"):
             self.genOutputFile() #TODO implement
         Controller.startUI(data_dict=data,params=self.output_args)
@@ -158,6 +163,9 @@ class Simulation:
                 new_key = "described_" + key
                 data_series = pd.Series(data)
                 analysis_dict.update({new_key : data_series.describe().to_dict()})
+            if all(isinstance(n, NamedDataPlot) for n in data):
+                new_plot = NamedDataPlot.meanOfList(data)
+                temp.update({key : new_plot})
         return analysis_dict, temp
 
     def getClassStats(self) -> dict:

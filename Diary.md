@@ -111,3 +111,5 @@ Doing a bunch of debugging. Learning a lot about more complex data handling. My 
 Also added opt args for output. Currently only with a test value but new ones can noew be added easily.
 
 More work on displaying graphical data in output UI. Coming towards completions. Still needs some testing and polish.
+
+Messing around with implementation for output UI and data generation for that UI. Many bug fixes. 

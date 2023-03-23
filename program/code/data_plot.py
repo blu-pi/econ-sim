@@ -1,6 +1,7 @@
 import numpy as np
 import matplotlib.pyplot as plt
 from matplotlib.figure import Figure
+import pandas as pd
 
 from typing import Tuple
 
@@ -75,9 +76,25 @@ class NamedDataPlot:
         running_average_plot = plots.pop(0)
         for current_plot in plots.copy():
             assert(isinstance(current_plot, NamedDataPlot))
-            running_average_plot._mean(current_plot)
+            running_average_plot.mean(current_plot)
             
         return running_average_plot
+    
+    def describe_y(self) -> dict:
+        """Get pandas description of y-axis data"""
+        temp = pd.Series(self.y_vals)
+        return temp.describe().to_dict()
+    
+    def describe_x(self) -> dict:
+        """Get pandas description of x-axis data"""
+        temp = pd.Series(self.x_vals)
+        return temp.describe().to_dict()
+    
+    def describe(self) -> Tuple[dict,dict]:
+        """Get pandas description of x-axis and y-axis data"""
+        x_desc = self.describe_x()
+        y_desc = self.describe_y()
+        return x_desc, y_desc
     
     def getFigure(self) -> Figure:
         """Make pyplot and return obj for use in Tkinter"""
@@ -96,6 +113,14 @@ class NamedDataPlot:
         ax.plot(self.x_vals, self.y_vals)
 
         return fig
+    
+    def trim(self, x_range : Tuple[float,float] = None, y_range : Tuple[float,float] = None):
+        """
+        Return new plot containing only data within passed x_range or passed y_range. Only 1 should be passed. If both are passed an error is generated.
+        If no values are passed the default behaviour is to only show data with a non-zero y value. 
+        This is intended behaviour for a price-profit plot. For other types of plots this may be undesireable.
+        """
+        pass
     
     def show_output(self) -> None:
         """Create pyplot for given data."""

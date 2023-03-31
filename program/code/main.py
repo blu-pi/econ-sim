@@ -8,6 +8,9 @@ from program.code.opt_args import OptArg
 from tkinter import *
 from tkinter.ttk import *
 
+#The original core code in this file is adapted from https://gist.github.com/cowlicks/21dd1b1938a9474f56cf
+#Obviously, many additions and modifications were made.
+
 class info_window:
 
     def __init__(self, text) -> None:

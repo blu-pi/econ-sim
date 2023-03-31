@@ -1,12 +1,12 @@
 from typing import Tuple
 import pandas as pd
-from program.code.data_plot import NamedDataPlot
 
 #from program.code.arg_checker import OptArgDict 
 from program.code.opt_args import OptArg
 from program.code.graphs import *
 from program.code.agents import *
 from program.code.output_ui import Controller
+from program.code.data_plot import NamedDataPlot
 
 class Simulation:
     """

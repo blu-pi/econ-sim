@@ -48,6 +48,7 @@ class App:
 
         App.prefer_asLabels = self.prefer_desc_as_labls
 
+        #TODO implement this 
         if filepath != None:
             try:
                 sim_file = open(filepath+"/sim_data.pkl", "r")
@@ -131,8 +132,10 @@ class Section():
                 print(type(val))
 
 
+
 #---------------------    UI-DISPLAYS    ---------------------
 
+#TODO UI must improve
 class graph_display:
 
     def __init__(self, parent : Tk, data_name : str, plot : NamedDataPlot, withDescription : str = None) -> None:

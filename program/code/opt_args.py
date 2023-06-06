@@ -68,6 +68,7 @@ class OptArg:
     @staticmethod
     def verifyDictParams(to_check : dict, allowed : dict) -> Union[None,dict]:
         """Verifies keys and the values they store. Returns keys and their contents that are not permitted"""
+        #TODO restructure for readability
         rejected = {}
         bad_args = OptArg.verifyDictKeys(to_check, allowed)
         if bad_args != None:

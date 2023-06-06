@@ -98,7 +98,8 @@ class Seller(Agent):
 
     def findBestAction(self, isSequential : bool):
         """Returns action object that the Seller can perform which was calculated to be the best. """
-        #TODO clean up this method (low priority). It should be split up bc it does to much at once right now.
+        #TODO clean up this method (low priority). It should be split up bc it does to much at once right now. (old todo)
+        #TODO use buyer collections to do stuff
 
         from program.code.actions import PriceChange, Idle, SellerAction
         from program.code.game_theory import DecisionMatrix

@@ -100,7 +100,7 @@ class Section():
         self.frame.pack(side=TOP)
         self.displays = []
         title_label = Label(self.frame,text=title,font=App.heading_font)
-        title_label.pack(side=TOP)
+        title_label.pack(side=TOP, pady=10)
         if isinstance(data,list):
             if all(isinstance(d, dict) for d in data):
                 self.data = data[0] | data[1]

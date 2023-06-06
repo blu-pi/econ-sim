@@ -30,7 +30,10 @@ class entry_field:
 
         self.entry = Entry(self.frame)
         self.entry.pack(side = LEFT)
-        self.value = lambda : self.getIntVal()
+        if self.restriction != None:
+            self.value = lambda : self.getIntVal()
+        else:
+            self.value = lambda : self.entry.get() #unrestricted
 
         self.holdButton = Button(self.frame, command = self.hold)
         self.holdButton.configure(text = 'Info')
@@ -177,6 +180,8 @@ class Section():
     def gen_entry_obj(self, colName, entry_restrictions):
         if ".." in entry_restrictions:
             return entry_field(self.entrycont, colName, entry_restrictions)
+        if entry_restrictions == "STRING":
+            return entry_field(self.entrycont, colName) #unrestricted
         if entry_restrictions == [True,False]:
             return tick_box(self.entrycont, colName)
         return drop_down(self.entrycont, colName, entry_restrictions)

@@ -7,6 +7,7 @@ from program.code.graphs import *
 from program.code.agents import *
 from program.code.output_ui import Controller
 from program.code.data_plot import NamedDataPlot
+from program.code.out_file_generator import *
 
 class Simulation:
     """
@@ -37,8 +38,15 @@ class Simulation:
             "buyer_args" : self.buyer_args,
             "seller_args" : self.seller_args,
             "graph_args" : self.parameters,
-            "num_sellers" : self.num_sellers
+            "num_sellers" : self.num_sellers,
+            "output_args" : self.output_args
         } #passing sim args as graph args for now.
+
+        if self.output_args["create_output_file"]:
+            dir_name = "PLACEHOLDER"
+            if "output_name" in self.output_args:
+                dir_name = self.output_args["output_name"]           
+            Output.createOutputDir(args, dir_name)
            
         if self.graph_type == "Line":
             graph = Line(**args)

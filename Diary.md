@@ -117,3 +117,6 @@ Messing around with implementation for output UI and data generation for that UI
 Fixed all known bugs. Now going through full testing. Output seems accurate to some extent. Might work on adding more graphs to give more detail on sim outcomes. This is the very minimum of a completed product.
 
 Finally, it's all over now.
+
+Or was it? Carrying on for fun... ah such fun. Let's see where I can take this.
+Set initital goals in form of TODOs. 

@@ -1,4 +1,6 @@
+import pickle
 import sys
+from tkinter import filedialog
 from typing import Union
 
 sys.path.append("./")
@@ -115,6 +117,19 @@ class App:
         self.nextButton = Button(parent, command = self.getAllInput)
         self.nextButton.configure(text = 'Start Simulation!')
         self.nextButton.pack(side = LEFT)
+
+        self.loadButton = Button(parent, command = self.makeLoadScreen)
+        self.loadButton.configure(text = 'Load simulation config')
+        self.loadButton.pack(side = BOTTOM)
+    
+    def makeLoadScreen(self) -> None:
+        folder_selected = filedialog.askdirectory()
+        if folder_selected != "":
+            fileObj = open(folder_selected + '/args.obj', 'rb')
+            args = pickle.load(fileObj)
+            fileObj.close()
+            args["from_file"] = True
+            sim = Simulation(**args)
 
     def initSim(self) -> None:
         #format global_output to be passable to Simulation constructor. 

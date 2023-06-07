@@ -14,17 +14,30 @@ class Simulation:
     Class that manages the simulation setup and end. 
     """
 
-    def __init__(self, parameters, buyer_args = {}, seller_args = {}, output_args = {}) -> None:
+    def __init__(self, parameters, buyer_args = {}, seller_args = {}, output_args = {}, from_file : bool = False) -> None:
         self.parameters = parameters
         self.buyer_args = buyer_args
         self.seller_args = seller_args
         self.output_args = output_args
+        self.from_file = from_file
 
         #DEFAULT VALUES, overwritten if value is passed through "parameters" dictionary
         self.max_iterations = 50 
         self.num_sellers = 20 
         self.buyer_dist = "Random"
         self.graph_type = "Line"
+
+        temp_args = {
+            "parameters" : self.parameters,
+            "buyer_args" : self.buyer_args,
+            "seller_args" : self.seller_args,
+            "output_args" : self.output_args
+        }
+        if self.output_args["create_output_file"] and not self.from_file:
+            dir_name = "PLACEHOLDER"
+            if "output_name" in self.output_args:
+                dir_name = self.output_args["output_name"]           
+            Output.createOutputDir(temp_args, dir_name)
 
         self.turn_num = 0
         self.startSim()
@@ -38,15 +51,9 @@ class Simulation:
             "buyer_args" : self.buyer_args,
             "seller_args" : self.seller_args,
             "graph_args" : self.parameters,
-            "num_sellers" : self.num_sellers,
-            "output_args" : self.output_args
+            "num_sellers" : self.num_sellers
         } #passing sim args as graph args for now.
 
-        if self.output_args["create_output_file"]:
-            dir_name = "PLACEHOLDER"
-            if "output_name" in self.output_args:
-                dir_name = self.output_args["output_name"]           
-            Output.createOutputDir(args, dir_name)
            
         if self.graph_type == "Line":
             graph = Line(**args)

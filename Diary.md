@@ -122,3 +122,5 @@ Or was it? Carrying on for fun... ah such fun. Let's see where I can take this.
 Set initital goals in form of TODOs. 
 
 Allowed saving of args used to start a simulation in a file.
+
+Added loading new simulation from parameter file.

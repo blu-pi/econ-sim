@@ -129,10 +129,6 @@ class Simulation:
             "seller_data" : [general_seller_stats,averaged_merged_seller_stats,merged_analysis],
             "buyer_data" : general_buyer_stats
         }
-        for key,values in data.items():
-            print(key)
-            print(values)
-            print("\n")
         if self.output_args.get("create_output_file"):
             self.genOutputFile() #TODO implement
         Controller.startUI(data_dict=data,params=self.output_args)

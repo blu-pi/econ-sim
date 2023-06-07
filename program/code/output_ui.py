@@ -132,7 +132,6 @@ class Section():
                 print(type(val))
 
 
-
 #---------------------    UI-DISPLAYS    ---------------------
 
 #TODO UI must improve

@@ -124,3 +124,5 @@ Set initital goals in form of TODOs.
 Allowed saving of args used to start a simulation in a file.
 
 Added loading new simulation from parameter file.
+
+Began adding support for box plots. Working on data output.

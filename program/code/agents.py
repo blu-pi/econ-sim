@@ -130,6 +130,9 @@ class Seller(Agent):
         else: #FOR ALL CASES WHERE IMPERFECT INFORMATION IS USED
             pass
             #Uses behaviour
+    
+    def __str__(self) -> str:
+        return "Seller" + str(self.arr_pos)
 
     #---------    SELLER STAT COLLECTION + PROCESSING    ---------
 
@@ -168,9 +171,6 @@ class Seller(Agent):
             "price_to_profit_plot" : combined_plot
         }
         return out
-
-    def __str__(self) -> str:
-        return "Seller" + str(self.arr_pos)
 
 
 class Buyer(Agent):

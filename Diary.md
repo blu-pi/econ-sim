@@ -126,3 +126,6 @@ Allowed saving of args used to start a simulation in a file.
 Added loading new simulation from parameter file.
 
 Began adding support for box plots. Working on data output.
+
+More prep work for data output. Decided to rework the control flow and methodology for data processing. This will be done by the DataHandler class in data_handle.py file.
+Ideally, data output will look better and be far more useful and dynamic depending on what the user is interested in seeing. It's quite a big change. ETA: not so soon.

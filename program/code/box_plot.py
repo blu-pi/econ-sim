@@ -1,6 +1,11 @@
 from pandas import Series
+import matplotlib.pyplot as plt
+from matplotlib.figure import Figure
 
-class Histogram:
+class BoxPlot:
+    """
+    A way to display a pandas Series as a BoxPlot in a standardised way.
+    """
 
     def __init__(self, data : Series, title : str = None, axis_name : str = None) -> None:
         self.data = data
@@ -17,5 +22,6 @@ class Histogram:
         ax = self.data.plot.box(column=self.axis_name)
         ax.show()
 
-    def getFigure(self) -> None:
+    def getFigure(self) -> Figure:
+        """Get a reference to an image (of the box plot) which can later be used in a Tkinter display."""
         pass

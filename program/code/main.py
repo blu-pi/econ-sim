@@ -151,7 +151,7 @@ class App:
         self.initSim()
 
 
-class Section():
+class Section:
     def __init__(self, parent, columns, title):
         self.myParent = parent
         self.columns = columns

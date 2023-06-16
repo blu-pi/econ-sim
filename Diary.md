@@ -129,3 +129,13 @@ Began adding support for box plots. Working on data output.
 
 More prep work for data output. Decided to rework the control flow and methodology for data processing. This will be done by the DataHandler class in data_handle.py file.
 Ideally, data output will look better and be far more useful and dynamic depending on what the user is interested in seeing. It's quite a big change. ETA: not so soon.
+
+Made a roadmap for future plans on paper in regards to data output.
+Essentially:
+- Modify data collection to ensure data is collected cleanly and efficiently
+- Work on data processing in the DataHandler class.
+- Work on brand new output UI system in output_ui_v2.py - this will be dynamic
+- Add saving and loading of output data, eliminating the need to rerun a simulation with the same parameters twice (unless it's non-deterministic)
+ETA: vaguely, 2 weeks depending on work ethic.
+
+Worked on setting up backbone for new UI. Minor clean-up of other parts of the code.

@@ -8,7 +8,7 @@ from typing import Tuple
 
 class NamedDataPlot:
     """
-    Data structure representing related data to be displayed in a pyplot. This class doesn't itself make plots.
+    Data structure representing related data to be displayed in a pyplot. 
     Mainly used to streamline data output.
     """
 
@@ -42,11 +42,6 @@ class NamedDataPlot:
 
     def combine_y(self, other : 'NamedDataPlot', new_title : str = None) -> 'NamedDataPlot':
         """Add data element-wise while keeping x axis the same. Used when combining plots of BuyerCollections that share a single Seller."""
-        if not(self.x_vals == other.x_vals):
-            print("Warning x-axis don't match. Might mean invalid data (also might not idk)")
-            print(self.x_vals)
-            print("Compared to")
-            print(other.x_vals)
         new_x_title = self.x_title
         new_y_title = other.y_title
         if self.x_title != other.x_title:
@@ -58,8 +53,8 @@ class NamedDataPlot:
 
     def mean(self, other : 'NamedDataPlot') -> 'NamedDataPlot':
         """Produce new NamedDataPlot with element-wise mean of passed data."""
-        #Could enforce checks here to ensure NDPs storing different data aren't averaged.
-        avg_x = [np.mean(x) for x in zip(self.x_vals, other.x_vals)]
+        if not (self.x_title == self.time_axis_name and other.x_title == other.time_axis_name): #no need to average time axis (It stays the same)
+            avg_x = [np.mean(x) for x in zip(self.x_vals, other.x_vals)]
         avg_y = [np.mean(x) for x in zip(self.y_vals, other.y_vals)]
         x_title = self.x_title if self.x_title == other.x_title else NamedDataPlot.placeholder_name
         y_title = self.y_title if self.y_title == other.y_title else NamedDataPlot.placeholder_name

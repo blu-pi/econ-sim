@@ -255,6 +255,9 @@ class Buyer(Agent):
             "Buyers_per_edge" : len(Agent.buyers_arr) / len(Agent.buyer_collections_arr)
         }
         return out
+    
+    def getCollectionStats(self) -> dict:
+        pass #TODO collect data through collections.
 
     def __str__(self) -> str:
         return "Buyer" + str(self.arr_pos)

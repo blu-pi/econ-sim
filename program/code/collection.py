@@ -1,15 +1,15 @@
 from program.code.agents import Seller, Buyer, Agent
-from program.code.actions import PriceChange
 from program.code.data_plot import NamedDataPlot
 from program.code.distribution import Distribution, Linear, Exponential
 
 import numpy as np
-import matplotlib.pyplot as plt
 
 from typing import Tuple
 
 class BuyerCollection:
-    """A collection of buyers that all buy from exactly the same Sellers."""
+    """
+    A collection of buyers that all buy from exactly the same Sellers. 
+    """
 
     def __init__(self, buyers : list[Buyer], util_dist : Distribution = None) -> None:
         assert(len(buyers) > 0)
@@ -51,7 +51,7 @@ class BuyerCollection:
     def _overrideUtilities(self) -> None:
         """
         When applying a distribution to Buyer utility it is done retrospectively. 
-        This means an initial value was likely already created. However, it doesn't matter if they weren't.
+        This means an initial value was likely already created. However, it doesn't matter if they weren't since it's overwritten anyway.
         """
         assert(len(self.buyers) == len(self.util_dist.values))
 
@@ -72,7 +72,6 @@ class BuyerCollection:
                 total += price
         return total
     
-    #Probably "feature-envy" from this point down but I don't have the time to clean this up. It works and it's not super bad and won't casue issues. 
     def makePlot(self, price_limits : Tuple[float,float] = (0,100), interval : float = 1, show_output : bool = False) -> NamedDataPlot:
         """Return NamedDataPlot for a BuyerCollection's price vs seller utility data."""
         total_price = 0

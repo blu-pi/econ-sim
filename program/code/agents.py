@@ -146,21 +146,22 @@ class Seller(Agent):
         return out
     
     @staticmethod
-    def getIndividualStats() -> None:
+    def getIndividualStats(get_complex : bool = True) -> list:
         out = []
         for obj in Agent.sellers_arr:
             obj : Seller
-            out.append(obj.getStats())
+            out.append(obj.getStats(get_complex))
         return out
     
-    def getStats(self) -> dict:
+    def getStats(self, get_complex : bool = True) -> dict:
         out = {
             "prices" : self.prices,
             "profits" : self.profits,
             "num_customers" : len(self.buyers),
             "num_direct_competitors" : len(self.buyer_collections)
         }
-        out.update(self._getComplexStats())
+        if get_complex:
+            out.update(self._getComplexStats())
         return out
     
     def _getComplexStats(self) -> dict:

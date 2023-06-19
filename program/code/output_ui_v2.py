@@ -4,7 +4,7 @@ from tkinter.ttk import *
 from matplotlib.backends.backend_tkagg import FigureCanvasTkAgg
 
 SingleOutput = float | int | str | bool
-Sections = ["Buyers", "Sellers", "Simulation"] #possible sections of data
+sections = ["Buyers", "Sellers", "Simulation"] #possible sections of data
 
 class App:
 
@@ -25,23 +25,37 @@ class App:
     sub_heading_font = ('Arial', 12)
 
 
-    def __init__(self, parent : Tk, parameters : dict = {}) -> None:
-        parent.winfo_toplevel().title("Data Visualiser")
-        self.parent = parent
+    def __init__(self, parameters : dict = {}) -> None:
+        self.root = Tk()
+        self.root.winfo_toplevel().title("Data Visualiser")
         self.parameters = parameters
 
-        select_frame = Frame(parent)
-        select_frame.pack(side=TOP)
+        #------FRAMES------
+        top_frame = Frame(self.root)
+        top_frame.pack(side=TOP)
 
-        sellers_button = Button(select_frame, text="Sellers", command=self.makeWindow)
-        sellers_button.pack(side=RIGHT)
+        button_frame = Frame(self.root)
+        button_frame.pack()
 
-    def makeWindow(self) -> None:
-        print("test")
+        #------LABELS------
+        title_label = Label(top_frame, text= "Select which stats to view", font=App.heading_font)
+        title_label.pack(side=TOP)
+
+        #------BUTTONS------
+        self.section_buttons = []
+        for section_name in sections:
+            btn = Button(button_frame, text=section_name)
+            btn.configure(command= lambda name=section_name: self.makeWindow(name))
+            btn.pack(side=RIGHT)
+            self.section_buttons.append(btn)
 
 
-root = Tk()
+        self.root.mainloop()
 
-app = App(root)
+    def makeWindow(self, text : str) -> None:
 
-root.mainloop()
+        newWindow = Toplevel(self.root)
+        newWindow.title(text + " selection")
+        print(text)
+
+app = App()

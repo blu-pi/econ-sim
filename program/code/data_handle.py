@@ -10,6 +10,7 @@ class DataHandler:
     """
     processed_sellers = {}
     processed_buyers = {}
+    #seller_performances = {} Could be used for optimisation
 
     #optional processed data keys. E.g. optional graph output.
     opt_seller_graphs = ["prices_over_time","profits_over_time","price_profit_graph","relative_performance_rating"]
@@ -27,10 +28,7 @@ class DataHandler:
         self.buyer_class_data = Buyer.getClassStats()
         self.buyer_data = Buyer.getCollectionStats()
 
-        self.seller_ratings = self.calc_seller_performance()
-
         #TODO sim data? is it needed? prob not. 
-
     
     def processSeller(self, pos : int = None, excluded_keys = []) -> dict:
         """
@@ -43,16 +41,20 @@ class DataHandler:
 
         out : dict = self.seller_data[pos]
         if "price_profit_graph" not in excluded_keys:
-            out["prices_profit_graph"] = BuyerCollection.makeComboPlotFromList(target.buyer_collections).getFigure()
+            plot : NamedDataPlot = BuyerCollection.makeComboPlotFromList(target.buyer_collections)
+            out["prices_profit_graph"] = plot.getFigure()
+
         if "prices_over_time" not in excluded_keys:
-            out["prices_over_time"] = NamedDataPlot(x_vals=("time",0), y_vals=("price",target.prices)).getFigure()
+            plot = NamedDataPlot(x_vals=("time",0), y_vals=("price",target.prices))
+            out["prices_over_time"] = plot.getFigure()
+
         if "profits_over_time" not in excluded_keys:
-            out["profits_over_time"] = NamedDataPlot(x_vals=("time",0), y_vals=("profit",target.profits)).getFigure()
+            plot = NamedDataPlot(x_vals=("time",0), y_vals=("profit",target.profits))
+            out["profits_over_time"] = plot.getFigure()
+
         if "relative_performance_rating" not in excluded_keys:
-            pass #TODO implement
-
+            out["relative_performance_rating"] = self.calculateSellerPerformance()
         return out
-
 
     def processBuyer(self, ) -> dict:
         """
@@ -61,6 +63,12 @@ class DataHandler:
         """
         pass
 
+    def calculateSellerPerformance(self, pos : int) -> int:
+        profits = Seller.getProfits()
+        described_profits = pd.Series(profits).describe().to_dict()
+        median_profit = described_profits["50%"]
+        return profits[pos] / median_profit
+
     def loadDataFile(self) -> object:
         #TODO try to unpickle from location given
         try:
@@ -68,10 +76,3 @@ class DataHandler:
         except:
             return None
         
-
-    def makeGeneralOutput(self) -> None:
-        pass
-
-
-    def makeSpecificOutput(self) -> None:
-        pass

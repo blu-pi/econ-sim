@@ -133,6 +133,22 @@ class Seller(Agent):
     
     def __str__(self) -> str:
         return "Seller" + str(self.arr_pos)
+        
+    @staticmethod
+    def getProfits() -> list[int]:
+        """Get a target profit value from each Seller which will later be used to determine Seller performance"""
+        profits = []
+        method = Seller.sellers_arr[0].arg_dict["performance_measure"] #ugly but might be changed in future idk
+        for seller in Agent.sellers_arr:
+            seller : Seller #so vsc understands (not important)
+            if method == "final_profit":
+                profits.append(seller.profits[-1])
+            elif method == "max_profit":
+                profits.append(max(seller.profits))
+            elif method == "total_profit":
+                profits.append(sum(seller.profits))
+        return profits
+
 
     #---------    SELLER STAT COLLECTION + PROCESSING    ---------
 

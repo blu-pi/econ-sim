@@ -143,3 +143,6 @@ Worked on setting up backbone for new UI. Minor clean-up of other parts of the c
 Working on new implementation for data collection and then later data processing. These are prerequisites for further development of the new UI.
 
 More work done on data collection + processing.
+
+Completed initial rework of data collection and procesing for Sellers. Will test next and then implement for buyers. Finally, all this will be integrated into the new UI.
+Also added new opt argument to determine the performance measure of a Seller.

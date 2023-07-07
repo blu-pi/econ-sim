@@ -146,3 +146,5 @@ More work done on data collection + processing.
 
 Completed initial rework of data collection and procesing for Sellers. Will test next and then implement for buyers. Finally, all this will be integrated into the new UI.
 Also added new opt argument to determine the performance measure of a Seller.
+
+Made progress on outputting data in new UI.

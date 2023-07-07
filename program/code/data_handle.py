@@ -16,9 +16,9 @@ class DataHandler:
     opt_seller_graphs = ["prices_over_time","profits_over_time","price_profit_graph","relative_performance_rating"]
     opt_proc_buyer_keys = []
 
-    def __init__(self, args: dict, dir = None) -> None:
+    def __init__(self, parameters: dict, dir = None) -> None:
         #TODO type limit for directory
-        self.args = args
+        self.parameters = parameters
         self.dir = dir
         if self.dir != None:
             self.loadDataFile()
@@ -26,11 +26,21 @@ class DataHandler:
         self.seller_class_data = Seller.getClassStats()
         self.seller_data = Seller.getIndividualStats(get_complex=False)
         self.buyer_class_data = Buyer.getClassStats()
-        self.buyer_data = Buyer.getCollectionStats()
+        #self.buyer_data = Buyer.getCollectionStats()
 
         #TODO sim data? is it needed? prob not. 
+
+    def process(self, section_name : str, pos : int = None) -> dict:
+        if section_name == "Buyer":
+            return self._processBuyer()
+        if section_name == "Seller":
+            if pos != None:
+                return self._processSeller()
+            return self._processSellerClass() #TODO
+        print("Data output error! Can't find data for " + section_name)
+        return {}
     
-    def processSeller(self, pos : int = None, excluded_keys = []) -> dict:
+    def _processSeller(self, pos : int = None, excluded_keys = []) -> dict:
         """
         Process data of a single Seller with a given position in the Agent.seller_array in a standardised way. 
         Passing no value will process a random seller. 
@@ -54,14 +64,21 @@ class DataHandler:
 
         if "relative_performance_rating" not in excluded_keys:
             out["relative_performance_rating"] = self.calculateSellerPerformance()
+            
         return out
+    
+    def _processSellerClass(self) -> dict:
+        pass
 
-    def processBuyer(self, ) -> dict:
+    def _processBuyer(self) -> dict:
         """
         Process data of a single Buyer Collection with a given position in the Agent.seller_array in a standardised way. 
         Passing no value will process a random seller. 
         """
-        pass
+        out = {
+
+        }
+        return out
 
     def calculateSellerPerformance(self, pos : int) -> int:
         profits = Seller.getProfits()

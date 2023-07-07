@@ -6,6 +6,7 @@ from program.code.opt_args import OptArg
 from program.code.graphs import *
 from program.code.agents import *
 from program.code.output_ui import Controller
+from program.code.output_ui_v2 import App
 from program.code.data_plot import NamedDataPlot
 from program.code.out_file_generator import *
 
@@ -117,6 +118,7 @@ class Simulation:
 
     def endSim(self) -> None:
         print("The End.") #TODO Data output
+
         #-------- STAT PROCESSING --------
         general_buyer_stats : dict = Buyer.getClassStats()
         general_seller_stats : dict = Seller.getClassStats()
@@ -129,9 +131,13 @@ class Simulation:
             "seller_data" : [general_seller_stats,averaged_merged_seller_stats,merged_analysis],
             "buyer_data" : general_buyer_stats
         }
+
         if self.output_args.get("create_output_file"):
             self.genOutputFile() #TODO implement
-        Controller.startUI(data_dict=data,params=self.output_args)
+           
+        #Controller.startUI(data_dict=data,params=self.output_args)
+        out_ui = App(parameters=self.output_args)
+        
 
     @staticmethod
     def getAveragedStats(target : dict) -> dict:

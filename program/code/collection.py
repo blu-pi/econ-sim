@@ -33,7 +33,8 @@ class BuyerCollection:
             elif dist_str == "Linear":
                 self.util_dist = Linear(**args)
 
-        self.informSellers() #give corresponding seller objects a reference to this obj
+        self.informSellers() 
+        self.informBuyers()
 
         if not self._validateCollection():
             print("Collection doesn't contain matching Buyers. Critical error!") #no point catching this, it's over anyway.
@@ -63,6 +64,12 @@ class BuyerCollection:
         for seller in self.buys_from:
             assert(isinstance(seller,Seller))
             seller.setBuyerCollection(self)
+    
+    def informBuyers(self) -> None:
+        """Give corresponding Buyer objects reference to this object for future use"""
+        for buyer in self.buyers:
+            assert(isinstance(buyer,Buyer))
+            buyer.setCollection(self)
 
     def getSellerUtil(self, price : float) -> float:
         """Returns total seller (plural) utility gained from this collection at given price."""

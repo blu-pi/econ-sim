@@ -3,6 +3,8 @@ from tkinter import *
 from tkinter.ttk import *
 from matplotlib.backends.backend_tkagg import FigureCanvasTkAgg
 
+from program.code.data_handle import *
+
 SingleOutput = float | int | str | bool
 sections = ["Buyers", "Sellers", "Simulation"] #possible sections of data
 
@@ -30,6 +32,8 @@ class App:
         self.root.winfo_toplevel().title("Data Visualiser")
         self.parameters = parameters
 
+        self.data_handler = DataHandler(parameters)
+
         #------FRAMES------
         top_frame = Frame(self.root)
         top_frame.pack(side=TOP)
@@ -55,7 +59,21 @@ class App:
     def makeWindow(self, text : str) -> None:
 
         newWindow = Toplevel(self.root)
-        newWindow.title(text + " selection")
-        print(text)
+        newWindow.title(text + " selection") 
 
-app = App()
+        frame = Frame(newWindow)
+        frame.pack()
+
+        title_label = Label(frame, font=App.heading_font)  
+        title_label.configure(text="Select which type of {} information you want to see:".format(text))
+        title_label.pack(side=TOP)
+
+        individual_button = Button(frame, text="Individual")
+        individual_button.configure(command= lambda section_name = text: self.displayData(section_name, is_individual=True))
+        individual_button.pack(side=LEFT)
+
+    def displayData(self, section_name : str, is_individual : bool) -> None:
+        pass
+
+    def requestData(self, section_name : str) -> dict:
+        pass

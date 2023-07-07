@@ -202,6 +202,7 @@ class Buyer(Agent):
     def __init__(self, buys_from_arr, arg_dict = {}) -> None:
         self.buys_from = buys_from_arr
         self.arg_dict = arg_dict
+        self.collection = None #optionally overwritten later. No big deal if it isn't.
         self.setPercievedUtility()
         self.informSellers()
         Agent.buyers_arr.append(self)
@@ -244,6 +245,12 @@ class Buyer(Agent):
             self.max_util = max_util
 
             self.percieved_utility = random.randint(min_util, max_util)
+
+    def setCollection(self, collection) -> None:
+        """records assignment of Buyer to a designated BuyerCollection"""
+        from program.code.collection import BuyerCollection
+        assert(isinstance(collection, BuyerCollection))
+        self.collection = collection
     
     def informSellers(self) -> None:
         """Gives seller a direct reference to this obj. Acts as an intention to buy from them."""
@@ -274,7 +281,10 @@ class Buyer(Agent):
         return out
     
     def getCollectionStats(self) -> dict:
-        pass #TODO collect data through collections.
+        #TODO implement if going deeper into Buyer behaviour is needed.
+        out = {
+        }
+        return out
 
     def __str__(self) -> str:
         return "Buyer" + str(self.arr_pos)

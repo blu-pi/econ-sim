@@ -181,6 +181,7 @@ class Seller(Agent):
         return out
     
     def _getComplexStats(self) -> dict:
+        #doesn't work for new output UI
         from program.code.collection import BuyerCollection
         from program.code.data_plot import NamedDataPlot
         combined_plot : NamedDataPlot = BuyerCollection.makeComboPlotFromList(self.buyer_collections)

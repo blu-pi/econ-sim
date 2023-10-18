@@ -30,26 +30,29 @@ class DataHandler:
 
         #TODO sim data? is it needed? prob not. 
 
-    def process(self, section_name : str, pos : int = None) -> dict:
+    def process(self, section_name : str, is_individual : bool, pos : int) -> dict:
         if section_name == "Buyer":
             return self._processBuyer()
         if section_name == "Seller":
-            if pos != None:
-                return self._processSeller()
+            if is_individual:
+                return self._processSeller(pos)
             return self._processSellerClass() #TODO
         print("Data output error! Can't find data for " + section_name)
         return {}
     
-    def _processSeller(self, pos : int = None, excluded_keys = []) -> dict:
+    def _processSeller(self, pos : int, excluded_keys = []) -> dict:
         """
         Process data of a single Seller with a given position in the Agent.seller_array in a standardised way. 
         Passing no value will process a random seller. 
         """
-        target : Seller = self.seller_data[pos]
+        
         if pos == None:
             pos = random.randint(0,len(self.seller_data)-1)
 
+        target : Seller = Agent.sellers_arr[pos]
         out : dict = self.seller_data[pos]
+
+        #TODO make not crime against humanity - use self.opt_seller_graphs
         if "price_profit_graph" not in excluded_keys:
             plot : NamedDataPlot = BuyerCollection.makeComboPlotFromList(target.buyer_collections)
             out["prices_profit_graph"] = plot.getFigure()
@@ -63,11 +66,14 @@ class DataHandler:
             out["profits_over_time"] = plot.getFigure()
 
         if "relative_performance_rating" not in excluded_keys:
-            out["relative_performance_rating"] = self.calculateSellerPerformance()
+            out["relative_performance_rating"] = self.calculateSellerPerformance(pos)
             
         return out
     
     def _processSellerClass(self) -> dict:
+        """
+        Process all Sellers as an average.
+        """
         pass
 
     def _processBuyer(self) -> dict:
@@ -80,7 +86,7 @@ class DataHandler:
         }
         return out
 
-    def calculateSellerPerformance(self, pos : int) -> int:
+    def calculateSellerPerformance(self, pos : int) -> float:
         profits = Seller.getProfits()
         described_profits = pd.Series(profits).describe().to_dict()
         median_profit = described_profits["50%"]

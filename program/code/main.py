@@ -130,6 +130,7 @@ class App:
             fileObj.close()
             args["from_file"] = True
             sim = Simulation(**args)
+        #TODO else case? 
 
     def initSim(self) -> None:
         #format global_output to be passable to Simulation constructor. 

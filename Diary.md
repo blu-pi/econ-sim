@@ -148,3 +148,5 @@ Completed initial rework of data collection and procesing for Sellers. Will test
 Also added new opt argument to determine the performance measure of a Seller.
 
 Made progress on outputting data in new UI.
+
+Back in business... More UI work. Also worked on data handler to begin implementing individual Seller analysis.

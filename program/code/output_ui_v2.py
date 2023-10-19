@@ -1,6 +1,7 @@
 from typing import Union
 from tkinter import *
 from tkinter.ttk import *
+from matplotlib.figure import Figure
 from matplotlib.backends.backend_tkagg import FigureCanvasTkAgg
 
 from program.code.data_handle import *
@@ -35,6 +36,9 @@ class App:
         self.parameters = parameters
 
         self.data_handler = DataHandler(parameters)
+
+        scroll = Scrollbar(self.root)
+        scroll.pack(side = RIGHT, fill=Y)
 
         #------FRAMES------
         top_frame = Frame(self.root)
@@ -127,7 +131,7 @@ class LookupContainer:
         for title, contents in self.data.items():
             if isinstance(contents, Figure):
                 self.displayed_figures[title] = FigureDisplay(title, figure=contents, container=self.container)
-            if isinstance(contents, SingleOutput):
+            elif isinstance(contents, SingleOutput):
                 self.displayed_vals[title] = ValueDisplay(title, value=contents, container=self.container)
             else:
                 print("Error, incompatible display data for {}. {} is not yet supported!".format(title,type(contents)))

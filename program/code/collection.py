@@ -14,14 +14,14 @@ class BuyerCollection:
     def __init__(self, buyers : list[Buyer], util_dist : Distribution = None) -> None:
         assert(len(buyers) > 0)
 
-        if isinstance(util_dist,str): #idk why the code lets this even happen but it does
+        if isinstance(util_dist,str): #idk why the code lets this even happen but it does - it does? 
             util_dist = None
 
         self.buyers = buyers
         self.buys_from = self.buyers[0].buys_from
 
         self.util_dist = util_dist
-        if util_dist == None and len(buyers) > 1: #if len buyers is 1 then Random is forced.
+        if util_dist is None and len(buyers) > 1: #if len buyers is 1 then Random is forced.
             dist_str = self.buyers[0].arg_dict["util_distribution"]
             args = {
                 "start" : self.buyers[0].min_util,
@@ -32,6 +32,8 @@ class BuyerCollection:
                 self.util_dist = Exponential(**args)
             elif dist_str == "Linear":
                 self.util_dist = Linear(**args)
+        
+        #do something if util dist isn't none? Maybe remove util dist from constructor? 
 
         self.informSellers() 
         self.informBuyers()
@@ -78,6 +80,13 @@ class BuyerCollection:
             if price <= buyer.percieved_utility:
                 total += price
         return total
+    
+    def getOpponent(self, target : Seller) -> Seller:
+        if target == self.buys_from[0]:
+            return self.buys_from[1]
+        elif target == self.buys_from[1]:
+            return self.buys_from[0]
+        return None   
     
     def makePlot(self, price_limits : Tuple[float,float] = (0,100), interval : float = 1, show_output : bool = False) -> NamedDataPlot:
         """Return NamedDataPlot for a BuyerCollection's price vs seller utility data."""

@@ -47,7 +47,7 @@ class DataHandler:
         """
         
         if pos == None:
-            pos = random.randint(0,len(self.seller_data)-1)
+            pos = random.randint(0,len(Agent.sellers_arr)-1)
 
         target : Seller = Agent.sellers_arr[pos]
         out : dict = self.seller_data[pos]
@@ -55,18 +55,23 @@ class DataHandler:
         #TODO make not crime against humanity - use self.opt_seller_graphs
         if "price_profit_graph" not in excluded_keys:
             plot : NamedDataPlot = BuyerCollection.makeComboPlotFromList(target.buyer_collections)
+            #plot.trim()
             out["prices_profit_graph"] = plot.getFigure()
 
         if "prices_over_time" not in excluded_keys:
             plot = NamedDataPlot(x_vals=("time",0), y_vals=("price",target.prices))
+            print(target.prices)
+            print(target.profits)
             out["prices_over_time"] = plot.getFigure()
 
         if "profits_over_time" not in excluded_keys:
             plot = NamedDataPlot(x_vals=("time",0), y_vals=("profit",target.profits))
+            #plot.trim()
             out["profits_over_time"] = plot.getFigure()
 
         if "relative_performance_rating" not in excluded_keys:
             out["relative_performance_rating"] = self.calculateSellerPerformance(pos)
+            print(out["relative_performance_rating"])
             
         return out
     

@@ -150,3 +150,10 @@ Also added new opt argument to determine the performance measure of a Seller.
 Made progress on outputting data in new UI.
 
 Back in business... More UI work. Also worked on data handler to begin implementing individual Seller analysis.
+
+Fixed error in seq. perfect info decision-making where seller utility was not accurately calculated in scenarios with more than 1 Buyer per Seller pair. 
+Uncovered poor UI design as user can try to create graph with multiple buyers per seller pair while setting all Buyer utilities to the same value. This is nonsensical and also causes an error.
+It's just not supposed to be allowed to begin with as it serves no purpose than potentially debug data.
+Also working on fixing Sellers thinking they are recieving double the utility than they actually should be. This doesn't affect accuracy in their actions but the raw data just isn't strictly accurate.
+
+Fixed bugs and attempted to add scroll bar to output screen.

@@ -157,3 +157,7 @@ It's just not supposed to be allowed to begin with as it serves no purpose than 
 Also working on fixing Sellers thinking they are recieving double the utility than they actually should be. This doesn't affect accuracy in their actions but the raw data just isn't strictly accurate.
 
 Fixed bugs and attempted to add scroll bar to output screen.
+
+Going for another UI rework... fun.
+Plans are on paper.
+This branch will finally deliver the finished UI.

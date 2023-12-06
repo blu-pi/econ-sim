@@ -53,3 +53,5 @@ docs/_build/
 program/tests/random_tests.py
 Final_report.pdf
 FYP_submission.zip
+output/
+program/tests/rand_tests.py

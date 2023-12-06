@@ -32,6 +32,9 @@ class Linear(Distribution):
             else:
                 out.append(round(current))
         return out
+    
+    def __str__(self) -> str:
+        return "Linear"
 
 class Exponential(Distribution):
     """
@@ -44,3 +47,6 @@ class Exponential(Distribution):
     
     def generate(self) -> list[float]:
         return np.logspace(np.log(self.start), np.log(self.end), self.steps, base=np.e)
+    
+    def __str__(self) -> str:
+        return "Exponential"

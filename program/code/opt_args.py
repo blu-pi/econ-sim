@@ -38,12 +38,14 @@ class OptArg:
         "PERFECT_INFORMATION" : [True,False],
         "price_change_amount" : [0,"..",20],
         "price_steps" : [0,"..",40],
-        "product_price" : [0,"..",100]
+        "product_price" : [0,"..",100],
+        "performance_measure" : ["final_profit","max_profit","total_profit"]
     } 
     _all_parameters.append(seller_parameters)
 
     output_parameters = {
         "create_output_file" : [True,False],
+        "output_name" : "STRING",
         "prefer_desc_as_labels" : [True,False]
     }
     _all_parameters.append(output_parameters)
@@ -90,6 +92,8 @@ class OptArg:
                 elif to_check[key] not in allowed[key]: #if param not in list of explicitly allowed params then it's bad
                     rejected.update({key : to_check[key]}) #add removed content to new dict
                     del to_check[key] #This change happens to the dict globally
+            elif allowed[key] == "STRING": #unrestricted entry
+                print("unrestricted entry")
             else:
                 if to_check[key] != allowed[key]: #if param doesn't match possible param then it's bad
                     rejected.update({key : to_check[key]}) #add removed content to new dict

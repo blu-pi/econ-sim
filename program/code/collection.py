@@ -1,27 +1,27 @@
 from program.code.agents import Seller, Buyer, Agent
-from program.code.actions import PriceChange
 from program.code.data_plot import NamedDataPlot
 from program.code.distribution import Distribution, Linear, Exponential
 
 import numpy as np
-import matplotlib.pyplot as plt
 
 from typing import Tuple
 
 class BuyerCollection:
-    """A collection of buyers that all buy from exactly the same Sellers."""
+    """
+    A collection of buyers that all buy from exactly the same Sellers. 
+    """
 
     def __init__(self, buyers : list[Buyer], util_dist : Distribution = None) -> None:
         assert(len(buyers) > 0)
 
-        if isinstance(util_dist,str): #idk why the code lets this even happen but it does
+        if isinstance(util_dist,str): #idk why the code lets this even happen but it does - it does? 
             util_dist = None
 
         self.buyers = buyers
         self.buys_from = self.buyers[0].buys_from
 
         self.util_dist = util_dist
-        if util_dist == None and len(buyers) > 1: #if len buyers is 1 then Random is forced.
+        if util_dist is None and len(buyers) > 1: #if len buyers is 1 then Random is forced.
             dist_str = self.buyers[0].arg_dict["util_distribution"]
             args = {
                 "start" : self.buyers[0].min_util,
@@ -32,8 +32,11 @@ class BuyerCollection:
                 self.util_dist = Exponential(**args)
             elif dist_str == "Linear":
                 self.util_dist = Linear(**args)
+        
+        #do something if util dist isn't none? Maybe remove util dist from constructor? 
 
-        self.informSellers() #give corresponding seller objects a reference to this obj
+        self.informSellers() 
+        self.informBuyers()
 
         if not self._validateCollection():
             print("Collection doesn't contain matching Buyers. Critical error!") #no point catching this, it's over anyway.
@@ -51,7 +54,7 @@ class BuyerCollection:
     def _overrideUtilities(self) -> None:
         """
         When applying a distribution to Buyer utility it is done retrospectively. 
-        This means an initial value was likely already created. However, it doesn't matter if they weren't.
+        This means an initial value was likely already created. However, it doesn't matter if they weren't since it's overwritten anyway.
         """
         assert(len(self.buyers) == len(self.util_dist.values))
 
@@ -63,6 +66,12 @@ class BuyerCollection:
         for seller in self.buys_from:
             assert(isinstance(seller,Seller))
             seller.setBuyerCollection(self)
+    
+    def informBuyers(self) -> None:
+        """Give corresponding Buyer objects reference to this object for future use"""
+        for buyer in self.buyers:
+            assert(isinstance(buyer,Buyer))
+            buyer.setCollection(self)
 
     def getSellerUtil(self, price : float) -> float:
         """Returns total seller (plural) utility gained from this collection at given price."""
@@ -72,7 +81,13 @@ class BuyerCollection:
                 total += price
         return total
     
-    #Probably "feature-envy" from this point down but I don't have the time to clean this up. It works and it's not super bad and won't casue issues. 
+    def getOpponent(self, target : Seller) -> Seller:
+        if target == self.buys_from[0]:
+            return self.buys_from[1]
+        elif target == self.buys_from[1]:
+            return self.buys_from[0]
+        return None   
+    
     def makePlot(self, price_limits : Tuple[float,float] = (0,100), interval : float = 1, show_output : bool = False) -> NamedDataPlot:
         """Return NamedDataPlot for a BuyerCollection's price vs seller utility data."""
         total_price = 0

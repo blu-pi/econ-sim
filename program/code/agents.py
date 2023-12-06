@@ -130,6 +130,25 @@ class Seller(Agent):
         else: #FOR ALL CASES WHERE IMPERFECT INFORMATION IS USED
             pass
             #Uses behaviour
+    
+    def __str__(self) -> str:
+        return "Seller" + str(self.arr_pos)
+        
+    @staticmethod
+    def getProfits() -> list[int]:
+        """Get a target profit value from each Seller which will later be used to determine Seller performance"""
+        profits = []
+        method = Seller.sellers_arr[0].arg_dict["performance_measure"] #ugly but might be changed in future idk
+        for seller in Agent.sellers_arr:
+            seller : Seller #so vsc understands (not important)
+            if method == "final_profit":
+                profits.append(seller.profits[-1])
+            elif method == "max_profit":
+                profits.append(max(seller.profits))
+            elif method == "total_profit":
+                profits.append(sum(seller.profits))
+        return profits
+
 
     #---------    SELLER STAT COLLECTION + PROCESSING    ---------
 
@@ -143,24 +162,26 @@ class Seller(Agent):
         return out
     
     @staticmethod
-    def getIndividualStats() -> None:
+    def getIndividualStats(get_complex : bool = True) -> list:
         out = []
         for obj in Agent.sellers_arr:
             obj : Seller
-            out.append(obj.getStats())
+            out.append(obj.getStats(get_complex))
         return out
     
-    def getStats(self) -> dict:
+    def getStats(self, get_complex : bool = True) -> dict:
         out = {
             "prices" : self.prices,
             "profits" : self.profits,
             "num_customers" : len(self.buyers),
             "num_direct_competitors" : len(self.buyer_collections)
         }
-        out.update(self._getComplexStats())
+        if get_complex:
+            out.update(self._getComplexStats())
         return out
     
     def _getComplexStats(self) -> dict:
+        #doesn't work for new output UI
         from program.code.collection import BuyerCollection
         from program.code.data_plot import NamedDataPlot
         combined_plot : NamedDataPlot = BuyerCollection.makeComboPlotFromList(self.buyer_collections)
@@ -168,9 +189,6 @@ class Seller(Agent):
             "price_to_profit_plot" : combined_plot
         }
         return out
-
-    def __str__(self) -> str:
-        return "Seller" + str(self.arr_pos)
 
 
 class Buyer(Agent):
@@ -185,6 +203,7 @@ class Buyer(Agent):
     def __init__(self, buys_from_arr, arg_dict = {}) -> None:
         self.buys_from = buys_from_arr
         self.arg_dict = arg_dict
+        self.collection = None #optionally overwritten later. No big deal if it isn't.
         self.setPercievedUtility()
         self.informSellers()
         Agent.buyers_arr.append(self)
@@ -227,6 +246,12 @@ class Buyer(Agent):
             self.max_util = max_util
 
             self.percieved_utility = random.randint(min_util, max_util)
+
+    def setCollection(self, collection) -> None:
+        """records assignment of Buyer to a designated BuyerCollection"""
+        from program.code.collection import BuyerCollection
+        assert(isinstance(collection, BuyerCollection))
+        self.collection = collection
     
     def informSellers(self) -> None:
         """Gives seller a direct reference to this obj. Acts as an intention to buy from them."""
@@ -253,6 +278,12 @@ class Buyer(Agent):
             "num_buyers" : len(Seller.buyers_arr),
             "num_edges" : len(Seller.buyer_collections_arr),
             "Buyers_per_edge" : len(Agent.buyers_arr) / len(Agent.buyer_collections_arr)
+        }
+        return out
+    
+    def getCollectionStats(self) -> dict:
+        #TODO implement if going deeper into Buyer behaviour is needed.
+        out = {
         }
         return out
 

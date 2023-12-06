@@ -47,7 +47,7 @@ class Buy(BuyerAction):
         self.agent.bought_products = True
         self.agent.action_history.append(self)
         for seller in self.agent.buys_from:
-            seller.getMoney(self.cost)
+            seller.getMoney(self.cost / 2)
 
     def eval(self) -> int:
         return self.agent.percieved_utility - self.cost
@@ -103,6 +103,7 @@ class PriceChange(SellerAction):
         return util
 
     def seqEval(self) -> int:
+        from program.code.collection import BuyerCollection
         util = 0
         if self.agent.arg_dict["PERFECT_INFORMATION"]: #if true
             #by far the easiest
@@ -110,14 +111,16 @@ class PriceChange(SellerAction):
                 new_price = self.agent.product_price * self.amount
             else:
                 new_price = self.agent.product_price + self.amount
-            opponents = self.agent.getOpponents()
-            for i in range(len(opponents)):
-                opp = opponents[i]
-                assert(isinstance(opp, Seller))
-                buyer = self.agent.buyers[i]
-                assert(isinstance(buyer, Buyer))
-                if (opp.product_price + new_price) <= buyer.percieved_utility:
-                    util += new_price
+
+            for collection in self.agent.buyer_collections:
+                assert(isinstance(collection, BuyerCollection))
+                opponent : Seller = collection.getOpponent(self.agent)
+                assert(opponent is not None)
+                for buyer in collection.buyers:
+                    assert(isinstance(buyer, Buyer))
+                    if (opponent.product_price + new_price) <= buyer.percieved_utility:
+                        util += new_price
+                        
         else: #imperfect info
             print("3 ERROR, NOT IMPLEMENTED!")
             exit(0) #TODO

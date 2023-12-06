@@ -1,4 +1,6 @@
+import pickle
 import sys
+from tkinter import filedialog
 from typing import Union
 
 sys.path.append("./")
@@ -30,7 +32,10 @@ class entry_field:
 
         self.entry = Entry(self.frame)
         self.entry.pack(side = LEFT)
-        self.value = lambda : self.getIntVal()
+        if self.restriction != None:
+            self.value = lambda : self.getIntVal()
+        else:
+            self.value = lambda : self.entry.get() #unrestricted
 
         self.holdButton = Button(self.frame, command = self.hold)
         self.holdButton.configure(text = 'Info')
@@ -113,6 +118,20 @@ class App:
         self.nextButton.configure(text = 'Start Simulation!')
         self.nextButton.pack(side = LEFT)
 
+        self.loadButton = Button(parent, command = self.makeLoadScreen)
+        self.loadButton.configure(text = 'Load simulation config')
+        self.loadButton.pack(side = BOTTOM)
+    
+    def makeLoadScreen(self) -> None:
+        folder_selected = filedialog.askdirectory()
+        if folder_selected != "":
+            fileObj = open(folder_selected + '/args.obj', 'rb')
+            args = pickle.load(fileObj)
+            fileObj.close()
+            args["from_file"] = True
+            sim = Simulation(**args)
+        #TODO else case? 
+
     def initSim(self) -> None:
         #format global_output to be passable to Simulation constructor. 
         #(Modifying key names)
@@ -133,7 +152,7 @@ class App:
         self.initSim()
 
 
-class Section():
+class Section:
     def __init__(self, parent, columns, title):
         self.myParent = parent
         self.columns = columns
@@ -177,6 +196,8 @@ class Section():
     def gen_entry_obj(self, colName, entry_restrictions):
         if ".." in entry_restrictions:
             return entry_field(self.entrycont, colName, entry_restrictions)
+        if entry_restrictions == "STRING":
+            return entry_field(self.entrycont, colName) #unrestricted
         if entry_restrictions == [True,False]:
             return tick_box(self.entrycont, colName)
         return drop_down(self.entrycont, colName, entry_restrictions)

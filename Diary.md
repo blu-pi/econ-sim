@@ -161,3 +161,7 @@ Fixed bugs and attempted to add scroll bar to output screen.
 Going for another UI rework... fun.
 Plans are on paper.
 This branch will finally deliver the finished UI.
+
+Progress on UI, now displaying the graph visually and all input parameters upon request.
+Working on modifying data handler to output desired data after simulation.
+modified display methods in Graph to ensure all graphs use the parent class' implementation unless they have their own.

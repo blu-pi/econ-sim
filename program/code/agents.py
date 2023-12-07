@@ -149,7 +149,6 @@ class Seller(Agent):
                 profits.append(sum(seller.profits))
         return profits
 
-
     #---------    SELLER STAT COLLECTION + PROCESSING    ---------
 
     @staticmethod

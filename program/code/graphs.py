@@ -26,8 +26,7 @@ class Graph:
             graph.add_edge(str(buys_from[0]), str(buys_from[1]), obj = buyer) #add edge between previous and seller. Give buyer object as reference.
         Agent.buyer_collections_arr.append(BuyerCollection(buyers))
 
-    @staticmethod
-    def display(graph_obj) -> None:
+    def display(self, graph_obj) -> None:
         nx.draw(graph_obj, with_labels=True) #just to test correct shape
         plt.show()
 
@@ -62,10 +61,7 @@ class Line(Graph):
         if self.isCircle:
             Graph.joinSellers([previous, first], G, self.buyer_args, num_buyers)
         if show_result:
-            if self.isCircle:
-                self.display(G)
-            else:
-                Graph.display(G)
+            self.display(G)
         return G
     
     def display(self, graph_obj) -> None:
@@ -113,5 +109,5 @@ class Tree(Graph):
             prev_layer = current_layer
             remaining_sellers -= len(current_layer)
         if show_result:
-            Graph.display(G)
+            self.display(G)
         return G

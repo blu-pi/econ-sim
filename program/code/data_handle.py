@@ -66,7 +66,6 @@ class DataHandler:
 
         if "profits_over_time" not in excluded_keys:
             plot = NamedDataPlot(x_vals=("time",0), y_vals=("profit",target.profits))
-            #plot.trim()
             out["profits_over_time"] = plot.getFigure()
 
         if "relative_performance_rating" not in excluded_keys:
@@ -96,6 +95,11 @@ class DataHandler:
         described_profits = pd.Series(profits).describe().to_dict()
         median_profit = described_profits["50%"]
         return profits[pos] / median_profit
+    
+    def calculateBuyerPerformace(self, pos: int = 1) -> float:
+        target = Agent.buyer_collections_arr[pos]
+        
+
 
     def loadDataFile(self) -> object:
         #TODO try to unpickle from location given

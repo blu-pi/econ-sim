@@ -131,6 +131,21 @@ class Seller(Agent):
             pass
             #Uses behaviour
     
+    def applyPerformanceMeasure(self, target_data : list[float] = None) -> float:
+        """Return desired value representing performance from list containing profits over time"""
+        if target_data is None:
+            target_data = self.profits
+        method = self.arg_dict["performance_measure"]
+        if method == "final_profit":
+            return target_data[-1]
+        elif method == "max_profit":
+            return max(target_data)
+        elif method == "total_profit":
+            return(target_data)
+        else:
+            print("ERROR INVALID SELLER PERFORMANCE MEASURE")
+            exit(0)
+    
     def __str__(self) -> str:
         return "Seller" + str(self.arr_pos)
         
@@ -141,12 +156,7 @@ class Seller(Agent):
         method = Seller.sellers_arr[0].arg_dict["performance_measure"] #ugly but might be changed in future idk
         for seller in Agent.sellers_arr:
             seller : Seller #so vsc understands (not important)
-            if method == "final_profit":
-                profits.append(seller.profits[-1])
-            elif method == "max_profit":
-                profits.append(max(seller.profits))
-            elif method == "total_profit":
-                profits.append(sum(seller.profits))
+            profits.append(seller.applyPerformanceMeasure())
         return profits
 
     #---------    SELLER STAT COLLECTION + PROCESSING    ---------

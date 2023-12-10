@@ -69,7 +69,7 @@ class DataHandler:
             out["profits_over_time"] = plot.getFigure()
 
         if "relative_performance_rating" not in excluded_keys:
-            out["relative_performance_rating"] = self.calculateSellerPerformance(pos)
+            out["relative_performance_rating"] = self.relativeSellerPerformance(pos)
             print(out["relative_performance_rating"])
             
         return out
@@ -78,7 +78,9 @@ class DataHandler:
         """
         Process all Sellers as an average.
         """
-        pass
+        out = {}
+
+        return out
 
     def _processBuyer(self) -> dict:
         """
@@ -90,16 +92,30 @@ class DataHandler:
         }
         return out
 
-    def calculateSellerPerformance(self, pos : int) -> float:
+    def relativeSellerPerformance(self, pos : int) -> float:
+        """Calculate individual seller performance compared to other Sellers"""
         profits = Seller.getProfits()
         described_profits = pd.Series(profits).describe().to_dict()
         median_profit = described_profits["50%"]
         return profits[pos] / median_profit
     
+    #TODO test this!
+    def absoluteSellerPerformance(self, pos : int = None) -> float:
+        """Calculate Seller performance compared to the theoretical optimum. If no position is passed the population as a whole is examined"""
+        profits = Seller.getProfits()
+        described_profits = pd.Series(profits).describe().to_dict()
+        data_plot = Seller.buyer_collections_arr[0].makePlot()
+        optimum = Seller.sellers_arr[0].applyPerformanceMeasure(data_plot.y_vals)
+        if pos is None:
+            optimum *= len(Agent.buyer_collections_arr)
+            return sum(profits) / optimum
+        else:
+            num_competitors = len(Agent.sellers_arr[pos].buyer_collections)
+            profit_per_collection = profits[pos] / num_competitors
+            return profit_per_collection / optimum
+    
     def calculateBuyerPerformace(self, pos: int = 1) -> float:
         target = Agent.buyer_collections_arr[pos]
-        
-
 
     def loadDataFile(self) -> object:
         #TODO try to unpickle from location given

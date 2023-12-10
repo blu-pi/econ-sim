@@ -165,3 +165,7 @@ This branch will finally deliver the finished UI.
 Progress on UI, now displaying the graph visually and all input parameters upon request.
 Working on modifying data handler to output desired data after simulation.
 modified display methods in Graph to ensure all graphs use the parent class' implementation unless they have their own.
+
+Worked on some UI features. Implemented absolute seller performance which rates how close to the theoretical optimum an individual Sellers or Sellers as a whole performed.
+Made performance measure implementation for Sellers more generic and put it in it's own method to always be applied correctly in all circumstances. This removes a lot of
+code smells as well. Just a better implementation.

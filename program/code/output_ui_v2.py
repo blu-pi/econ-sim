@@ -47,17 +47,20 @@ class App:
         button_frame = Frame(self.root)
         button_frame.pack()
 
-        self.lookup_frame = Frame(self.root)
-        self.lookup_frame.pack(side=BOTTOM)
+        self.buyer_frame = Frame(self.root)
+        self.buyer_frame.pack(side=BOTTOM)
+
+        self.seller_frame = Frame(self.root)
+        self.seller_frame.pack(side=BOTTOM)
 
         #------LABELS------
         title_label = Label(top_frame, text= "General Data Output", font=App.heading_font)
         title_label.pack(side=TOP)
 
-        seller_label = Label(self.lookup_frame, text= "General Seller performance", font= App.sub_heading_font)
+        seller_label = Label(self.seller_frame, text= "General Seller performance", font= App.sub_heading_font)
         seller_label.pack(side=TOP)
 
-        buyer_label = Label(self.lookup_frame, text= "General Buyer performance", font= App.sub_heading_font)
+        buyer_label = Label(self.buyer_frame, text= "General Buyer performance", font= App.sub_heading_font)
         buyer_label.pack(side=TOP)
 
         #------BUTTONS------
@@ -69,7 +72,9 @@ class App:
         show_params.configure(command=self.show_parameters)
         show_params.pack(side=LEFT, padx=5, pady=5)
 
+        self.getSellerPerf()
 
+        self.getBuyerPerf()
 
         self.root.mainloop()
     
@@ -87,6 +92,11 @@ class App:
             sec_title_label.pack(side=TOP)
             for param_name, value in dict.items():
                 temp = ParamDisplay(sec_frame, param_name, value)
+
+    #TODO carry on here
+    def getSellerPerf(self) -> dict:
+        pass
+        #self.data_handler.
 
 class ParamDisplay:
 

@@ -133,6 +133,7 @@ class Seller(Agent):
     
     def applyPerformanceMeasure(self, target_data : list[float] = None) -> float:
         """Return desired value representing performance from list containing profits over time"""
+        #IMPORTANT, FINAL PROFIT IS ONLY VALID ON DATA OVER TIME GRAPHS!
         if target_data is None:
             target_data = self.profits
         method = self.arg_dict["performance_measure"]
@@ -153,7 +154,6 @@ class Seller(Agent):
     def getProfits() -> list[int]:
         """Get a target profit value from each Seller which will later be used to determine Seller performance"""
         profits = []
-        method = Seller.sellers_arr[0].arg_dict["performance_measure"] #ugly but might be changed in future idk
         for seller in Agent.sellers_arr:
             seller : Seller #so vsc understands (not important)
             profits.append(seller.applyPerformanceMeasure())

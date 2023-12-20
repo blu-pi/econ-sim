@@ -19,9 +19,16 @@ class BoxPlot:
         self.axis_name = axis_name
 
     def showOutput(self) -> None:
-        ax = self.data.plot.box(column=self.axis_name)
-        ax.show()
+        plt.figure(figsize=(8, 6))
+        plt.boxplot(self.data)
+        if self.title is not None:
+            plt.title(self.title)
+        plt.xlabel(self.axis_name)
+        plt.ylabel('Y-axis label')
+        plt.show()
 
     def getFigure(self) -> Figure:
         """Get a reference to an image (of the box plot) which can later be used in a Tkinter display."""
-        pass
+        fig, ax = plt.subplots()  # Create a new figure and axes
+        self.data.plot(kind='box', ax=ax)  # Create a boxplot on the axes
+        return fig

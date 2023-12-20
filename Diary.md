@@ -169,3 +169,8 @@ modified display methods in Graph to ensure all graphs use the parent class' imp
 Worked on some UI features. Implemented absolute seller performance which rates how close to the theoretical optimum an individual Sellers or Sellers as a whole performed.
 Made performance measure implementation for Sellers more generic and put it in it's own method to always be applied correctly in all circumstances. This removes a lot of
 code smells as well. Just a better implementation.
+
+Cleaned up data handler a lot.
+Removed final profit as a seller performance measure. Might add back as an optional override. Generally not useful enough. Total profit is better if Sellers can decline. Max profit is better if they can't.
+Added boxplot visual representation. 
+Working on absolute seller performance accuracy.

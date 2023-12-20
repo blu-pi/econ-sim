@@ -72,10 +72,11 @@ class App:
         show_params.configure(command=self.show_parameters)
         show_params.pack(side=LEFT, padx=5, pady=5)
 
-        self.getSellerPerf()
-
-        self.getBuyerPerf()
-
+        #get some classs data
+        general_seller_perf = self.data_handler.absoluteSellerPerformance()
+        ParamDisplay(self.seller_frame, "Absolute performance", general_seller_perf)
+        #general_buyer_perf = self.data_handler. (kinda irrelevant)
+        
         self.root.mainloop()
     
     def show_graph(self) -> None:
@@ -93,14 +94,9 @@ class App:
             for param_name, value in dict.items():
                 temp = ParamDisplay(sec_frame, param_name, value)
 
-    #TODO carry on here
-    def getSellerPerf(self) -> dict:
-        pass
-        #self.data_handler.
-
 class ParamDisplay:
 
-    def __init__(self, container: Tk, param_name : str, value : any):
+    def __init__(self, container: Tk, param_name : str, value : SingleOutput):
         self.container = container
         self.param_name = param_name
         self.value = value

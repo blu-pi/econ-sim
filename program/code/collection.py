@@ -88,7 +88,7 @@ class BuyerCollection:
             return self.buys_from[0]
         return None   
     
-    def makePlot(self, price_limits : Tuple[float,float] = (0,100), interval : float = 1, show_output : bool = False) -> NamedDataPlot:
+    def makePlot(self, price_limits : Tuple[float,float] = (0,100), interval : float = 1.0, show_output : bool = False) -> NamedDataPlot:
         """Return NamedDataPlot for a BuyerCollection's price vs seller utility data."""
         total_price = 0
         prices = []

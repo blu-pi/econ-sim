@@ -174,3 +174,8 @@ Cleaned up data handler a lot.
 Removed final profit as a seller performance measure. Might add back as an optional override. Generally not useful enough. Total profit is better if Sellers can decline. Max profit is better if they can't.
 Added boxplot visual representation. 
 Working on absolute seller performance accuracy.
+
+Made graph display more flexible. Working on introducing interactive graph displays for data output. Found new problem: Tk windows seem to be popping up kinda randomly when simulation ends. Probably a simple fix.
+Between commits - forgot the popups were dubug... keeping for now. Removed option to display graphs within method that builds them. It's just not needed and the completed graph returned by the method is needed to draw them without
+jumping through too many hoops. They can still be displayed at will at any other time. Added functionality for an interactive graph in output. Just need to add a window of sorts to display data about selected Seller. 
+Merry Christmas lol.

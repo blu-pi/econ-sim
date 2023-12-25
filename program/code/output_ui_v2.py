@@ -6,6 +6,7 @@ from matplotlib.backends.backend_tkagg import FigureCanvasTkAgg
 
 from program.code.data_handle import *
 from program.code.graphs import Graph
+from program.code.graph_ui import GraphUI
 
 SingleOutput = float | int | str | bool
 sections = ["Buyer", "Seller", "Simulation"] #possible sections of data
@@ -80,7 +81,9 @@ class App:
         self.root.mainloop()
     
     def show_graph(self) -> None:
-        self.graph.display(self.graph.graph_obj)
+        #self.graph.display(self.graph.graph_obj)
+        interactive = GraphUI(self.graph)
+        interactive.display_interactive_graph()
 
     def show_parameters(self) -> None:
         popup = Toplevel()

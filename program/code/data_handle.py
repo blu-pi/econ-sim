@@ -47,7 +47,7 @@ class DataHandler:
         """Calculate Seller performance compared to the theoretical optimum. If no Seller is passed the population as a whole is examined"""
         profits = Seller.getProfits()
         described_profits = pd.Series(profits).describe().to_dict()
-        data_plot = Seller.buyer_collections_arr[0].makePlot(show_output=True)
+        data_plot = Seller.buyer_collections_arr[0].makePlot(show_output=True) #TODO show output is debug
         print(data_plot.y_vals)
         optimum = Seller.sellers_arr[0].applyPerformanceMeasure(data_plot.y_vals)
         if target is None:
@@ -59,6 +59,7 @@ class DataHandler:
             return profit_per_collection / optimum
     
     def calculateBuyerPerformace(self, target : Buyer = None) -> float:
+        """Kinda pointless"""
         pass
 
     def loadDataFile(self) -> object:

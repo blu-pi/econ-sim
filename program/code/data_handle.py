@@ -52,6 +52,7 @@ class DataHandler:
         optimum = Seller.sellers_arr[0].applyPerformanceMeasure(data_plot.y_vals)
         if target is None:
             optimum *= len(Agent.buyer_collections_arr)
+            print(sum(profits),optimum)
             return sum(profits) / optimum
         else:
             num_competitors = len(target.buyer_collections)

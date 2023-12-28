@@ -179,3 +179,8 @@ Made graph display more flexible. Working on introducing interactive graph displ
 Between commits - forgot the popups were dubug... keeping for now. Removed option to display graphs within method that builds them. It's just not needed and the completed graph returned by the method is needed to draw them without
 jumping through too many hoops. They can still be displayed at will at any other time. Added functionality for an interactive graph in output. Just need to add a window of sorts to display data about selected Seller. 
 Merry Christmas lol.
+
+Code makes assumption that all buyercollections are identical for performance calculation. This may also be present in decision maiking. 
+TODO: Chnage code to allow for varied buyercollections. Implement logic for complicated varied collections. E.g. All collections with same distribution but different ranges under certain parameters.
+This is somewhat big of a job but important. 
+Also implemented getting seller object from interactable graph output to begin analysis of individual seller performance.

@@ -111,7 +111,7 @@ class Seller(Agent):
         for i in range(self.price_steps):
             change += interval
             action_obj_arr.append(PriceChange(self, change))
-            action_obj_arr.append(PriceChange(self, change * -1))       
+            action_obj_arr.append(PriceChange(self, change * -1))     
         assert(len(action_obj_arr) == 1 + (self.price_steps * 2))
 
         matrices = self.makeMatrices(action_obj_arr) #only needed during simultaneous decision making!

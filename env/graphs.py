@@ -4,8 +4,8 @@ import matplotlib.pyplot as plt
 import math
 from random import Random
 
-from program.code.agents import Seller, Buyer, Agent
-from program.code.collection import BuyerCollection
+from env.agents import Seller, Buyer, Agent
+from env.collection import BuyerCollection
 
 #interface, not to be confuced with nx.Graph!
 #Kinda ugly code but I'm not about to spend hours rewriting this just to make it marginally more efficient. #TODO eventually rewrite

@@ -2,13 +2,12 @@ from typing import Tuple
 import pandas as pd
 
 #from program.code.arg_checker import OptArgDict 
-from program.code.opt_args import OptArg
-from program.code.graphs import *
-from program.code.agents import *
-from program.code.output_ui import Controller
-from program.code.output_ui_v2 import App
-from program.code.data_plot import NamedDataPlot
-from program.code.out_file_generator import *
+from structs.opt_args import OptArg
+from env.graphs import *
+from env.agents import *
+from interface.output_ui_v2 import App
+from structs.data_plot import NamedDataPlot
+from file_IO.out_file_generator import *
 
 class Simulation:
     """

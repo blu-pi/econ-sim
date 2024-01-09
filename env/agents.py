@@ -3,7 +3,7 @@ from typing import Union, Any
 import numpy as np
 import statistics
 
-from program.code.game_theory import DecisionMatrix
+from structs.game_theory import DecisionMatrix
 
 #from program.code.agent_actions_interface import ActionInterface
 
@@ -59,7 +59,7 @@ class Seller(Agent):
                 self.buyers.append(b)
 
     def setBuyerCollection(self, collection):
-        from program.code.collection import BuyerCollection
+        from env.collection import BuyerCollection
         assert(isinstance(collection, BuyerCollection))
         self.buyer_collections.append(collection)
 
@@ -101,8 +101,8 @@ class Seller(Agent):
         #TODO clean up this method (low priority). It should be split up bc it does to much at once right now. (old todo)
         #TODO use buyer collections to do stuff
 
-        from program.code.actions import PriceChange, Idle, SellerAction
-        from program.code.game_theory import DecisionMatrix
+        from env.actions import PriceChange, Idle, SellerAction
+        from structs.game_theory import DecisionMatrix
         
         #generate possible actions    
         action_obj_arr = [Idle(self)]
@@ -191,8 +191,8 @@ class Seller(Agent):
     
     def _getComplexStats(self) -> dict:
         #doesn't work for new output UI
-        from program.code.collection import BuyerCollection
-        from program.code.data_plot import NamedDataPlot
+        from env.collection import BuyerCollection
+        from structs.data_plot import NamedDataPlot
         combined_plot : NamedDataPlot = BuyerCollection.makeComboPlotFromList(self.buyer_collections)
         out = {
             "price_to_profit_plot" : combined_plot
@@ -258,7 +258,7 @@ class Buyer(Agent):
 
     def setCollection(self, collection) -> None:
         """records assignment of Buyer to a designated BuyerCollection"""
-        from program.code.collection import BuyerCollection
+        from env.collection import BuyerCollection
         assert(isinstance(collection, BuyerCollection))
         self.collection = collection
     
@@ -270,7 +270,7 @@ class Buyer(Agent):
 
     def findBestAction(self): #No typing because imports are made later
         """Returns action object that the Buyer can perform which was calculated to be the best."""
-        from program.code.actions import Buy, Idle
+        from env.actions import Buy, Idle
         action_obj_arr = []
         action_values_arr = []
         buy_action = Buy(self)

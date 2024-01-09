@@ -1,7 +1,7 @@
 from typing import Union, Any
 
-from program.code.agents import Seller, Buyer
-from program.code.opt_args import OptArg
+from env.agents import Seller, Buyer
+from structs.opt_args import OptArg
 
 #interface
 class Action():
@@ -103,7 +103,7 @@ class PriceChange(SellerAction):
         return util
 
     def seqEval(self) -> int:
-        from program.code.collection import BuyerCollection
+        from env.collection import BuyerCollection
         util = 0
         if self.agent.arg_dict["PERFECT_INFORMATION"]: #if true
             #by far the easiest

@@ -1,8 +1,8 @@
 import pandas as pd
 import random
 
-from program.code.collection import *
-from program.code.data_plot import *
+from env.collection import *
+from structs.data_plot import *
 
 #Potential for refactor, could move functionality to Seller/Buyer classes.
 class DataHandler:

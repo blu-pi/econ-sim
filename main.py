@@ -3,10 +3,8 @@ import sys
 from tkinter import filedialog
 from typing import Union
 
-sys.path.append("./")
-
-from program.code.simulation import Simulation
-from program.code.opt_args import OptArg
+from env.simulation import Simulation
+from structs.opt_args import OptArg
 from tkinter import *
 from tkinter.ttk import *
 

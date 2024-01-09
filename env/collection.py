@@ -1,6 +1,6 @@
-from program.code.agents import Seller, Buyer, Agent
-from program.code.data_plot import NamedDataPlot
-from program.code.distribution import Distribution, Linear, Exponential
+from env.agents import Seller, Buyer, Agent
+from structs.data_plot import NamedDataPlot
+from structs.distribution import Distribution, Linear, Exponential
 
 import numpy as np
 

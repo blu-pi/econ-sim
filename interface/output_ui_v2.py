@@ -4,9 +4,9 @@ from tkinter.ttk import *
 from matplotlib.figure import Figure
 from matplotlib.backends.backend_tkagg import FigureCanvasTkAgg
 
-from program.code.data_handle import *
-from program.code.graphs import Graph
-from program.code.graph_ui import GraphUI
+from env.data_handle import *
+from env.graphs import Graph
+from interface.graph_ui import GraphUI
 
 SingleOutput = float | int | str | bool
 sections = ["Buyer", "Seller", "Simulation"] #possible sections of data

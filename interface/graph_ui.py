@@ -2,8 +2,9 @@ import networkx as nx
 import matplotlib.pyplot as plt
 from tkinter import *
 
-from program.code.data_handle import *
-from program.code.graphs import Graph
+from env.agents import Seller
+from env.data_handle import *
+from env.graphs import Graph
 
 
 class GraphUI:
@@ -42,7 +43,7 @@ class GraphUI:
         plt.show()
     
     def display_data(self, node) -> None:
-        from program.code.output_ui_v2 import LookupContainer
+        from interface.output_ui_v2 import LookupContainer
         #incoming war crime, I'm not sorry (it never happened) but if it did (it did) they deserved it (they did not)
         #Explanation below 
         #GraphUI.Line/Tree.networkx_Graph.nodes[node][seller_obj_arg_reference] -> Chosen Seller object reference

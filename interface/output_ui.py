@@ -1,7 +1,7 @@
 from typing import Tuple, Union
 
-from program.code.data_plot import NamedDataPlot
-from program.code.opt_args import OptArg
+from structs.data_plot import NamedDataPlot
+from structs.opt_args import OptArg
 
 import pandas as pd
 from tkinter import *

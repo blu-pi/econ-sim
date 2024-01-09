@@ -5,6 +5,8 @@ from matplotlib.figure import Figure
 from matplotlib.backends.backend_tkagg import FigureCanvasTkAgg
 
 from program.code.data_handle import *
+from program.code.graphs import Graph
+from program.code.graph_ui import GraphUI
 
 SingleOutput = float | int | str | bool
 sections = ["Buyer", "Seller", "Simulation"] #possible sections of data
@@ -30,15 +32,14 @@ class App:
     sub_heading_font = ('Arial', 12)
 
 
-    def __init__(self, parameters : dict = {}) -> None:
+    def __init__(self, graph: Graph, in_parameters : dict, out_parameters : dict = {}) -> None:
         self.root = Tk()
         self.root.winfo_toplevel().title("Data Visualiser")
-        self.parameters = parameters
+        self.graph = graph
+        self.in_parameters = in_parameters
+        self.out_parameters = out_parameters
 
-        self.data_handler = DataHandler(parameters)
-
-        scroll = Scrollbar(self.root)
-        scroll.pack(side = RIGHT, fill=Y)
+        self.data_handler = DataHandler(out_parameters)
 
         #------FRAMES------
         top_frame = Frame(self.root)
@@ -50,59 +51,61 @@ class App:
         self.lookup_frame = Frame(self.root)
         self.lookup_frame.pack(side=BOTTOM)
 
+        self.seller_frame = Frame(self.root)
+        self.seller_frame.pack(side=BOTTOM)
+
         #------LABELS------
-        title_label = Label(top_frame, text= "Select which stats to view", font=App.heading_font)
+        title_label = Label(top_frame, text= "General Data Output", font=App.heading_font)
         title_label.pack(side=TOP)
+
+        seller_label = Label(self.seller_frame, text= "General Seller performance", font= App.sub_heading_font)
+        seller_label.pack(side=TOP)
 
         #------BUTTONS------
-        self.section_buttons = []
-        for section_name in sections:
-            btn = Button(button_frame, text=section_name)
-            btn.configure(command= lambda name=section_name: self.makeWindow(name))
-            btn.pack(side=RIGHT)
-            self.section_buttons.append(btn)
+        show_graph = Button(button_frame, text="Graph")
+        show_graph.configure(command=self.show_graph)
+        show_graph.pack(side=LEFT, padx=5, pady=5)
 
+        show_params = Button(button_frame, text="Simulation parameters")
+        show_params.configure(command=self.show_parameters)
+        show_params.pack(side=LEFT, padx=5, pady=5)
+
+        #get some classs data
+        general_seller_perf = self.data_handler.sellerClassPerformance()
+        ParamDisplay(self.seller_frame, "Absolute performance", general_seller_perf)
+        #general_buyer_perf = self.data_handler. (kinda irrelevant)
+        
         self.root.mainloop()
+    
+    def show_graph(self) -> None:
+        #self.graph.display(self.graph.graph_obj)
+        interactive = GraphUI(self.graph, self.lookup_frame, self.data_handler)
+        interactive.display_interactive_graph()
 
-    def makeWindow(self, text : str) -> None:
+    def show_parameters(self) -> None:
+        popup = Toplevel()
+        popup.title("Simulation parameters")
 
-        self.newWindow = Toplevel(self.root)
-        self.newWindow.title(text + " selection") 
+        for section_name, dict in self.in_parameters.items():
+            sec_frame = Frame(popup)
+            sec_frame.pack(side=TOP,pady=5)
+            sec_title_label = Label(sec_frame, text=section_name, font= App.sub_heading_font)
+            sec_title_label.pack(side=TOP)
+            for param_name, value in dict.items():
+                temp = ParamDisplay(sec_frame, param_name, value)
 
-        frame = Frame(self.newWindow)
-        frame.pack()
+class ParamDisplay:
 
-        title_label = Label(frame, font=App.heading_font)  
-        title_label.configure(text="Select which type of {} information you want to see:".format(text))
-        title_label.pack(side=TOP)
+    def __init__(self, container: Tk, param_name : str, value : SingleOutput):
+        self.container = container
+        self.param_name = param_name
+        self.value = value
+        
+        combined_text = "{}: {}".format(param_name, value)
 
-        individual_button = Button(frame, text="Individual")
-        individual_button.configure(command= lambda section_name = text: self.requestData(section_name, is_individual=True))
-        individual_button.pack(side=LEFT)
+        val_label = Label(container, text= combined_text)
+        val_label.pack()
 
-        summary_button = Button(frame, text="Summary")
-        summary_button.configure(command= lambda section_name = text: self.requestData(section_name, is_individual=False))
-        summary_button.pack(side=LEFT)
-
-    def requestData(self, section_name : str, is_individual : bool) -> None:
-        pos = None
-        if is_individual:
-            #get user input
-            pos = 2
-
-        data_handler = DataHandler(parameters={})
-        data : dict = data_handler.process(section_name, is_individual, pos)
-        self.displayData(data, section_name, is_individual)
-            
-    def displayData(self, data : dict, section_name : str, is_individual : bool) -> None:
-        self.newWindow.destroy()
-
-        if is_individual:
-            detail = "Individual"
-        else:
-            detail = "Average"
-        title = "{} {}".format(detail, section_name)
-        self.displays[title] = LookupContainer(self.lookup_frame, title, data)
 
 class LookupContainer:
 
@@ -116,10 +119,10 @@ class LookupContainer:
         self.data = data
 
         self.frame = Frame(self.container)
-        self.frame.pack(side=BOTTOM, pady=10)
+        self.frame.pack(side=BOTTOM, pady=5)
 
         self.title_label = Label(self.frame, text=self.title, font=App.heading_font)
-        self.title_label.pack(side=TOP,padx=10)
+        self.title_label.pack(side=TOP,padx=5)
 
         self.remove_button = Button(self.frame, text="remove")
         self.remove_button.configure(command= lambda a="": self.frame.destroy())
@@ -130,9 +133,9 @@ class LookupContainer:
     def show_conts(self):
         for title, contents in self.data.items():
             if isinstance(contents, Figure):
-                self.displayed_figures[title] = FigureDisplay(title, figure=contents, container=self.container)
+                self.displayed_figures[title] = FigureDisplay(title, figure=contents, container=self.frame)
             elif isinstance(contents, SingleOutput):
-                self.displayed_vals[title] = ValueDisplay(title, value=contents, container=self.container)
+                self.displayed_vals[title] = ParamDisplay(param_name=title, value=contents, container=self.frame)
             else:
                 print("Error, incompatible display data for {}. {} is not yet supported!".format(title,type(contents)))
 
@@ -149,14 +152,3 @@ class FigureDisplay:
         canvas = FigureCanvasTkAgg(figure, master=self.frame)
         canvas.draw()
         canvas.get_tk_widget().pack(side=TOP, fill=BOTH, expand=1)
-
-
-
-class ValueDisplay:
-
-    def __init__(self, title : str, value : SingleOutput, container : Frame):
-        self.frame = Frame(container)
-        self.frame.pack(side=BOTTOM)
-
-        self.title_label = Label(self.frame, text=title, font=App.sub_heading_font)
-        self.title_label.pack(side=TOP)

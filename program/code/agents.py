@@ -111,7 +111,7 @@ class Seller(Agent):
         for i in range(self.price_steps):
             change += interval
             action_obj_arr.append(PriceChange(self, change))
-            action_obj_arr.append(PriceChange(self, change * -1))       
+            action_obj_arr.append(PriceChange(self, change * -1))     
         assert(len(action_obj_arr) == 1 + (self.price_steps * 2))
 
         matrices = self.makeMatrices(action_obj_arr) #only needed during simultaneous decision making!
@@ -131,6 +131,22 @@ class Seller(Agent):
             pass
             #Uses behaviour
     
+    def applyPerformanceMeasure(self, target_data : list[float] = None) -> float:
+        """Return desired value representing performance from list containing profits over time"""
+        #IMPORTANT, FINAL PROFIT IS ONLY VALID ON DATA OVER TIME GRAPHS!
+        if target_data is None:
+            target_data = self.profits
+        method = self.arg_dict["performance_measure"]
+        if method == "final_profit":
+            return target_data[-1]
+        elif method == "max_profit":
+            return max(target_data)
+        elif method == "total_profit":
+            return(target_data)
+        else:
+            print("ERROR INVALID SELLER PERFORMANCE MEASURE")
+            exit(0)
+    
     def __str__(self) -> str:
         return "Seller" + str(self.arr_pos)
         
@@ -138,17 +154,10 @@ class Seller(Agent):
     def getProfits() -> list[int]:
         """Get a target profit value from each Seller which will later be used to determine Seller performance"""
         profits = []
-        method = Seller.sellers_arr[0].arg_dict["performance_measure"] #ugly but might be changed in future idk
         for seller in Agent.sellers_arr:
             seller : Seller #so vsc understands (not important)
-            if method == "final_profit":
-                profits.append(seller.profits[-1])
-            elif method == "max_profit":
-                profits.append(max(seller.profits))
-            elif method == "total_profit":
-                profits.append(sum(seller.profits))
+            profits.append(seller.applyPerformanceMeasure())
         return profits
-
 
     #---------    SELLER STAT COLLECTION + PROCESSING    ---------
 

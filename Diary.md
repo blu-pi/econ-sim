@@ -157,3 +157,34 @@ It's just not supposed to be allowed to begin with as it serves no purpose than 
 Also working on fixing Sellers thinking they are recieving double the utility than they actually should be. This doesn't affect accuracy in their actions but the raw data just isn't strictly accurate.
 
 Fixed bugs and attempted to add scroll bar to output screen.
+
+Going for another UI rework... fun.
+Plans are on paper.
+This branch will finally deliver the finished UI.
+
+Progress on UI, now displaying the graph visually and all input parameters upon request.
+Working on modifying data handler to output desired data after simulation.
+modified display methods in Graph to ensure all graphs use the parent class' implementation unless they have their own.
+
+Worked on some UI features. Implemented absolute seller performance which rates how close to the theoretical optimum an individual Sellers or Sellers as a whole performed.
+Made performance measure implementation for Sellers more generic and put it in it's own method to always be applied correctly in all circumstances. This removes a lot of
+code smells as well. Just a better implementation.
+
+Cleaned up data handler a lot.
+Removed final profit as a seller performance measure. Might add back as an optional override. Generally not useful enough. Total profit is better if Sellers can decline. Max profit is better if they can't.
+Added boxplot visual representation. 
+Working on absolute seller performance accuracy.
+
+Made graph display more flexible. Working on introducing interactive graph displays for data output. Found new problem: Tk windows seem to be popping up kinda randomly when simulation ends. Probably a simple fix.
+Between commits - forgot the popups were dubug... keeping for now. Removed option to display graphs within method that builds them. It's just not needed and the completed graph returned by the method is needed to draw them without
+jumping through too many hoops. They can still be displayed at will at any other time. Added functionality for an interactive graph in output. Just need to add a window of sorts to display data about selected Seller. 
+Merry Christmas lol.
+
+Code makes assumption that all buyercollections are identical for performance calculation. This may also be present in decision maiking. 
+TODO: Chnage code to allow for varied buyercollections. Implement logic for complicated varied collections. E.g. All collections with same distribution but different ranges under certain parameters.
+This is somewhat big of a job but important. 
+Also implemented getting seller object from interactable graph output to begin analysis of individual seller performance.
+
+Leaving random distribution to be the only one that allows for non-identical buyer collections. Implemenmting other existing ditributions to have random ranges produces very little value.
+Fixed a bug that made selecting seller0 impossible. Still not 100% sure if performance measures are working correctly.
+Mostly achieved goal of this branch. 

@@ -43,18 +43,11 @@ class Simulation:
         self.turn_num = 0
         self.startSim()
 
-    def setupSim(self) -> None:
+    def setupSim(self, args) -> Graph:
         """
         Completes simulation setup including parameter verification and Graph creation. 
         Buyer and Seller args are checked later as they are totally optional and thus less important.
         """
-        args = {
-            "buyer_args" : self.buyer_args,
-            "seller_args" : self.seller_args,
-            "graph_args" : self.parameters,
-            "num_sellers" : self.num_sellers
-        } #passing sim args as graph args for now.
-
            
         if self.graph_type == "Line":
             graph = Line(**args)
@@ -62,11 +55,22 @@ class Simulation:
             graph = Line(**args, isCircle=True)
         if self.graph_type == "Tree":
             graph = Tree(**args)
+
+        return graph
         #TODO support for more graph types
         
 
     def startSim(self) -> None:
         """Method that uses entered parameters to start the simulation."""
+        
+        #If everything blows up, maybe put num_sellers back
+        args = {
+            "buyer_args" : self.buyer_args,
+            "seller_args" : self.seller_args,
+            "graph_args" : self.parameters,
+            #"num_sellers" : self.num_sellers
+        } #passing sim args as graph args for now.
+
         #!IMPORTANT! all opt_dicts must pass through a .verify method! They will not be verified otherwise and can pass illegal parameters!
         bad_sim_params = OptArg.verifyDictParams(self.parameters,OptArg.sim_parameters)
         bad_buyer_params = OptArg.verifyDictParams(self.buyer_args,OptArg.buyer_parameters)
@@ -81,8 +85,9 @@ class Simulation:
         for key in self.parameters:
             setattr(self, key, self.parameters[key])
 
-        self.setupSim()
+        graph = self.setupSim(args)
         self.run()
+        self.endSim(graph, args) 
 
     def agentChoices(self) -> None:
         """
@@ -114,9 +119,8 @@ class Simulation:
             self.turn_num += 1
             if self.turn_num >= self.max_iterations or self.reachedEquilibrium():
                 break
-        self.endSim() 
 
-    def endSim(self) -> None:
+    def endSim(self, graph: Graph, in_parameters: dict) -> None:
         print("The End.") #TODO Data output
 
         #-------- STAT PROCESSING --------
@@ -136,7 +140,7 @@ class Simulation:
             self.genOutputFile() #TODO implement
            
         #Controller.startUI(data_dict=data,params=self.output_args)
-        out_ui = App(parameters=self.output_args)
+        out_ui = App(graph, in_parameters, out_parameters=self.output_args)
         
 
     @staticmethod

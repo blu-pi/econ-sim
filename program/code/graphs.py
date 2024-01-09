@@ -26,10 +26,13 @@ class Graph:
             graph.add_edge(str(buys_from[0]), str(buys_from[1]), obj = buyer) #add edge between previous and seller. Give buyer object as reference.
         Agent.buyer_collections_arr.append(BuyerCollection(buyers))
 
-    @staticmethod
-    def display(graph_obj) -> None:
-        nx.draw(graph_obj, with_labels=True) #just to test correct shape
+    def display(self, graph_obj) -> None:
+        layout = self.get_layout()
+        nx.draw(graph_obj, pos= layout, with_labels=True)
         plt.show()
+    
+    def get_layout(self):
+        return nx.spring_layout(self.graph_obj)
 
 class Line(Graph):
     """
@@ -46,10 +49,11 @@ class Line(Graph):
         self.isCircle = isCircle
         self.graph_obj = self.makeGraph()
 
-    def makeGraph(self, show_result : bool = True) -> nx.Graph:
+    def makeGraph(self) -> nx.Graph:
         G = nx.Graph()
         Graph.total_graphs.append(G)
         first = Seller(self.seller_args)
+        G.add_node(str(first), obj = first)
         previous = first
         num_buyers = 1 #default
         if "buyers_per_seller_pair" in self.graph_args:
@@ -61,16 +65,12 @@ class Line(Graph):
             previous = seller
         if self.isCircle:
             Graph.joinSellers([previous, first], G, self.buyer_args, num_buyers)
-        if show_result:
-            if self.isCircle:
-                self.display(G)
-            else:
-                Graph.display(G)
+        
         return G
     
-    def display(self, graph_obj) -> None:
-        nx.draw_spectral(graph_obj, with_labels=True) #just to test correct shape
-        plt.show()
+    def get_layout(self):
+        return nx.spectral_layout(self.graph_obj)
+    
 
 class Tree(Graph):
     """
@@ -80,13 +80,14 @@ class Tree(Graph):
     """
 
     def __init__(self, num_sellers = 20, graph_args = {}, buyer_args = {}, seller_args = {}) -> None:
+        self.layout = None
         self.num_sellers = num_sellers
         self.buyer_args = buyer_args
         self.seller_args = seller_args
         self.graph_args = graph_args
         self.graph_obj = self.makeGraph()
 
-    def makeGraph(self, show_result : bool = True) -> nx.Graph:
+    def makeGraph(self) -> nx.Graph:
         num_buyers = 1 #default
         if "buyers_per_seller_pair" in self.graph_args:
             num_buyers = self.graph_args["buyers_per_seller_pair"]
@@ -112,6 +113,5 @@ class Tree(Graph):
                 del current[:2]
             prev_layer = current_layer
             remaining_sellers -= len(current_layer)
-        if show_result:
-            Graph.display(G)
+
         return G

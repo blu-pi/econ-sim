@@ -48,8 +48,8 @@ class App:
         button_frame = Frame(self.root)
         button_frame.pack()
 
-        self.buyer_frame = Frame(self.root)
-        self.buyer_frame.pack(side=BOTTOM)
+        self.lookup_frame = Frame(self.root)
+        self.lookup_frame.pack(side=BOTTOM)
 
         self.seller_frame = Frame(self.root)
         self.seller_frame.pack(side=BOTTOM)
@@ -61,9 +61,6 @@ class App:
         seller_label = Label(self.seller_frame, text= "General Seller performance", font= App.sub_heading_font)
         seller_label.pack(side=TOP)
 
-        buyer_label = Label(self.buyer_frame, text= "General Buyer performance", font= App.sub_heading_font)
-        buyer_label.pack(side=TOP)
-
         #------BUTTONS------
         show_graph = Button(button_frame, text="Graph")
         show_graph.configure(command=self.show_graph)
@@ -74,7 +71,7 @@ class App:
         show_params.pack(side=LEFT, padx=5, pady=5)
 
         #get some classs data
-        general_seller_perf = self.data_handler.absoluteSellerPerformance()
+        general_seller_perf = self.data_handler.sellerClassPerformance()
         ParamDisplay(self.seller_frame, "Absolute performance", general_seller_perf)
         #general_buyer_perf = self.data_handler. (kinda irrelevant)
         
@@ -82,7 +79,7 @@ class App:
     
     def show_graph(self) -> None:
         #self.graph.display(self.graph.graph_obj)
-        interactive = GraphUI(self.graph)
+        interactive = GraphUI(self.graph, self.lookup_frame, self.data_handler)
         interactive.display_interactive_graph()
 
     def show_parameters(self) -> None:
@@ -124,7 +121,7 @@ class LookupContainer:
         self.frame = Frame(self.container)
         self.frame.pack(side=BOTTOM, pady=5)
 
-        self.title_label = Label(self.frame, text=self.title, font=App.sub_heading_font)
+        self.title_label = Label(self.frame, text=self.title, font=App.heading_font)
         self.title_label.pack(side=TOP,padx=5)
 
         self.remove_button = Button(self.frame, text="remove")
@@ -136,9 +133,9 @@ class LookupContainer:
     def show_conts(self):
         for title, contents in self.data.items():
             if isinstance(contents, Figure):
-                self.displayed_figures[title] = FigureDisplay(title, figure=contents, container=self.container)
+                self.displayed_figures[title] = FigureDisplay(title, figure=contents, container=self.frame)
             elif isinstance(contents, SingleOutput):
-                self.displayed_vals[title] = ValueDisplay(title, value=contents, container=self.container)
+                self.displayed_vals[title] = ParamDisplay(param_name=title, value=contents, container=self.frame)
             else:
                 print("Error, incompatible display data for {}. {} is not yet supported!".format(title,type(contents)))
 
@@ -155,14 +152,3 @@ class FigureDisplay:
         canvas = FigureCanvasTkAgg(figure, master=self.frame)
         canvas.draw()
         canvas.get_tk_widget().pack(side=TOP, fill=BOTH, expand=1)
-
-
-
-class ValueDisplay:
-
-    def __init__(self, title : str, value : SingleOutput, container : Frame):
-        self.frame = Frame(container)
-        self.frame.pack(side=BOTTOM)
-
-        self.title_label = Label(self.frame, text=title, font=App.sub_heading_font)
-        self.title_label.pack(side=TOP)

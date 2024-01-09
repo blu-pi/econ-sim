@@ -184,3 +184,7 @@ Code makes assumption that all buyercollections are identical for performance ca
 TODO: Chnage code to allow for varied buyercollections. Implement logic for complicated varied collections. E.g. All collections with same distribution but different ranges under certain parameters.
 This is somewhat big of a job but important. 
 Also implemented getting seller object from interactable graph output to begin analysis of individual seller performance.
+
+Leaving random distribution to be the only one that allows for non-identical buyer collections. Implemenmting other existing ditributions to have random ranges produces very little value.
+Fixed a bug that made selecting seller0 impossible. Still not 100% sure if performance measures are working correctly.
+Mostly achieved goal of this branch. 

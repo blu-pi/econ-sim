@@ -22,16 +22,16 @@ class DataHandler:
         self.buyer_class_data = Buyer.getClassStats()
         #self.buyer_data = Buyer.getCollectionStats()
 
-    def priceProfit(target : Seller) -> Figure:
+    def priceProfit(self, target : Seller) -> Figure:
         plot : NamedDataPlot = BuyerCollection.makeComboPlotFromList(target.buyer_collections)
         #plot.trim()
         return plot.getFigure()
     
-    def priceTime(target : Seller) -> Figure:
+    def priceTime(self, target : Seller) -> Figure:
         plot = NamedDataPlot(x_vals=("time",0), y_vals=("price",target.prices))
         return plot.getFigure()
     
-    def profitTime(target : Seller) -> Figure:
+    def profitTime(self, target : Seller) -> Figure:
         plot = NamedDataPlot(x_vals=("time",0), y_vals=("profit",target.profits))
         return plot.getFigure()
 
@@ -43,24 +43,21 @@ class DataHandler:
         return target.applyPerformanceMeasure() / median_profit
     
     #TODO test this!
-    def absoluteSellerPerformance(self, target : Seller = None) -> float:
-        """Calculate Seller performance compared to the theoretical optimum. If no Seller is passed the population as a whole is examined"""
-        profits = Seller.getProfits()
-        described_profits = pd.Series(profits).describe().to_dict()
-        data_plot = Seller.buyer_collections_arr[0].makePlot(show_output=True) #TODO show output is debug
-        print(data_plot.y_vals)
-        optimum = Seller.sellers_arr[0].applyPerformanceMeasure(data_plot.y_vals)
-        if target is None:
-            optimum *= len(Agent.buyer_collections_arr)
-            print(sum(profits),optimum)
-            return sum(profits) / optimum
-        else:
-            num_competitors = len(target.buyer_collections)
-            profit_per_collection = target.applyPerformanceMeasure() / num_competitors
-            return profit_per_collection / optimum
+    def absoluteSellerPerformance(self, target : Seller) -> float:
+        """Calculate Seller performance compared to the theoretical optimum"""
+        data_plot = BuyerCollection.makeComboPlotFromList(target.buyer_collections)
+        optimum = target.applyPerformanceMeasure(data_plot.y_vals)
+        return target.applyPerformanceMeasure() / optimum
+    
+    def sellerClassPerformance(self) -> float:
+        """Calculate absolute performance value for the entire population of sellers asa whole"""
+        individual_performance = []
+        for seller in Seller.sellers_arr:
+            individual_performance.append(self.absoluteSellerPerformance(seller))
+        return sum(individual_performance) / len(individual_performance)
     
     def calculateBuyerPerformace(self, target : Buyer = None) -> float:
-        """Kinda pointless"""
+        """Not implemented yet; might be pointless"""
         pass
 
     def loadDataFile(self) -> object:

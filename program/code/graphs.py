@@ -53,6 +53,7 @@ class Line(Graph):
         G = nx.Graph()
         Graph.total_graphs.append(G)
         first = Seller(self.seller_args)
+        G.add_node(str(first), obj = first)
         previous = first
         num_buyers = 1 #default
         if "buyers_per_seller_pair" in self.graph_args:

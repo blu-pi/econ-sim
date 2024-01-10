@@ -188,3 +188,8 @@ Also implemented getting seller object from interactable graph output to begin a
 Leaving random distribution to be the only one that allows for non-identical buyer collections. Implemenmting other existing ditributions to have random ranges produces very little value.
 Fixed a bug that made selecting seller0 impossible. Still not 100% sure if performance measures are working correctly.
 Mostly achieved goal of this branch. 
+
+Had a big mixup for NDPs when applied to buyercollections. Values represented are to be split between all adjacent Sellers not just 1. This affected how I did performance measures and perhaps other things too.
+Deliberating on how to proceed. Will fix the output graphs and performance metrics!#
+Fixed data plots made by combining more than 2 BuyerCollections. This would only go wrong in tree structures previously resulting in abd output values. Might need more testing.
+Tree graph layout isn't quite correct for the interactive graph. As a result tree graph nodes can't be clicked or aren't where they are supposed to be.

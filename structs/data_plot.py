@@ -113,7 +113,7 @@ class NamedDataPlot:
     
     def getFigure(self) -> Figure:
         """Make pyplot and return obj for use in Tkinter"""
-        fig = Figure(figsize=(6, 6), dpi=100)
+        fig = Figure(figsize=(4, 4), dpi=100)
         ax = fig.add_subplot(111)
 
         if self.name != None:

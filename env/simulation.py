@@ -47,14 +47,14 @@ class Simulation:
         Completes simulation setup including parameter verification and Graph creation. 
         Buyer and Seller args are checked later as they are totally optional and thus less important.
         """
-           
+        args["num_sellers"] = self.num_sellers #kinda ugly tbh but whatever
         if self.graph_type == "Line":
             graph = Line(**args)
         if self.graph_type == "Circle":
             graph = Line(**args, isCircle=True)
         if self.graph_type == "Tree":
             graph = Tree(**args)
-
+        del args["num_sellers"]
         return graph
         #TODO support for more graph types
         
@@ -62,7 +62,6 @@ class Simulation:
     def startSim(self) -> None:
         """Method that uses entered parameters to start the simulation."""
         
-        #If everything blows up, maybe put num_sellers back
         args = {
             "buyer_args" : self.buyer_args,
             "seller_args" : self.seller_args,

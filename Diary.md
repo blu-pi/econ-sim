@@ -188,3 +188,12 @@ Also implemented getting seller object from interactable graph output to begin a
 Leaving random distribution to be the only one that allows for non-identical buyer collections. Implemenmting other existing ditributions to have random ranges produces very little value.
 Fixed a bug that made selecting seller0 impossible. Still not 100% sure if performance measures are working correctly.
 Mostly achieved goal of this branch. 
+
+Had a big mixup for NDPs when applied to buyercollections. Values represented are to be split between all adjacent Sellers not just 1. This affected how I did performance measures and perhaps other things too.
+Deliberating on how to proceed. Will fix the output graphs and performance metrics!#
+Fixed data plots made by combining more than 2 BuyerCollections. This would only go wrong in tree structures previously resulting in abd output values. Might need more testing.
+Tree graph layout isn't quite correct for the interactive graph. As a result tree graph nodes can't be clicked or aren't where they are supposed to be.
+
+Fixed Tree graph nodes being unpredictable. Cause: graph layout was being newly fetched after every click. This involved invoking the creation of the exact same layout again with the same parameters. 
+This is fine for the nx.spectral_layout as it is deterministic and always produces the same results when run on the same original graph obj. For the tree graph a the nx.spring_layout was chosen and it's not deterministic
+(at least not with a tree shape). Perhaps other nx layouts are also non deterministic with tree graph inputs. Either way the original layout is saved upon creation and is called after every click. No desync can occur anymore.

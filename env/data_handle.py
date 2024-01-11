@@ -47,7 +47,7 @@ class DataHandler:
         """Calculate Seller performance compared to the theoretical optimum"""
         data_plot = BuyerCollection.makeComboPlotFromList(target.buyer_collections)
         optimum = target.applyPerformanceMeasure(data_plot.y_vals)
-        return target.applyPerformanceMeasure() / optimum
+        return target.applyPerformanceMeasure() * len(target.buyer_collections) / optimum #multing by collections might be bad
     
     def sellerClassPerformance(self) -> float:
         """Calculate absolute performance value for the entire population of sellers asa whole"""

@@ -119,7 +119,7 @@ class LookupContainer:
         self.data = data
 
         self.frame = Frame(self.container)
-        self.frame.pack(side=BOTTOM, pady=5)
+        self.frame.pack(side=BOTTOM, pady=5, padx=5)
 
         self.title_label = Label(self.frame, text=self.title, font=App.heading_font)
         self.title_label.pack(side=TOP,padx=5)

@@ -18,26 +18,26 @@ class GraphUI:
     def on_click(self, event):
 
         if event.button == 1 and event.inaxes is not None:
-            x, y = event.xdata, event.ydata
-            pos = self.graph.get_layout()
-            
+            self.clicked_node = None
+            x, y = event.xdata, event.ydata   
             tolerance = 0.1  # Adjust this value for your specific case to determine the proximity to a node
 
             # Check if the click is near a node
-            for node, coord in pos.items():
+            for node, coord in self.pos.items():
                 distance = ((coord[0] - x) ** 2 + (coord[1] - y) ** 2) ** 0.5
                 if distance < tolerance:
                     self.clicked_node = node
                     break 
             
-            self.display_data(self.clicked_node)
+            if self.clicked_node is not None:
+                self.display_data(self.clicked_node)
 
     def connect_events(self):
         self.fig.canvas.mpl_connect('button_press_event', self.on_click)
 
     def display_interactive_graph(self):
-        pos = self.graph.get_layout()
-        nx.draw(self.graph.graph_obj, pos, with_labels=True)
+        self.pos = self.graph.get_layout()
+        nx.draw(self.graph.graph_obj, self.pos, with_labels=True)
 
         self.connect_events()
         plt.show()
@@ -49,6 +49,7 @@ class GraphUI:
         #GraphUI.Line/Tree.networkx_Graph.nodes[node][seller_obj_arg_reference] -> Chosen Seller object reference
         seller_obj : Seller = self.graph.graph_obj.nodes[node]["obj"]
         data = {
+            "Performance measure value" : seller_obj.applyPerformanceMeasure(),
             "Absolute performance" : self.data_handler.absoluteSellerPerformance(seller_obj),
             "Relative performance" : self.data_handler.relativeSellerPerformance(seller_obj),
             "Price to profit graph" : self.data_handler.priceProfit(seller_obj)

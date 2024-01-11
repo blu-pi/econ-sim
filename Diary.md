@@ -193,3 +193,7 @@ Had a big mixup for NDPs when applied to buyercollections. Values represented ar
 Deliberating on how to proceed. Will fix the output graphs and performance metrics!#
 Fixed data plots made by combining more than 2 BuyerCollections. This would only go wrong in tree structures previously resulting in abd output values. Might need more testing.
 Tree graph layout isn't quite correct for the interactive graph. As a result tree graph nodes can't be clicked or aren't where they are supposed to be.
+
+Fixed Tree graph nodes being unpredictable. Cause: graph layout was being newly fetched after every click. This involved invoking the creation of the exact same layout again with the same parameters. 
+This is fine for the nx.spectral_layout as it is deterministic and always produces the same results when run on the same original graph obj. For the tree graph a the nx.spring_layout was chosen and it's not deterministic
+(at least not with a tree shape). Perhaps other nx layouts are also non deterministic with tree graph inputs. Either way the original layout is saved upon creation and is called after every click. No desync can occur anymore.

@@ -197,3 +197,5 @@ Tree graph layout isn't quite correct for the interactive graph. As a result tre
 Fixed Tree graph nodes being unpredictable. Cause: graph layout was being newly fetched after every click. This involved invoking the creation of the exact same layout again with the same parameters. 
 This is fine for the nx.spectral_layout as it is deterministic and always produces the same results when run on the same original graph obj. For the tree graph a the nx.spring_layout was chosen and it's not deterministic
 (at least not with a tree shape). Perhaps other nx layouts are also non deterministic with tree graph inputs. Either way the original layout is saved upon creation and is called after every click. No desync can occur anymore.
+
+Starting new project to use existing structs to simulate inflation. Started with minor restructure of sim start UI.

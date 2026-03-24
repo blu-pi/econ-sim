@@ -138,11 +138,12 @@ class Seller(Agent):
             target_data = self.profits
         method = self.arg_dict["performance_measure"]
         if method == "final_profit":
+            #probably don't even need this
             return target_data[-1]
         elif method == "max_profit":
             return max(target_data)
-        elif method == "total_profit":
-            return(target_data)
+        elif method == "mean_profit":
+            return sum(target_data) / len(target_data)
         else:
             print("ERROR INVALID SELLER PERFORMANCE MEASURE")
             exit(0)

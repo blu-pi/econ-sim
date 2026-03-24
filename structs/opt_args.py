@@ -39,7 +39,7 @@ class OptArg:
         "price_change_amount" : [0,"..",20],
         "price_steps" : [0,"..",40],
         "product_price" : [0,"..",100],
-        "performance_measure" : ["max_profit","total_profit"]
+        "performance_measure" : ["max_profit","mean_profit"]
     } 
     _all_parameters.append(seller_parameters)
 

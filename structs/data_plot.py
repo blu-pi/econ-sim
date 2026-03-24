@@ -48,7 +48,7 @@ class NamedDataPlot:
             new_x_title = NamedDataPlot.placeholder_name
         if self.y_title != other.y_title:
             new_y_title = NamedDataPlot.placeholder_name        
-        new_y = [sum(x) for x in zip(self.y_vals, other.y_vals)]
+        new_y = [sum(i) for i in zip(self.y_vals, other.y_vals)]
         return NamedDataPlot((new_x_title,self.x_vals),(new_y_title,new_y),new_title)
 
     def mean(self, other : 'NamedDataPlot') -> 'NamedDataPlot':

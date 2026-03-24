@@ -199,3 +199,7 @@ This is fine for the nx.spectral_layout as it is deterministic and always produc
 (at least not with a tree shape). Perhaps other nx layouts are also non deterministic with tree graph inputs. Either way the original layout is saved upon creation and is called after every click. No desync can occur anymore.
 
 Starting new project to use existing structs to simulate inflation. Started with minor restructure of sim start UI.
+
+Working on some fixing performance measure accuracy. When performance measure selected is total profit, output absolute performance (the performance compared to the theoretical optimum)
+is not meaningful at all. Changing it to calculate average profit per step from total and comparing to optimum. This should result in agents almost never achieving absolute performances of 1.
+This is by design, the performance measure is very harsh. 
